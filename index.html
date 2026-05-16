@@ -1,0 +1,2576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#6B1A1A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Azkena v1.0</title>
+  <style>
+    /* =====================================================
+       VARIABLES Y PALETA TXOKO TRADICIONAL
+    ===================================================== */
+    :root {
+      --primary:       #6B1A1A;
+      --primary-dark:  #4A0F0F;
+      --primary-light: #8B2A2A;
+      --accent:        #C8952A;
+      --accent-light:  #E8B84B;
+      --bg:            #F5EDD6;
+      --card:          #FFFFFF;
+      --text:          #2C1810;
+      --text-muted:    #6B5B52;
+      --success:       #2E7D32;
+      --warning:       #E65100;
+      --error:         #C62828;
+      --blocked:       #757575;
+      --border:        #E0D5C8;
+      --shadow:        rgba(44, 24, 16, 0.12);
+      --nav-h:         64px;
+      --header-h:      58px;
+    }
+
+    /* =====================================================
+       RESET Y BASE
+    ===================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+    #app-header {
+      position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      height: calc(var(--header-h) + env(safe-area-inset-top));
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: #fff;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 0 16px env(safe-area-inset-top, 0px);
+      padding-bottom: 10px;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+    .logo { display: flex; flex-direction: column; }
+    .logo .title { font-size: 15px; font-weight: 800; letter-spacing: 0.3px; }
+    .logo .subtitle { font-size: 11px; opacity: 0.85; font-style: italic; margin-top: 1px; }
+    #lang-toggle {
+      background: rgba(255,255,255,0.18);
+      border: 1.5px solid rgba(255,255,255,0.4);
+      color: #fff; padding: 5px 12px;
+      border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* =====================================================
+       MAIN / SCREENS
+    ===================================================== */
+    #app-main {
+      padding-top: calc(var(--header-h) + env(safe-area-inset-top));
+      padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px);
+      min-height: 100vh;
+    }
+    .screen { display: none; padding: 12px; animation: fadeIn 0.18s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .screen-header { padding: 12px 0 6px; }
+    .screen-title { font-size: 20px; font-weight: 800; color: var(--primary); }
+    .screen-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* =====================================================
+       BOTTOM NAV
+    ===================================================== */
+    #app-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+      background: var(--card); border-top: 1px solid var(--border);
+      display: flex; z-index: 100;
+      box-shadow: 0 -2px 10px var(--shadow);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-btn {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1px;
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 9px; font-weight: 600;
+      padding: 6px 1px; transition: color 0.15s;
+      -webkit-tap-highlight-color: transparent; position: relative;
+    }
+    .nav-btn .nav-icon { font-size: 20px; line-height: 1; transition: transform 0.15s; }
+    .nav-btn.active { color: var(--primary); }
+    .nav-btn.active .nav-icon { transform: scale(1.12); }
+    .nav-badge {
+      position: absolute; top: 4px; right: calc(50% - 16px);
+      background: var(--error); color: #fff;
+      border-radius: 50%; width: 8px; height: 8px;
+      font-size: 0; border: 1.5px solid var(--card);
+    }
+
+    /* =====================================================
+       CARDS
+    ===================================================== */
+    .card {
+      background: var(--card); border-radius: 12px; padding: 14px;
+      margin-bottom: 10px; box-shadow: 0 1px 5px var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .card-title {
+      font-size: 14px; font-weight: 700; color: var(--primary);
+      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+
+    /* =====================================================
+       CALENDARIO
+    ===================================================== */
+    .cal-nav {
+      display: flex; align-items: center;
+      justify-content: space-between; padding: 6px 0 10px;
+    }
+    .cal-nav-btn {
+      background: var(--primary); color: #fff; border: none;
+      width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      font-size: 20px; font-weight: 700; display: flex;
+      align-items: center; justify-content: center; line-height: 1;
+    }
+    .cal-month-label { font-size: 17px; font-weight: 800; color: var(--primary); text-transform: capitalize; }
+    .cal-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      text-align: center; font-size: 11px; font-weight: 700;
+      color: var(--text-muted); margin-bottom: 5px; gap: 3px;
+    }
+    .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 8px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; cursor: pointer; font-size: 13px;
+      font-weight: 600; border: 2px solid transparent;
+      transition: transform 0.1s, box-shadow 0.1s; position: relative;
+    }
+    .cal-day:active { transform: scale(0.90); }
+    .cal-day.empty   { cursor: default; }
+    .cal-day.past    { color: #ccc; background: #f8f8f8; cursor: default; font-weight: 400; }
+    .cal-day.free    { background: #E8F5E9; color: #1B5E20; }
+    .cal-day.partial { background: #FFF8E1; color: #E65100; }
+    .cal-day.full    { background: #FFEBEE; color: #B71C1C; }
+    .cal-day.blocked { background: #EEEEEE; color: #9E9E9E; cursor: default; }
+    .cal-day.today   { border-color: var(--accent) !important; }
+    .cal-day.today .cal-day-num { font-weight: 900; }
+    .cal-day.selected { background: var(--primary) !important; color: #fff !important; border-color: var(--primary-dark) !important; box-shadow: 0 2px 8px rgba(107,26,26,0.4); }
+    .cal-day-dots { display: flex; gap: 2px; margin-top: 1px; }
+    .cal-dot { width: 4px; height: 4px; border-radius: 50%; }
+    .cal-dot.comida { background: #FF8F00; }
+    .cal-dot.cena   { background: #1565C0; }
+    .cal-dot.dia    { background: #C62828; }
+
+    /* Leyenda */
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; }
+    .legend span { display: flex; align-items: center; gap: 4px; }
+
+    /* Day detail panel */
+    .day-detail {
+      background: var(--card); border-radius: 12px; padding: 14px;
+      margin-top: 8px; border: 1px solid var(--border);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    .day-detail-title { font-weight: 800; font-size: 15px; color: var(--primary); margin-bottom: 10px; }
+    .franja-row {
+      display: flex; align-items: center;
+      justify-content: space-between; padding: 9px 0;
+      border-bottom: 1px solid var(--border); font-size: 14px;
+    }
+    .franja-row:last-of-type { border-bottom: none; }
+    .franja-name { font-weight: 700; }
+    .franja-status {
+      font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 700;
+    }
+    .fs-libre    { background: #E8F5E9; color: #2E7D32; }
+    .fs-ocupado  { background: #FFEBEE; color: #C62828; }
+    .fs-bloqueado{ background: #F5F5F5; color: #757575; }
+    /* Nuevo estado parcial para cuando hay mesas libres en alguna planta */
+    .fs-parcial  { background: #FFF8E1; color: #E65100; }
+
+    /* =====================================================
+       FORMULARIO
+    ===================================================== */
+    .form-group { margin-bottom: 14px; }
+    label {
+      display: block; font-size: 13px; font-weight: 700;
+      color: var(--text); margin-bottom: 5px;
+    }
+    .label-eu { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: 3px; }
+
+    input[type="date"], input[type="number"], input[type="text"],
+    input[type="password"], select, textarea {
+      width: 100%; padding: 11px 12px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 15px; color: var(--text); background: #fff;
+      -webkit-appearance: none; appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(107,26,26,0.12);
+    }
+    textarea { resize: vertical; min-height: 60px; }
+
+    .kitchen-box {
+      background: #FFFBF0; border: 1.5px solid #E8CFA0;
+      border-radius: 10px; padding: 12px; margin-top: 6px;
+    }
+    .kitchen-box-title {
+      font-size: 13px; font-weight: 800; color: #7B4A00; margin-bottom: 10px;
+    }
+
+    .check-group {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px; background: #FFF8EC;
+      border: 1.5px solid var(--accent); border-radius: 8px;
+    }
+    .check-group input[type="checkbox"] {
+      width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px;
+      accent-color: var(--primary); cursor: pointer;
+    }
+    .check-group label {
+      margin: 0; font-size: 13px; font-weight: 500; cursor: pointer;
+      color: var(--text);
+    }
+
+    /* Notices */
+    .notice {
+      border-radius: 8px; padding: 10px 12px; font-size: 13px;
+      margin-bottom: 10px; line-height: 1.55;
+    }
+    .notice.info    { background: #E3F2FD; border-left: 4px solid #1565C0; color: #0D47A1; }
+    .notice.warning { background: #FFF3E0; border-left: 4px solid #E65100; color: #BF360C; }
+    .notice.kitchen { background: #FFFDE7; border-left: 4px solid #F9A825; color: #5D4037; }
+
+    .min-box {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--primary); color: #fff; border-radius: 8px;
+      padding: 8px 12px; font-size: 13px; font-weight: 700; margin-top: 5px;
+    }
+
+    /* =====================================================
+       BOTONES
+    ===================================================== */
+    .btn {
+      display: block; width: 100%; padding: 13px 16px;
+      font-size: 15px; font-weight: 800; border: none; border-radius: 10px;
+      cursor: pointer; text-align: center; transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.2px;
+    }
+    .btn:active { opacity: 0.82; transform: scale(0.98); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-accent  { background: var(--accent); color: #fff; }
+    .btn-danger  { background: var(--error); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .btn-sm { padding: 6px 14px; font-size: 12px; width: auto; display: inline-block; border-radius: 8px; }
+
+    /* =====================================================
+       TARJETAS DE RESERVA
+    ===================================================== */
+    .reserva-card {
+      background: var(--card); border-radius: 10px; padding: 12px;
+      margin-bottom: 8px; border: 1px solid var(--border);
+      box-shadow: 0 1px 4px var(--shadow);
+    }
+    .reserva-card.cancelada { opacity: 0.55; border-style: dashed; }
+    .reserva-card-top {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 7px;
+    }
+    .reserva-socio { font-weight: 800; font-size: 14px; color: var(--primary); }
+    .badge {
+      font-size: 10px; font-weight: 800; padding: 3px 9px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .badge-ok    { background: #E8F5E9; color: #2E7D32; }
+    .badge-no    { background: #F5F5F5; color: #757575; }
+    .badge-pend  { background: #FFF3E0; color: #E65100; }
+    .reserva-info {
+      font-size: 12px; color: var(--text-muted);
+      display: flex; flex-wrap: wrap; gap: 6px; line-height: 1.5;
+    }
+    .reserva-info span { display: flex; align-items: center; gap: 3px; }
+    .reserva-footer {
+      margin-top: 9px; padding-top: 9px;
+      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; justify-content: flex-end;
+    }
+
+    /* =====================================================
+       NORMAS
+    ===================================================== */
+    .norma-item {
+      display: flex; gap: 10px; padding: 10px 0;
+      border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.55;
+    }
+    .norma-num { font-weight: 800; color: var(--primary); font-size: 15px; flex-shrink: 0; width: 22px; }
+
+    /* =====================================================
+       ADMIN – PIN
+    ===================================================== */
+    .pin-screen {
+      display: flex; flex-direction: column; align-items: center; padding: 28px 20px;
+    }
+    .pin-display {
+      font-size: 36px; letter-spacing: 18px; color: var(--primary);
+      font-weight: 900; margin: 18px 0; min-width: 130px; text-align: center;
+    }
+    .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 248px; }
+    .pin-key {
+      height: 68px; border-radius: 50%; border: 2px solid var(--border);
+      background: var(--card); font-size: 24px; font-weight: 700;
+      cursor: pointer; color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent; transition: background 0.1s;
+    }
+    .pin-key:active { background: var(--bg); }
+    .pin-key.del  { font-size: 18px; color: var(--error); }
+    .pin-key.ok   { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
+
+    /* =====================================================
+       ADMIN – STATS / TABS
+    ===================================================== */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .stat-card {
+      background: var(--card); border-radius: 12px; padding: 14px;
+      text-align: center; border: 1px solid var(--border); box-shadow: 0 1px 3px var(--shadow);
+    }
+    .stat-value { font-size: 30px; font-weight: 900; color: var(--primary); }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .tab-bar {
+      display: flex; background: var(--bg); border-radius: 10px;
+      padding: 3px; margin-bottom: 12px;
+    }
+    .tab-btn {
+      flex: 1; padding: 8px 3px; border: none; background: transparent;
+      border-radius: 8px; font-size: 11px; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 1px 3px var(--shadow); }
+
+    /* =====================================================
+       ALERTAS / VACÍO / UTILIDAD
+    ===================================================== */
+    .alert {
+      padding: 10px 14px; border-radius: 8px;
+      font-size: 13px; margin-bottom: 10px; font-weight: 600; line-height: 1.5;
+    }
+    .alert-error   { background: #FFEBEE; color: var(--error); border: 1px solid #FFCDD2; }
+    .alert-success { background: #E8F5E9; color: var(--success); border: 1px solid #C8E6C9; }
+
+    .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); }
+    .empty-state .ei { font-size: 42px; margin-bottom: 8px; }
+    .empty-state .et { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+    .empty-state .eh { font-size: 13px; }
+
+    /* Código de cancelación */
+    .cancel-code-box {
+      background: #FFF8EC; border: 2px solid var(--accent);
+      border-radius: 10px; padding: 14px; margin-top: 10px; text-align: center;
+    }
+    .cancel-code-box .cc-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .cancel-code-box .cc-code  { font-size: 34px; font-weight: 900; letter-spacing: 10px; color: var(--primary); margin: 6px 0; }
+    .cancel-code-box .cc-hint  { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Modal cancelación */
+    .cancel-modal-overlay {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.55); z-index: 500;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .cancel-modal {
+      background: #fff; border-radius: 16px; padding: 24px;
+      width: 100%; max-width: 320px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .cancel-modal .cm-icon  { font-size: 28px; text-align: center; margin-bottom: 10px; }
+    .cancel-modal .cm-title { font-weight: 800; font-size: 16px; color: var(--primary); text-align: center; margin-bottom: 8px; }
+    .cancel-modal .cm-hint  { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 14px; line-height: 1.5; }
+    .cancel-modal input {
+      width: 100%; padding: 14px; font-size: 22px; font-weight: 900;
+      text-align: center; letter-spacing: 8px; text-transform: uppercase;
+      border: 2px solid var(--border); border-radius: 8px; margin-bottom: 6px;
+    }
+    .cancel-modal .cm-error { color: var(--error); font-size: 12px; text-align: center; min-height: 18px; margin-bottom: 10px; }
+    .cancel-modal .cm-btns  { display: flex; gap: 10px; }
+
+    /* Avisos */
+    .aviso-card {
+      border-radius: 12px; padding: 14px; margin-bottom: 10px;
+      border-left: 5px solid; position: relative;
+    }
+    .aviso-card.info    { background: #E3F2FD; border-color: #1565C0; }
+    .aviso-card.urgente { background: #FFEBEE; border-color: #C62828; }
+    .aviso-card.evento  { background: #FFF8E1; border-color: #F9A825; }
+    .aviso-card .av-tipo  { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .aviso-card.info    .av-tipo { color: #1565C0; }
+    .aviso-card.urgente .av-tipo { color: #C62828; }
+    .aviso-card.evento  .av-tipo { color: #F9A825; }
+    .aviso-card .av-titulo { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .aviso-card .av-msg    { font-size: 13px; color: var(--text); line-height: 1.6; }
+    .aviso-card .av-fecha  { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+    .aviso-card .av-fijado { position: absolute; top: 10px; right: 12px; font-size: 14px; }
+    .aviso-banner {
+      background: #FFEBEE; border: 1.5px solid #C62828; border-radius: 10px;
+      padding: 10px 14px; margin-bottom: 10px; font-size: 13px;
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .aviso-banner .ab-txt { flex: 1; }
+    .aviso-banner .ab-title { font-weight: 800; color: #C62828; }
+
+    /* Documentos */
+    .doc-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+      text-decoration: none; color: var(--text);
+      box-shadow: 0 1px 4px var(--shadow);
+    }
+    .doc-item:active { opacity: 0.75; }
+    .doc-icon  { font-size: 24px; flex-shrink: 0; }
+    .doc-info  { flex: 1; }
+    .doc-name  { font-size: 14px; font-weight: 700; color: var(--primary); }
+    .doc-meta  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .doc-arrow { font-size: 22px; color: var(--text-muted); font-weight: 300; }
+
+    /* Toast notificación */
+    .toast {
+      position: fixed; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px);
+      left: 50%; transform: translateX(-50%);
+      background: #2C1810; color: #fff;
+      padding: 12px 22px; border-radius: 24px;
+      font-size: 14px; font-weight: 700;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      z-index: 600; white-space: nowrap;
+      animation: toastIn 0.25s ease;
+    }
+    .toast.ok  { background: var(--success); }
+    .toast.err { background: var(--error); }
+    @keyframes toastIn {
+      from { opacity:0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity:1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .hidden  { display: none !important; }
+    .mt-8    { margin-top: 8px; }
+    .mt-12   { margin-top: 12px; }
+    .sep     { height: 1px; background: var(--border); margin: 10px 0; }
+
+    /*
+      Resalta los campos del formulario con errores de validación. Se aplica un borde rojo y un
+      fondo sutilmente rosado para que el usuario identifique claramente el problema.
+      También se aplica un estilo a las opciones de select deshabilitadas para que aparezcan
+      tachadas y en color de error, de modo que el socio vea de un vistazo qué opciones no están disponibles.
+    */
+    .input-error {
+      border-color: var(--error) !important;
+      background: #FFEBEE !important;
+    }
+
+    select option:disabled {
+      color: var(--error);
+      background-color: #FFEDEE;
+      text-decoration: line-through;
+    }
+
+    /* Resumen reserva (tarjeta de confirmación) */
+    .confirm-box {
+      background: #E8F5E9; border: 1.5px solid #A5D6A7;
+      border-radius: 10px; padding: 14px; margin-bottom: 10px;
+    }
+    .confirm-box .confirm-title { font-weight: 800; color: var(--success); font-size: 15px; margin-bottom: 8px; }
+    .confirm-box .confirm-row { font-size: 13px; display: flex; gap: 6px; padding: 3px 0; }
+    .confirm-box .confirm-label { font-weight: 700; color: var(--text-muted); min-width: 100px; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header id="app-header">
+  <div class="logo">
+    <span class="title">🍽️ Txoko Azkena</span>
+    <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.6;font-size:10px;">v1.0</span></span>
+  </div>
+  <button id="lang-toggle" onclick="toggleLang()">EU</button>
+</header>
+
+<!-- ===================== MAIN ===================== -->
+<main id="app-main">
+
+  <!-- ── CALENDARIO ── -->
+  <div class="screen active" id="screen-calendario">
+    <div class="screen-header">
+      <div class="screen-title" id="tt-cal">📅 Calendario</div>
+      <div class="screen-subtitle" id="ts-cal">Disponibilidad del txoko</div>
+    </div>
+
+    <div class="card">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+        <span class="cal-month-label" id="cal-label"></span>
+        <button class="cal-nav-btn" onclick="calNext()">›</button>
+      </div>
+      <div class="cal-weekdays" id="cal-wd"></div>
+      <div class="cal-days"     id="cal-days"></div>
+    </div>
+
+    <div class="card" style="padding:10px 14px;">
+      <div class="legend">
+        <span>🟢 <span id="l-libre">Libre</span></span>
+        <span>🟡 <span id="l-parcial">Parcial</span></span>
+        <span>🔴 <span id="l-ocupado">Ocupado</span></span>
+        <span>⚫ <span id="l-bloq">Bloqueado</span></span>
+      </div>
+    </div>
+
+    <div id="day-detail" class="hidden"></div>
+    <!-- Lista de reservas activas que se muestra en la vista de calendario -->
+    <div id="cal-res-list" class="card"></div>
+  </div>
+
+  <!-- ── NUEVA RESERVA ── -->
+  <div class="screen" id="screen-reserva">
+    <div class="screen-header">
+      <div class="screen-title" id="tt-nr">➕ Nueva Reserva</div>
+      <div class="screen-subtitle" id="ts-nr">Erreserba berria</div>
+    </div>
+
+    <div id="form-alerts"></div>
+
+    <div class="card">
+      <form id="reserva-form" onsubmit="submitReserva(event)" novalidate>
+
+        <!-- Socio -->
+        <div class="form-group">
+          <label for="f-socio" id="lbl-socio">Socio responsable <span class="label-eu">/ Bazkide arduraduna</span></label>
+          <select id="f-socio" required></select>
+        </div>
+
+        <!-- Fecha -->
+        <div class="form-group">
+          <label for="f-fecha" id="lbl-fecha">Fecha <span class="label-eu">/ Data</span></label>
+          <input type="date" id="f-fecha" required onchange="updateMesasOptions(); updateCocinaDisponibilidad(); updateMinBox()">
+        </div>
+
+        <!-- Franja -->
+        <div class="form-group">
+          <label for="f-franja" id="lbl-franja">Franja horaria <span class="label-eu">/ Ordu-tartea</span></label>
+          <select id="f-franja" required onchange="updateMesasOptions(); updateCocinaDisponibilidad(); updateMinBox()">
+            <option value="comida">🍴 Comida / Bazkaria  (10:00–17:00)</option>
+            <option value="cena">🌙 Cena / Afaria  (18:00–01:00)</option>
+            <option value="dia_completo">☀️ Día completo / Egun osoa</option>
+          </select>
+        </div>
+
+        <!-- Planta -->
+        <div class="form-group">
+          <label for="f-planta" id="lbl-planta">Planta <span class="label-eu">/ Solairua</span></label>
+          <select id="f-planta" required onchange="updateMesasOptions(); updateCocinaDisponibilidad(); updateMinBox();">
+            <option value="">-- Selecciona planta --</option>
+            <option value="baja">🏠 Planta baja / Beheko solairua</option>
+            <option value="superior">🏠 Planta superior / Goiko solairua</option>
+          </select>
+        </div>
+
+        <!-- Mesas -->
+        <div class="form-group">
+          <label for="f-mesas" id="lbl-mesas">Nº de mesas <span class="label-eu">/ Mahai kopurua</span></label>
+          <select id="f-mesas" required onchange="updateMinBox()">
+            <option value="">-- Selecciona --</option>
+            <!-- Las opciones de mesas se rellenan dinámicamente según la planta seleccionada -->
+          </select>
+          <div id="min-box" class="min-box hidden">💶 <span id="min-txt"></span></div>
+        </div>
+
+        <!-- Comensales -->
+        <div class="form-group">
+          <label for="f-comsls" id="lbl-comsls">Comensales estimados <span class="label-eu">/ Lagun kopurua</span></label>
+          <input type="number" id="f-comsls" min="1" max="60" placeholder="Nº de personas previstas" required>
+        </div>
+
+        <!-- Cocina -->
+        <div class="form-group">
+          <label for="f-cocina" id="lbl-cocina">¿Usará la cocina? <span class="label-eu">/ Sukaldea?</span></label>
+          <select id="f-cocina" required onchange="toggleCocina(); updateCocinaDisponibilidad()">
+            <option value="no">No / Ez</option>
+            <option value="si">Sí / Bai</option>
+          </select>
+        </div>
+
+        <!-- Opciones cocina -->
+        <div id="kitchen-box" class="kitchen-box hidden">
+          <div class="kitchen-box-title">🔥 Elementos a utilizar / Erabiliko diren elementuak</div>
+          <div class="form-group">
+            <label for="f-horno-e">Horno eléctrico / Labe elektrikoa</label>
+            <select id="f-horno-e"><option value="no">No / Ez</option><option value="si">Sí / Bai</option></select>
+          </div>
+          <div class="form-group">
+            <label for="f-horno-g">Horno de gas / Gas-labea</label>
+            <select id="f-horno-g"><option value="no">No / Ez</option><option value="si">Sí / Bai</option></select>
+          </div>
+          <div class="form-group">
+            <label for="f-fuegos">Fuegos / Su-plakak</label>
+            <select id="f-fuegos"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label for="f-plancha">Plancha de gas / Gas-plancha</label>
+            <select id="f-plancha"><option value="no">No / Ez</option><option value="si">Sí / Bai</option></select>
+          </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="form-group">
+          <label for="f-obs" id="lbl-obs">Observaciones (opcional) <span class="label-eu">/ Oharrak</span></label>
+          <textarea id="f-obs" placeholder="Cualquier nota adicional..."></textarea>
+        </div>
+
+        <!-- Aviso normas -->
+        <div class="notice info" id="notice-normas">
+          📋 <strong>Recuerda / Gogoratu:</strong> Reservas por mesas, máximo un mes de antelación. Pago mínimo = 5 personas × mesa. El socio responsable responde del uso, invitados, limpieza, cierre y consumos.
+        </div>
+
+        <!-- Aviso cocina -->
+        <div class="notice kitchen hidden" id="notice-cocina">
+          🔥 <strong>Cocina / Sukaldea:</strong> Al finalizar comprueba que horno eléctrico, horno de gas, fuegos, plancha, cocina, gas, luces y demás elementos quedan <strong>apagados y en buen estado</strong>.
+        </div>
+
+        <!-- Limpieza -->
+        <div class="form-group">
+          <div class="check-group">
+            <input type="checkbox" id="f-limpieza">
+            <label for="f-limpieza" id="lbl-limpieza">
+              Confirmo que al finalizar me responsabilizo de la limpieza, recogida, retirada de basura y correcto cierre del txoko.
+              <em style="display:block; margin-top:3px; color:var(--text-muted);">(Garbiketa eta ixtea nire ardura da)</em>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-reservar">✅ Confirmar reserva / Baieztatu erreserba</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── MIS RESERVAS ── -->
+  <div class="screen" id="screen-misreservas">
+    <div class="screen-header">
+      <div class="screen-title" id="tt-mr">📋 Reservas</div>
+      <div class="screen-subtitle" id="ts-mr">Historial de reservas</div>
+    </div>
+
+    <div class="card" style="padding:10px 14px; margin-bottom:8px;">
+      <label style="font-size:12px; margin-bottom:4px;" id="lbl-ver-como">Ver reservas de:</label>
+      <select id="mr-socio" onchange="renderMisReservas()"></select>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-activas"   onclick="filterMR('activas')">Activas</button>
+      <button class="tab-btn"        id="tab-historial" onclick="filterMR('historial')">Historial</button>
+    </div>
+
+    <div id="mr-list"></div>
+  </div>
+
+  <!-- ── AVISOS ── -->
+  <div class="screen" id="screen-avisos">
+    <div class="screen-header">
+      <div class="screen-title" id="tt-av">📢 Avisos</div>
+      <div class="screen-subtitle" id="ts-av">Tablón de la Junta Directiva</div>
+    </div>
+    <div id="avisos-list"></div>
+  </div>
+
+  <!-- ── NORMAS ── -->
+  <div class="screen" id="screen-normas">
+    <div class="screen-header">
+      <div class="screen-title" id="tt-normas">ℹ️ Normas</div>
+      <div class="screen-subtitle" id="ts-normas">Arauak eta informazioa</div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="ntab-normas" onclick="normasTab('normas')">📜 Normas</button>
+      <button class="tab-btn"        id="ntab-docs"   onclick="normasTab('docs')">📄 Documentos</button>
+    </div>
+
+    <!-- Pestaña Normas -->
+    <div id="normas-content">
+      <div class="card">
+        <div class="card-title">📜 Normas básicas de reserva</div>
+        <div id="normas-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔥 Uso de cocina / Sukaldea</div>
+        <p style="font-size:14px; line-height:1.65; color:var(--text);">
+          Debes indicar qué elementos vas a utilizar: horno eléctrico, horno de gas, fuegos y plancha de gas.<br><br>
+          Al finalizar, comprueba que <strong>todos quedan apagados y en buen estado</strong>: horno eléctrico, horno de gas, fuegos, plancha, cocina general, gas, luces y alarma.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">💶 Pago mínimo / Gutxieneko ordainketa</div>
+        <p style="font-size:14px; line-height:1.65;">
+          <strong>Cada mesa = mínimo 5 personas</strong><br>
+          Fórmula: nº mesas × 5<br><br>
+          1 mesa → 5 personas mín.<br>
+          2 mesas → 10 personas mín.<br>
+          3 mesas → 15 personas mín.<br>
+          4 mesas → 20 personas mín.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">🏠 Responsabilidades del socio</div>
+        <p style="font-size:14px; line-height:1.65;">
+          • Uso correcto del local<br>
+          • Sus invitados<br>
+          • Los consumos y liquidación<br>
+          • Orden y limpieza<br>
+          • Cierre correcto y alarma<br>
+          • Retirada de basura
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--text-muted); font-size:12px;">ℹ️ Sobre esta app</div>
+        <p style="font-size:12px; line-height:1.8; color:var(--text-muted);">
+          Libro Dietario Digital – Asociación Gastronómica Azkena.<br>
+          <strong>CIF:</strong> G95368627<br>
+          <strong>Dirección:</strong> C/ Pozokoetxe, 2 – Bajo, 48970 Basauri (Bizkaia)<br>
+          <strong>Contacto:</strong> azkenabasauri@gmail.com<br>
+          <strong>Registro:</strong> AS/B/11831/2005 – Registro de Asociaciones del País Vasco
+        </p>
+      </div>
+    </div>
+
+    <!-- Pestaña Documentos -->
+    <div id="docs-content" class="hidden">
+      <div class="notice info" style="margin-bottom:10px;">
+        📱 Pulsa cualquier documento para abrirlo. Necesitas conexión a internet.
+      </div>
+
+      <div class="card-title" style="padding:4px 0 8px;">📜 Legal y estatutos</div>
+      <a href="https://drive.google.com/file/d/1JdhxMFDb6vrLFISpIAhd2HwCV8iLNgS9/view" target="_blank" class="doc-item">
+        <span class="doc-icon">📄</span>
+        <div class="doc-info"><div class="doc-name">Estatutos de la Asociación</div><div class="doc-meta">PDF · 01_LEGAL_Y_ESTATUTOS</div></div>
+        <span class="doc-arrow">›</span>
+      </a>
+      <a href="https://drive.google.com/file/d/1f_v68B-d-zjTOX_CDwpT5DKYGpxEqESN/view" target="_blank" class="doc-item">
+        <span class="doc-icon">📄</span>
+        <div class="doc-info"><div class="doc-name">Régimen Interno</div><div class="doc-meta">PDF · 01_LEGAL_Y_ESTATUTOS</div></div>
+        <span class="doc-arrow">›</span>
+      </a>
+
+      <div class="card-title" style="padding:12px 0 8px;">📋 Actas</div>
+      <a href="https://drive.google.com/file/d/12kue3ULERCDXITsQ9FTuCfTg6t07WP4_/view" target="_blank" class="doc-item">
+        <span class="doc-icon">📋</span>
+        <div class="doc-info"><div class="doc-name">Acta Asamblea General 2025</div><div class="doc-meta">PDF · 02_ACTAS</div></div>
+        <span class="doc-arrow">›</span>
+      </a>
+
+      <div class="card-title" style="padding:12px 0 8px;">💶 Precios y operativa</div>
+      <a href="https://drive.google.com/file/d/1ZKmOyT3K1N7NYNPOFG6G_Yg1IV6V5hHY/view" target="_blank" class="doc-item">
+        <span class="doc-icon">💶</span>
+        <div class="doc-info"><div class="doc-name">Propuesta precios bebidas 2026</div><div class="doc-meta">PDF · 05_PRECIOS_Y_OPERATIVA</div></div>
+        <span class="doc-arrow">›</span>
+      </a>
+
+      <div class="card-title" style="padding:12px 0 8px;">📝 Modelos y formularios</div>
+      <a href="https://drive.google.com/file/d/1H91umdFWTET5DBWXuT-bIekaZm9I8j1B/view" target="_blank" class="doc-item">
+        <span class="doc-icon">📝</span>
+        <div class="doc-info"><div class="doc-name">Modelo Cesión de Voto 2026</div><div class="doc-meta">PDF · 04_SOCIOS</div></div>
+        <span class="doc-arrow">›</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── ADMIN ── -->
+  <div class="screen" id="screen-admin">
+
+    <!-- PIN screen -->
+    <div id="admin-pin-view">
+      <div class="pin-screen">
+        <div style="text-align:center; margin-bottom:8px;">
+          <div style="font-size:44px; margin-bottom:8px;">🔐</div>
+          <div style="font-weight:800; font-size:18px; color:var(--primary);" id="tt-admin">Panel Junta Directiva</div>
+          <div style="color:var(--text-muted); font-size:13px; margin-top:4px;">Introduce el PIN de administración</div>
+        </div>
+        <div id="pin-error" class="alert alert-error hidden" style="width:100%; max-width:260px;"></div>
+        <div class="pin-display" id="pin-display">····</div>
+        <div class="pin-pad">
+          <button class="pin-key" onclick="pinPress('1')">1</button>
+          <button class="pin-key" onclick="pinPress('2')">2</button>
+          <button class="pin-key" onclick="pinPress('3')">3</button>
+          <button class="pin-key" onclick="pinPress('4')">4</button>
+          <button class="pin-key" onclick="pinPress('5')">5</button>
+          <button class="pin-key" onclick="pinPress('6')">6</button>
+          <button class="pin-key" onclick="pinPress('7')">7</button>
+          <button class="pin-key" onclick="pinPress('8')">8</button>
+          <button class="pin-key" onclick="pinPress('9')">9</button>
+          <button class="pin-key del" onclick="pinDel()">⌫</button>
+          <button class="pin-key" onclick="pinPress('0')">0</button>
+          <button class="pin-key ok" onclick="pinOK()">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin content -->
+    <div id="admin-content" class="hidden">
+      <div class="screen-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="screen-title">⚙️ Administración</div>
+          <div class="screen-subtitle">Junta Directiva – Txoko Azkena</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="adminLogout()">Salir</button>
+      </div>
+
+      <div id="admin-stats"></div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" id="at-reservas"   onclick="adminTab('reservas')"   style="font-size:10.5px;">📋 Reservas</button>
+        <button class="tab-btn"        id="at-bloquear"   onclick="adminTab('bloquear')"   style="font-size:10.5px;">🚫 Bloquear</button>
+        <button class="tab-btn"        id="at-bloqueados" onclick="adminTab('bloqueados')" style="font-size:10.5px;">📅 Bloqueados</button>
+        <button class="tab-btn"        id="at-avisos-admin" onclick="adminTab('avisos-admin')" style="font-size:10.5px;">📢 Avisos</button>
+        <button class="tab-btn"        id="at-socios"     onclick="adminTab('socios')"     style="font-size:10.5px;">👥 Socios</button>
+        <button class="tab-btn"        id="at-informe"    onclick="adminTab('informe')"    style="font-size:10.5px;">📄 Informe</button>
+      </div>
+
+      <div id="admin-tab"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===================== BOTTOM NAV ===================== -->
+<nav id="app-nav">
+  <button class="nav-btn active" id="nav-calendario"  onclick="navigate('calendario')">
+    <span class="nav-icon">📅</span>
+    <span id="nl-cal">Calendario</span>
+  </button>
+  <button class="nav-btn" id="nav-reserva" onclick="navigate('reserva')">
+    <span class="nav-icon">➕</span>
+    <span id="nl-res">Reservar</span>
+  </button>
+  <button class="nav-btn" id="nav-misreservas" onclick="navigate('misreservas')">
+    <span class="nav-icon">📋</span>
+    <span id="nl-mr">Reservas</span>
+  </button>
+  <button class="nav-btn" id="nav-avisos" onclick="navigate('avisos')">
+    <span class="nav-icon">📢</span>
+    <span id="nl-av">Avisos</span>
+    <span class="nav-badge hidden" id="nav-badge-avisos"></span>
+  </button>
+  <button class="nav-btn" id="nav-normas" onclick="navigate('normas')">
+    <span class="nav-icon">ℹ️</span>
+    <span id="nl-nor">Normas</span>
+  </button>
+  <button class="nav-btn" id="nav-admin" onclick="navigate('admin')">
+    <span class="nav-icon">⚙️</span>
+    <span id="nl-adm">Admin</span>
+  </button>
+</nav>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+/* =========================================================
+   TRADUCCIONES
+========================================================= */
+const TR = {
+  es: {
+    subtitle: 'Libro Dietario Digital',
+    ttCal: '📅 Calendario', tsCal: 'Disponibilidad del txoko',
+    ttNr: '➕ Nueva Reserva', tsNr: 'Formulario de reserva',
+    ttMr: '📋 Reservas', tsMr: 'Historial de reservas',
+    ttNormas: 'ℹ️ Normas', tsNormas: 'Arauak eta informazioa',
+    ttAdmin: 'Panel Junta Directiva',
+    nlCal: 'Calendario', nlRes: 'Reservar',
+    nlMr: 'Reservas', nlAv: 'Avisos', nlNor: 'Normas', nlAdm: 'Admin',
+    calResTitle: 'Reservas actuales',
+    weekdays: ['Lu','Ma','Mi','Ju','Vi','Sá','Do'],
+    months: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+    libre: 'Libre', parcial: 'Parcial', ocupado: 'Ocupado', bloqueado: 'Bloqueado',
+    comida: 'Comida', cena: 'Cena', diaC: 'Día completo',
+    confirm: 'Confirmada', cancel: 'Cancelada', pend: 'Pendiente',
+    selectNombre: '-- Selecciona tu nombre --',
+    selectMesas: '-- Selecciona --',
+    todosLos: '-- Todos los socios --',
+    verActivas: 'Activas', verHist: 'Historial',
+    cancelarRes: 'Cancelar reserva',
+    sinReservas: 'No hay reservas',
+    sinReservasHint: 'Pulsa ➕ para crear una',
+    libereSocio: 'Libre (disponible)',
+  },
+  eu: {
+    subtitle: 'Dietetiko Liburu Digitala',
+    ttCal: '📅 Egutegia', tsCal: 'Txokoaren erabilgarritasuna',
+    ttNr: '➕ Erreserba Berria', tsNr: 'Erreserba formularioa',
+    ttMr: '📋 Erreserbak', tsMr: 'Erreserben historia',
+    ttNormas: 'ℹ️ Arauak', tsNormas: 'Arauak eta informazioa',
+    ttAdmin: 'Batzorde Zuzentzailea',
+    nlCal: 'Egutegia', nlRes: 'Erreserbatu',
+    nlMr: 'Erreserbak', nlAv: 'Iragarkiak', nlNor: 'Arauak', nlAdm: 'Admin',
+    calResTitle: 'Erreserba aktiboak',
+    weekdays: ['Al','As','Az','Og','Or','La','Ig'],
+    months: ['Urtarrila','Otsaila','Martxoa','Apirila','Maiatza','Ekaina','Uztaila','Abuztua','Iraila','Urria','Azaroa','Abendua'],
+    libre: 'Libre', parcial: 'Partziala', ocupado: 'Betea', bloqueado: 'Blokeatua',
+    comida: 'Bazkaria', cena: 'Afaria', diaC: 'Egun osoa',
+    confirm: 'Baieztatua', cancel: 'Ezeztatua', pend: 'Zain',
+    selectNombre: '-- Zure izena hautatu --',
+    selectMesas: '-- Hautatu --',
+    todosLos: '-- Bazkide guztiak --',
+    verActivas: 'Aktiboak', verHist: 'Historia',
+    cancelarRes: 'Ezeztatu erreserba',
+    sinReservas: 'Ez dago erreserbarik',
+    sinReservasHint: 'Sakatu ➕ erreserba egiteko',
+    libereSocio: 'Libre (erabilgarri)',
+  }
+};
+
+let lang = 'es';
+
+function t(key) { return TR[lang][key] || TR.es[key] || key; }
+
+function toggleLang() {
+  lang = lang === 'es' ? 'eu' : 'es';
+  document.getElementById('lang-toggle').textContent = lang === 'es' ? 'EU' : 'ES';
+  applyTR();
+  renderCalendar();
+  renderNormas();
+  if (currentScreen === 'misreservas') renderMisReservas();
+  if (currentScreen === 'reserva')     initReservaForm();
+}
+
+function applyTR() {
+  const ids = {
+    'h-subtitle':   'subtitle',
+    'tt-cal': 'ttCal', 'ts-cal': 'tsCal',
+    'tt-nr':  'ttNr',  'ts-nr':  'tsNr',
+    'tt-mr':  'ttMr',  'ts-mr':  'tsMr',
+    'tt-normas': 'ttNormas', 'ts-normas': 'tsNormas',
+    'nl-cal': 'nlCal', 'nl-res': 'nlRes',
+    'nl-mr':  'nlMr',  'nl-av': 'nlAv', 'nl-nor': 'nlNor', 'nl-adm': 'nlAdm',
+    'l-libre':'libre', 'l-parcial':'parcial', 'l-ocupado':'ocupado', 'l-bloq':'bloqueado',
+    'tab-activas':'verActivas', 'tab-historial':'verHist',
+  };
+  Object.entries(ids).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(key);
+  });
+}
+
+/* =========================================================
+   BASE DE DATOS (localStorage)
+========================================================= */
+const API_URL = 'https://script.google.com/macros/s/AKfycbwbIiLocQqwQZ8Gu8yB1jFYZWdrFXl2l9TkT-WJIY_S2dnz3nw0vmNvuOIhpTP6m1O8/exec';
+
+/* Capacidad de cada planta. Planta baja: 4 mesas, planta superior: 5 mesas */
+const PLANTA_CAP = { baja: 4, superior: 5 };
+
+/* Capacidad total de quemadores disponibles en la cocina (fuegos) */
+const MAX_FUEGOS = 3;
+
+/* ⚠️  DATOS DE DEMO – Actualizar con la lista real de socios en Admin → Socios */
+const SOCIOS_DEMO = [
+  // Lista oficial de socios extraída del registro actualizado (mayo de 2026).
+  { id:'01', nombre:'José Gil Fraile',                       estado:'activo' },
+  { id:'02', nombre:'Juan Manuel Lueje Alonso',              estado:'activo' },
+  { id:'03', nombre:'Rubén García Jiménez',                  estado:'activo' },
+  { id:'04', nombre:'Vicente Trancón Alonso',                estado:'activo' },
+  { id:'05', nombre:'María Teresa Suquia Pereda (Maritere)',  estado:'activo' },
+  { id:'06', nombre:'Luis Miguel Ferreiro Hidalgo (Cookie)', estado:'activo' },
+  { id:'07', nombre:'Félix Víctor Quijano Ponce',            estado:'activo' },
+  { id:'08', nombre:'Javier López Puentes',                  estado:'activo' },
+  { id:'09', nombre:'Asier Larrea Miranda',                  estado:'activo' },
+  { id:'10', nombre:'Tirso Ángel Calonge Viñas',             estado:'activo' },
+  { id:'11', nombre:'Iván Roura Saez-Diez',                  estado:'activo' },
+  { id:'12', nombre:'Ana Pérez Barahona (Abellan)',          estado:'activo' },
+  { id:'13', nombre:'José Ramón Artaraz Zurbano (Joserra)',  estado:'activo' },
+  { id:'14', nombre:'Alberto Oscar Cuñado Gómez',            estado:'activo' },
+  { id:'15', nombre:'Patxi Xabier García Tajadura',          estado:'activo' },
+  { id:'16', nombre:'José Luis Tudanca Vinagre (Tudy)',       estado:'activo' },
+  { id:'17', nombre:'Joseba Iñaki Goyoaga Medina',           estado:'activo' },
+  { id:'18', nombre:'Oscar Casas Pino',                      estado:'activo' },
+  { id:'19', nombre:'Ignacio Javier Etxarri Yoldi (Iñaki)',  estado:'activo' },
+  { id:'20', nombre:'Mikel Emaldi Echevarria',               estado:'activo' },
+];
+
+// Caché en memoria — se carga desde Google Sheets al iniciar
+let _cache = { reservas: [], socios: SOCIOS_DEMO, bloq: [], avisos: [] };
+
+function dbGet(key, def) {
+  try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : def; }
+  catch(e) { return def; }
+}
+function dbSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+
+function getSocios()         { return _cache.socios; }
+function getSociosActivos()  { return _cache.socios.filter(s => String(s.estado) === 'activo'); }
+
+function normalizeSocio(s) {
+  return {
+    ...s,
+    id:        String(s.id      || ''),
+    nombre:    String(s.nombre  || ''),
+    estado:    String(s.estado  || 'activo'),
+    fechaBaja: toDateStr(s.fechaBaja) || String(s.fechaBaja || ''),
+  };
+}
+function getReservas() { return _cache.reservas; }
+function getBloq()     { return _cache.bloq; }
+function getCfg()      { return dbGet('azk_cfg', { pin: '1234' }); }
+function saveCfg(v)    { dbSet('azk_cfg', v); }
+
+async function apiCall(params) {
+  const url = new URL(API_URL);
+  Object.entries(params).forEach(([k, v]) =>
+    url.searchParams.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v))
+  );
+  const res  = await fetch(url.toString());
+  const data = await res.json();
+  if (data && data.error) throw new Error(data.error);
+  return data;
+}
+
+function showToast(msg, type = 'ok', ms = 2800) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), ms);
+}
+
+function generarCodigoCancelacion() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+function normalizeAviso(a) {
+  return {
+    ...a,
+    id:      String(a.id      || ''),
+    tipo:    String(a.tipo    || 'info'),
+    titulo:  String(a.titulo  || ''),
+    mensaje: String(a.mensaje || ''),
+    fecha:   toDateStr(a.fecha) || String(a.fecha || ''),
+    fijado:  a.fijado  === true || a.fijado  === 'TRUE'  || a.fijado  === 'true',
+    visible: a.visible === true || a.visible === 'TRUE'  || a.visible === 'true',
+  };
+}
+
+function getAvisos() { return _cache.avisos; }
+
+function checkAvisosBadge() {
+  const badge = document.getElementById('nav-badge-avisos');
+  if (!badge) return;
+  const lastSeen = localStorage.getItem('azk_avisos_seen') || '0';
+  const hasNew = _cache.avisos.some(a => String(a.id) > lastSeen);
+  badge.classList.toggle('hidden', !hasNew);
+}
+
+function markAvisosRead() {
+  if (_cache.avisos.length === 0) return;
+  const maxId = Math.max(..._cache.avisos.map(a => Number(a.id) || 0));
+  localStorage.setItem('azk_avisos_seen', String(maxId));
+  const badge = document.getElementById('nav-badge-avisos');
+  if (badge) badge.classList.add('hidden');
+}
+
+function toDateStr(val) {
+  if (!val) return '';
+  const s = String(val);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  return s;
+}
+
+function normalizeReserva(r) {
+  const socioResp   = String(r.socioResponsable || '');
+  const socioNombre = String(r.socioNombre || '') || socioResp;
+  const socioNumero = String(r.socioNumero || r.socioId || '');
+  return {
+    ...r,
+    id:               String(r.id   || ''),
+    socioId:          String(r.socioId || ''),
+    socioResponsable: socioResp || (socioNumero ? `Nº ${socioNumero} – ${socioNombre}` : socioNombre),
+    socioNombre,
+    socioNumero,
+    fechaReservada:       toDateStr(r.fechaReservada),
+    fechaSolicitud:       String(r.fechaSolicitud   || ''),
+    fechaCancelacion:     String(r.fechaCancelacion || ''),
+    franja:               String(r.franja    || ''),
+    planta:               String(r.planta    || ''),
+    estado:               String(r.estado    || 'confirmada'),
+    usoCocina:            String(r.usoCocina       || 'no'),
+    hornoElectrico:       String(r.hornoElectrico  || 'no'),
+    hornoGas:             String(r.hornoGas        || 'no'),
+    planchaGas:           String(r.planchaGas      || 'no'),
+    codigoCancelacion:    String(r.codigoCancelacion || ''),
+    observaciones:        String(r.observaciones   || ''),
+    numeroMesas:          Number(r.numeroMesas)         || 0,
+    numeroFuegos:         Number(r.numeroFuegos)        || 0,
+    numeroComensales:     Number(r.numeroComensales || r.comensalesEstimados) || 0,
+    comensalesEstimados:  Number(r.comensalesEstimados || r.numeroComensales) || 0,
+    minComputable:        Number(r.minComputable)       || 0,
+    confirmacionLimpieza: r.confirmacionLimpieza === true || r.confirmacionLimpieza === 'TRUE' || r.confirmacionLimpieza === 'true',
+  };
+}
+
+function showLoading(show) {
+  let el = document.getElementById('loading-overlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'loading-overlay';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,237,214,0.92);display:flex;align-items:center;justify-content:center;z-index:999;font-size:16px;font-weight:700;color:var(--primary);gap:10px;';
+    el.innerHTML = '<span style="font-size:28px">⏳</span> Cargando datos...';
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'flex' : 'none';
+}
+
+async function loadAllData() {
+  showLoading(true);
+  try {
+    const [reservas, socios, bloq, avisos] = await Promise.all([
+      apiCall({ action: 'getReservas' }),
+      apiCall({ action: 'getSocios' }),
+      apiCall({ action: 'getBloq' }),
+      apiCall({ action: 'getAvisos' })
+    ]);
+    _cache.reservas = Array.isArray(reservas) ? reservas.map(normalizeReserva) : [];
+    _cache.socios   = Array.isArray(socios)   ? socios.map(normalizeSocio)   : SOCIOS_DEMO;
+    _cache.bloq     = Array.isArray(bloq)     ? bloq     : [];
+    _cache.avisos   = Array.isArray(avisos)   ? avisos.map(normalizeAviso) : [];
+    checkAvisosBadge();
+  } catch(e) {
+    console.warn('Error cargando datos de Google Sheets:', e);
+  }
+  showLoading(false);
+}
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+function dStr(date) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function todayStr() { return dStr(new Date()); }
+function maxDateStr() {
+  const d = new Date(); d.setMonth(d.getMonth() + 1); return dStr(d);
+}
+function fmtDate(str) {
+  if (!str) return '';
+  const d = new Date(str + 'T12:00:00');
+  return d.toLocaleDateString(lang === 'eu' ? 'eu-ES' : 'es-ES',
+    { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+}
+function franjaLabel(f) {
+  if (f === 'comida')      return t('comida');
+  if (f === 'cena')        return t('cena');
+  if (f === 'dia_completo')return t('diaC');
+  return f;
+}
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+let currentScreen = 'calendario';
+
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.getElementById('nav-' + screen).classList.add('active');
+  currentScreen = screen;
+
+  if (screen === 'calendario')  renderCalendar();
+  if (screen === 'reserva')     initReservaForm();
+  if (screen === 'misreservas') { populateMRSocioSelect(); renderMisReservas(); }
+  if (screen === 'avisos')      { renderAvisos(); markAvisosRead(); }
+  if (screen === 'normas')      renderNormas();
+  if (screen === 'admin')       renderAdminScreen();
+
+  window.scrollTo(0, 0);
+}
+
+/* =========================================================
+   CALENDARIO
+========================================================= */
+let calY, calM;
+
+function initCalendar() {
+  const now = new Date();
+  calY = now.getFullYear();
+  calM = now.getMonth();
+}
+
+function calPrev() {
+  calM--; if (calM < 0) { calM = 11; calY--; }
+  renderCalendar();
+}
+function calNext() {
+  calM++; if (calM > 11) { calM = 0; calY++; }
+  renderCalendar();
+}
+
+// Devuelve una etiqueta legible de la planta según el idioma y el código almacenado.
+function plantaLabel(p) {
+  if (p === 'baja')      return lang === 'eu' ? 'Beheko solairua' : 'Planta baja';
+  if (p === 'superior') return lang === 'eu' ? 'Goiko solairua' : 'Planta superior';
+  return lang === 'eu' ? 'Bi solairuak' : 'Ambas';
+}
+
+// Renderiza la lista de reservas activas en la vista de calendario. Muestra las próximas
+// reservas (no canceladas) a partir de hoy ordenadas por fecha y franja. Cada línea
+// indica la fecha, la franja, el número de mesas y la planta. Si no hay reservas, se
+// muestra un mensaje de estado vacío reutilizando las traducciones existentes.
+function renderCalReservaList() {
+  const listEl = document.getElementById('cal-res-list');
+  if (!listEl) return;
+  const today = todayStr();
+  const reservas = getReservas().filter(r => r.estado !== 'cancelada' && r.fechaReservada >= today);
+  reservas.sort((a, b) => {
+    if (a.fechaReservada !== b.fechaReservada) return a.fechaReservada.localeCompare(b.fechaReservada);
+    // Ordenar comida antes que cena y día completo al final
+    const order = { comida: 1, cena: 2, dia_completo: 3 };
+    return (order[a.franja] || 3) - (order[b.franja] || 3);
+  });
+  if (reservas.length === 0) {
+    listEl.innerHTML = `<div class="empty-state"><div class="et">${t('sinReservas')}</div><div class="eh">${t('sinReservasHint')}</div></div>`;
+    return;
+  }
+  let html = `<div class="card-title">${t('calResTitle')}</div>`;
+  reservas.forEach(r => {
+    const dateTxt   = fmtDate(r.fechaReservada);
+    const franjaTxt = franjaLabel(r.franja);
+    const plantaTxt = plantaLabel(r.planta);
+    const mesaWord  = lang === 'eu' ? (r.numeroMesas > 1 ? 'mahai' : 'mahai') : (r.numeroMesas > 1 ? 'mesas' : 'mesa');
+    html += `<div class="franja-row"><span>${dateTxt} – ${franjaTxt}</span><span>${r.numeroMesas} ${mesaWord} · ${plantaTxt}</span></div>`;
+  });
+  listEl.innerHTML = html;
+}
+
+function renderCalendar() {
+  document.getElementById('cal-label').textContent = `${t('months')[calM]} ${calY}`;
+
+  const wdEl = document.getElementById('cal-wd');
+  wdEl.innerHTML = t('weekdays').map(d => `<div>${d}</div>`).join('');
+
+  const daysEl = document.getElementById('cal-days');
+  daysEl.innerHTML = '';
+
+  const firstDay = new Date(calY, calM, 1).getDay();
+  const offset   = (firstDay === 0) ? 6 : firstDay - 1;
+  const total    = new Date(calY, calM + 1, 0).getDate();
+  const today    = todayStr();
+  const reservas = getReservas();
+  const bloqs    = getBloq();
+
+  for (let i = 0; i < offset; i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-day empty'; daysEl.appendChild(e);
+  }
+
+  for (let d = 1; d <= total; d++) {
+    const ds  = `${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el  = document.createElement('div');
+    el.className = 'cal-day';
+
+    const isPast    = ds < today;
+    const isToday   = ds === today;
+    const isBloq    = bloqs.some(b => b.fecha === ds);
+    const dayRes    = reservas.filter(r => r.fechaReservada === ds && r.estado !== 'cancelada');
+    const hasDiaC   = dayRes.some(r => r.franja === 'dia_completo');
+    // Calcular mesas reservadas por franja y planta
+    const reserved = {
+      comida:   { baja: 0, superior: 0 },
+      cena:     { baja: 0, superior: 0 },
+    };
+    dayRes.forEach(r => {
+      if (r.franja === 'dia_completo') {
+        // Una reserva de día completo llena ambas franjas y plantas
+        reserved.comida.baja    = PLANTA_CAP.baja;
+        reserved.comida.superior= PLANTA_CAP.superior;
+        reserved.cena.baja      = PLANTA_CAP.baja;
+        reserved.cena.superior  = PLANTA_CAP.superior;
+      } else if (r.franja === 'comida') {
+        if (r.planta === 'baja')      reserved.comida.baja    += r.numeroMesas || 0;
+        else if (r.planta === 'superior') reserved.comida.superior += r.numeroMesas || 0;
+      } else if (r.franja === 'cena') {
+        if (r.planta === 'baja')      reserved.cena.baja     += r.numeroMesas || 0;
+        else if (r.planta === 'superior') reserved.cena.superior += r.numeroMesas || 0;
+      }
+    });
+    const comidaFull = reserved.comida.baja >= PLANTA_CAP.baja && reserved.comida.superior >= PLANTA_CAP.superior;
+    const cenaFull   = reserved.cena.baja  >= PLANTA_CAP.baja && reserved.cena.superior  >= PLANTA_CAP.superior;
+    const anyReserved= (reserved.comida.baja + reserved.comida.superior + reserved.cena.baja + reserved.cena.superior) > 0;
+
+    if (isPast) {
+      el.classList.add('past');
+    } else if (isBloq) {
+      el.classList.add('blocked');
+    } else if (hasDiaC || (comidaFull && cenaFull)) {
+      el.classList.add('full');
+      el.addEventListener('click', () => showDayDetail(ds));
+    } else if (comidaFull || cenaFull || anyReserved) {
+      el.classList.add('partial');
+      el.addEventListener('click', () => showDayDetail(ds));
+    } else {
+      el.classList.add('free');
+      el.addEventListener('click', () => showDayDetail(ds));
+    }
+
+    if (isToday) el.classList.add('today');
+
+    const numEl = document.createElement('span');
+    numEl.className = 'cal-day-num';
+    numEl.textContent = d;
+    el.appendChild(numEl);
+
+    if (!isPast && dayRes.length > 0) {
+      const dots = document.createElement('div');
+      dots.className = 'cal-day-dots';
+      dayRes.slice(0, 3).forEach(r => {
+        const dot = document.createElement('div');
+        dot.className = `cal-dot ${r.franja === 'dia_completo' ? 'dia' : r.franja}`;
+        dots.appendChild(dot);
+      });
+      el.appendChild(dots);
+    }
+    if (isBloq) {
+      const lk = document.createElement('div');
+      lk.style.cssText = 'font-size:9px; margin-top:1px;';
+      lk.textContent = '🔒'; el.appendChild(lk);
+    }
+
+    daysEl.appendChild(el);
+  }
+
+  document.getElementById('day-detail').innerHTML = '';
+  document.getElementById('day-detail').classList.add('hidden');
+  renderCalReservaList();
+  renderAvisoBanner();
+}
+
+function showDayDetail(ds) {
+  const reservas = getReservas().filter(r => r.fechaReservada === ds && r.estado !== 'cancelada');
+  const bloqs    = getBloq().filter(b => b.fecha === ds);
+  const isBloq   = bloqs.length > 0;
+  const dateLabel = new Date(ds + 'T12:00:00').toLocaleDateString(lang === 'eu' ? 'eu-ES' : 'es-ES',
+    { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Comprobar si existe una reserva de día completo
+  const hasDiaC = reservas.some(r => r.franja === 'dia_completo');
+
+  // Calcular mesas reservadas por franja y planta
+  const reserved = {
+    comida: { baja: 0, superior: 0 },
+    cena:   { baja: 0, superior: 0 }
+  };
+  reservas.forEach(r => {
+    if (r.franja === 'dia_completo') {
+      // Un día completo llena todas las franjas y plantas
+      reserved.comida.baja     = PLANTA_CAP.baja;
+      reserved.comida.superior = PLANTA_CAP.superior;
+      reserved.cena.baja       = PLANTA_CAP.baja;
+      reserved.cena.superior   = PLANTA_CAP.superior;
+    } else {
+      const fr = r.franja;
+      const pl = r.planta;
+      if (pl === 'ambas') {
+        reserved[fr].baja     += PLANTA_CAP.baja;
+        reserved[fr].superior += PLANTA_CAP.superior;
+      } else if (pl === 'baja') {
+        reserved[fr].baja     += r.numeroMesas || 0;
+      } else if (pl === 'superior') {
+        reserved[fr].superior += r.numeroMesas || 0;
+      }
+    }
+  });
+
+  let html = `<div class="day-detail"><div class="day-detail-title">📅 ${dateLabel}</div>`;
+
+  if (isBloq) {
+    // Día bloqueado
+    html += `<div class="notice warning">🚫 ${lang === 'eu' ? 'Blokeatuta' : 'Bloqueado'}: <strong>${bloqs[0].motivo}</strong></div>`;
+  } else {
+    if (hasDiaC) {
+      // Si hay día completo, mostrar solo esa fila con nombre de los socios
+      const names = reservas.filter(r => r.franja === 'dia_completo').map(r => r.socioResponsable || r.socioNombre);
+      const uniqueNames = [...new Set(names)].join(', ');
+      html += `<div class="franja-row"><span class="franja-name">${t('diaC')}</span><span class="franja-status fs-ocupado">${t('ocupado')} – ${uniqueNames}</span></div>`;
+    } else {
+      // Para cada franja (comida y cena), mostrar ocupación
+      ['comida','cena'].forEach(fr => {
+        const label = fr === 'comida' ? t('comida') : t('cena');
+        const res = reserved[fr];
+        const totalCap = { baja: PLANTA_CAP.baja, superior: PLANTA_CAP.superior };
+        const totalReserved = res.baja + res.superior;
+        const totalCapSum   = totalCap.baja + totalCap.superior;
+        let statusTxt = '';
+        let statusCls = '';
+        if (totalReserved >= totalCapSum) {
+          // Ocupado totalmente
+          const names = reservas.filter(r => r.franja === fr).map(r => r.socioResponsable || r.socioNombre);
+          const uniqueNames = [...new Set(names)].join(', ');
+          statusTxt = `${t('ocupado')} – ${uniqueNames}`;
+          statusCls = 'fs-ocupado';
+        } else if (totalReserved > 0) {
+          // Parcialmente ocupado: mostrar conteo de mesas por planta
+          statusTxt = `${t('parcial')} – ${res.baja}/${totalCap.baja} + ${res.superior}/${totalCap.superior}`;
+          statusCls = 'fs-parcial';
+        } else {
+          // Libre
+          statusTxt = t('libre');
+          statusCls = 'fs-libre';
+        }
+        html += `<div class="franja-row"><span class="franja-name">${label}</span><span class="franja-status ${statusCls}">${statusTxt}</span></div>`;
+      });
+    }
+
+    // Botón para reservar si la fecha está dentro del rango permitido
+    const sel = new Date(ds + 'T12:00:00');
+    const now = new Date(); now.setHours(0,0,0,0);
+    const max = new Date(); max.setMonth(max.getMonth() + 1); max.setHours(23,59,59,999);
+    if (sel >= now && sel <= max) {
+      html += `<button class="btn btn-primary mt-8" onclick="navigate('reserva');prefillDate('${ds}')">
+        ${lang === 'eu' ? '➕ Egun honetarako erreserba' : '➕ Reservar este día'}</button>`;
+    }
+  }
+
+  html += '</div>';
+
+  const det = document.getElementById('day-detail');
+  det.innerHTML = html;
+  det.classList.remove('hidden');
+  setTimeout(() => det.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+}
+
+function prefillDate(ds) {
+  // Preselecciona una fecha desde el calendario y actualiza la disponibilidad de mesas y cocina.
+  setTimeout(() => {
+    const fd = document.getElementById('f-fecha');
+    if (fd) {
+      fd.value = ds;
+      // Al preseleccionar la fecha, recalcular opciones disponibles
+      updateMesasOptions();
+      updateCocinaDisponibilidad();
+    }
+  }, 80);
+}
+
+/* =========================================================
+   AVISOS
+========================================================= */
+function renderAvisos() {
+  const cont = document.getElementById('avisos-list');
+  const avisos = getAvisos().slice().sort((a, b) => {
+    if (a.fijado !== b.fijado) return a.fijado ? -1 : 1;
+    return String(b.id).localeCompare(String(a.id));
+  });
+  if (avisos.length === 0) {
+    cont.innerHTML = `<div class="empty-state">
+      <div class="ei">📢</div>
+      <div class="et">${lang === 'eu' ? 'Oraindik iragarkirik ez' : 'No hay avisos publicados'}</div>
+      <div class="eh">${lang === 'eu' ? 'Batzordeak hemen argitaratuko ditu iragarkiak.' : 'La junta publicará aquí los avisos para los socios.'}</div>
+    </div>`;
+    return;
+  }
+  const tipoLabel = { info: '📢 Informativo', urgente: '🚨 Urgente', evento: '📅 Evento' };
+  cont.innerHTML = avisos.map(a => `
+    <div class="aviso-card ${a.tipo}">
+      ${a.fijado ? '<span class="av-fijado">📌</span>' : ''}
+      <div class="av-tipo">${tipoLabel[a.tipo] || a.tipo}</div>
+      <div class="av-titulo">${a.titulo}</div>
+      <div class="av-msg">${a.mensaje.replace(/\n/g, '<br>')}</div>
+      <div class="av-fecha">${fmtDate(a.fecha)}</div>
+    </div>`).join('');
+}
+
+function renderAvisoBanner() {
+  const existing = document.getElementById('aviso-urgente-banner');
+  if (existing) existing.remove();
+  const urgente = getAvisos().find(a => a.tipo === 'urgente' && a.visible);
+  if (!urgente) return;
+  const banner = document.createElement('div');
+  banner.id = 'aviso-urgente-banner';
+  banner.className = 'aviso-banner';
+  banner.innerHTML = `<span style="font-size:20px">🚨</span>
+    <div class="ab-txt">
+      <div class="ab-title">${urgente.titulo}</div>
+      <div style="font-size:12px;color:var(--text);margin-top:2px;">${urgente.mensaje}</div>
+    </div>`;
+  const calCard = document.querySelector('#screen-calendario .card');
+  if (calCard) calCard.parentNode.insertBefore(banner, calCard);
+}
+
+/* =========================================================
+   FORMULARIO DE RESERVA
+========================================================= */
+function initReservaForm() {
+  const sel = document.getElementById('f-socio');
+  sel.innerHTML = `<option value="">${t('selectNombre')}</option>`;
+  getSociosActivos().forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = `Nº ${s.id} – ${s.nombre}`;
+    sel.appendChild(opt);
+  });
+
+  const fd = document.getElementById('f-fecha');
+  fd.min = todayStr();
+  fd.max = maxDateStr();
+
+  const ms = document.getElementById('f-mesas');
+  // Establecer la planta por defecto (baja) y actualizar las opciones de mesas
+  const plantaSel = document.getElementById('f-planta');
+  // Si no hay valor preseleccionado, selecciona la planta baja por defecto
+  if (!plantaSel.value) plantaSel.value = 'baja';
+  updateMesasOptions();
+
+  document.getElementById('form-alerts').innerHTML = '';
+  document.getElementById('min-box').classList.add('hidden');
+}
+
+function toggleCocina() {
+  const v = document.getElementById('f-cocina').value;
+  document.getElementById('kitchen-box').classList.toggle('hidden', v !== 'si');
+  document.getElementById('notice-cocina').classList.toggle('hidden', v !== 'si');
+  if (v !== 'si') {
+    document.getElementById('f-horno-e').value = 'no';
+    document.getElementById('f-horno-g').value = 'no';
+    document.getElementById('f-fuegos').value  = '0';
+    document.getElementById('f-plancha').value = 'no';
+  }
+  // Actualizar la disponibilidad de los elementos de cocina cada vez que se cambia este campo
+  updateCocinaDisponibilidad();
+}
+
+// Actualiza las opciones de equipamiento de cocina según las reservas existentes. Si un elemento ya
+// está reservado en la fecha y franja seleccionadas, se deshabilita la opción "Sí". Para los fuegos,
+// se deshabilitan los valores que superen el número disponible. También restablece el valor si
+// el usuario tenía seleccionado algo que ya no está disponible.
+function updateCocinaDisponibilidad() {
+  const fechaSel  = document.getElementById('f-fecha').value;
+  const franjaSel = document.getElementById('f-franja').value;
+  const usoC      = document.getElementById('f-cocina').value;
+  // Referencias a los selects
+  const hornoEsel = document.getElementById('f-horno-e');
+  const hornoGsel = document.getElementById('f-horno-g');
+  const fuegosSel = document.getElementById('f-fuegos');
+  const planchaSel= document.getElementById('f-plancha');
+
+  // Establecer las opciones de base como habilitadas
+  const resetOptions = sel => Array.from(sel.options).forEach(o => { o.disabled = false; });
+  resetOptions(hornoEsel);
+  resetOptions(hornoGsel);
+  resetOptions(fuegosSel);
+  resetOptions(planchaSel);
+  // Por defecto hay MAX_FUEGOS disponibles
+  let dispFuegos = MAX_FUEGOS;
+  let hornoEFree = true, hornoGFree = true, planchaFree = true;
+
+  if (fechaSel && franjaSel && usoC === 'si') {
+    const equipRes = getReservas().filter(r => r.fechaReservada === fechaSel && r.estado !== 'cancelada' && (r.franja === franjaSel || r.franja === 'dia_completo'));
+    // Horno eléctrico
+    if (equipRes.some(r => r.hornoElectrico === 'si')) hornoEFree = false;
+    // Horno de gas
+    if (equipRes.some(r => r.hornoGas === 'si')) hornoGFree = false;
+    // Plancha de gas
+    if (equipRes.some(r => r.planchaGas === 'si')) planchaFree = false;
+    // Fuegos
+    const usedF = equipRes.reduce((sum, r) => sum + (r.numeroFuegos || 0), 0);
+    dispFuegos = Math.max(0, MAX_FUEGOS - usedF);
+  }
+  // Deshabilitar las opciones "sí" si no están libres
+  Array.from(hornoEsel.options).forEach(o => {
+    if (o.value === 'si') o.disabled = !hornoEFree;
+  });
+  Array.from(hornoGsel.options).forEach(o => {
+    if (o.value === 'si') o.disabled = !hornoGFree;
+  });
+  Array.from(planchaSel.options).forEach(o => {
+    if (o.value === 'si') o.disabled = !planchaFree;
+  });
+  // Actualizar valor seleccionado si está deshabilitado
+  if (hornoEsel.options[hornoEsel.selectedIndex] && hornoEsel.options[hornoEsel.selectedIndex].disabled) {
+    hornoEsel.value = 'no';
+  }
+  if (hornoGsel.options[hornoGsel.selectedIndex] && hornoGsel.options[hornoGsel.selectedIndex].disabled) {
+    hornoGsel.value = 'no';
+  }
+  if (planchaSel.options[planchaSel.selectedIndex] && planchaSel.options[planchaSel.selectedIndex].disabled) {
+    planchaSel.value = 'no';
+  }
+  // Ajustar opciones de número de fuegos según disponibilidad
+  Array.from(fuegosSel.options).forEach(o => {
+    const v = parseInt(o.value);
+    if (!isNaN(v) && v > dispFuegos) o.disabled = true;
+  });
+  // Restablecer el valor de fuegos si supera la disponibilidad
+  const currentF = parseInt(fuegosSel.value);
+  if (!isNaN(currentF) && currentF > dispFuegos) {
+    // Seleccionamos la opción más alta disponible
+    fuegosSel.value = String(dispFuegos);
+  }
+}
+
+function updateMinBox() {
+  const m = parseInt(document.getElementById('f-mesas').value);
+  const el = document.getElementById('min-box');
+  if (m > 0) {
+    document.getElementById('min-txt').textContent =
+      lang === 'eu'
+        ? `Gutxieneko ordainketa: ${m} mahai × 5 lagun = ${m*5} lagun`
+        : `Pago mínimo: ${m} mesa${m>1?'s':''} × 5 personas = ${m*5} personas`;
+    el.classList.remove('hidden');
+  } else { el.classList.add('hidden'); }
+}
+
+// Actualiza las opciones de nº de mesas en función de la planta seleccionada
+function updateMesasOptions() {
+  // Calcula las opciones de número de mesas según la planta seleccionada y la disponibilidad.
+  const planta = document.getElementById('f-planta').value;
+  const msEl   = document.getElementById('f-mesas');
+  // Vaciar las opciones actuales y añadir la opción por defecto
+  msEl.innerHTML = `<option value="">${t('selectMesas')}</option>`;
+  const cap = PLANTA_CAP[planta] || 0;
+  // Por defecto la disponibilidad es igual a la capacidad
+  let disponible = cap;
+  // Si el usuario ya seleccionó una fecha y franja, calculamos cuántas mesas quedan libres en esa planta
+  const fechaSel  = document.getElementById('f-fecha').value;
+  const franjaSel = document.getElementById('f-franja').value;
+  if (fechaSel && franjaSel && franjaSel !== 'dia_completo') {
+    const existing = getReservas().filter(r => r.fechaReservada === fechaSel && r.estado !== 'cancelada');
+    let resBaja = 0, resSup = 0;
+    existing.forEach(r => {
+      // Contar reservas en la misma franja o de día completo
+      if (r.franja === franjaSel || r.franja === 'dia_completo') {
+        if (r.planta === 'baja') resBaja += (r.numeroMesas || 0);
+        else if (r.planta === 'superior') resSup += (r.numeroMesas || 0);
+        else if (r.planta === 'ambas') {
+          // Día completo: marca ocupadas todas las mesas en ambas plantas
+          resBaja = PLANTA_CAP.baja;
+          resSup  = PLANTA_CAP.superior;
+        }
+      }
+    });
+    const reservedOnFloor = planta === 'baja' ? resBaja : resSup;
+    disponible = Math.max(0, cap - reservedOnFloor);
+  }
+  // Generar las opciones, deshabilitando las que excedan la disponibilidad
+  for (let i = 1; i <= cap; i++) {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    const txt = lang === 'eu'
+      ? `${i} mahai`
+      : `${i} mesa${i > 1 ? 's' : ''}`;
+    opt.textContent = txt;
+    if (i > disponible) opt.disabled = true;
+    msEl.appendChild(opt);
+  }
+  // Actualizar el mínimo de pago mostrado
+  updateMinBox();
+}
+
+async function submitReserva(e) {
+  e.preventDefault();
+  const alertsDiv = document.getElementById('form-alerts');
+  alertsDiv.innerHTML = '';
+
+  // Quitar resaltado de error de todos los campos antes de validar
+  ['f-socio','f-fecha','f-planta','f-mesas','f-cocina','f-horno-e','f-horno-g','f-fuegos','f-plancha','f-obs','f-limpieza'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('input-error');
+  });
+  document.querySelectorAll('.check-group.input-error').forEach(el => el.classList.remove('input-error'));
+
+  const socioId   = document.getElementById('f-socio').value;
+  const fecha     = document.getElementById('f-fecha').value;
+  const franja    = document.getElementById('f-franja').value;
+  const mesas     = parseInt(document.getElementById('f-mesas').value) || 0;
+  const comsls    = parseInt(document.getElementById('f-comsls')?.value) || 0;
+  const planta    = document.getElementById('f-planta').value;
+  const usoCocina = document.getElementById('f-cocina').value;
+  const hornoE    = document.getElementById('f-horno-e').value;
+  const hornoG    = document.getElementById('f-horno-g').value;
+  const fuegos    = parseInt(document.getElementById('f-fuegos').value) || 0;
+  const plancha   = document.getElementById('f-plancha').value;
+  const obs       = document.getElementById('f-obs').value.trim();
+  const limpieza  = document.getElementById('f-limpieza').checked;
+  const errors = [];
+  const errorFields = [];
+  const eu = lang === 'eu';
+
+  // Función auxiliar para añadir errores y asociar el campo afectado
+  function addError(msg, fieldId) {
+    errors.push(msg);
+    if (fieldId) errorFields.push(fieldId);
+  }
+
+  if (!socioId)   addError(eu ? 'Bazkide arduradunarena hautatu.' : 'Selecciona el socio responsable.', 'f-socio');
+  if (!fecha)     addError(eu ? 'Aukeratu data bat.'              : 'Indica la fecha.', 'f-fecha');
+  if (!planta)    addError(eu ? 'Hautatu solairua.'               : 'Indica la planta.', 'f-planta');
+  if (!mesas)     addError(eu ? 'Hautatu mahai kopurua.'          : 'Indica el número de mesas.', 'f-mesas');
+  if (document.getElementById('f-comsls')) {
+    if (!comsls)  addError(eu ? 'Adierazi lagun kopurua.'         : 'Indica el número estimado de comensales.', 'f-comsls');
+  }
+  if (!limpieza)  addError(eu ? 'Garbiketa berretsi behar duzu.'  : 'Confirma la responsabilidad de limpieza.', 'f-limpieza');
+
+  if (fecha) {
+    const sel = new Date(fecha + 'T12:00:00');
+    const now = new Date(); now.setHours(0,0,0,0);
+    const max = new Date(); max.setMonth(max.getMonth()+1); max.setHours(23,59,59,999);
+    if (sel < now) addError(eu ? 'Data iraganekoa da.' : 'La fecha no puede estar en el pasado.', 'f-fecha');
+    if (sel > max) addError(eu ? 'Gehienez hilabete bat aurretik.' : 'No se puede reservar con más de un mes de antelación.', 'f-fecha');
+  }
+
+  if (fecha) {
+    const bloq = getBloq().find(b => b.fecha === fecha);
+    if (bloq) addError(`${eu ? 'Egun hau blokeatuta dago' : 'Día bloqueado'}: ${bloq.motivo}`, 'f-fecha');
+  }
+
+  // Comprobar disponibilidad y capacidad de mesas según planta y franja
+  if (fecha && franja) {
+    const existing = getReservas().filter(r => r.fechaReservada === fecha && r.estado !== 'cancelada');
+    // Ver si existe una reserva de día completo
+    const hasDia = existing.some(r => r.franja === 'dia_completo');
+    if (hasDia && franja !== 'dia_completo') {
+      addError(eu
+        ? 'Data hori egun osoan erreserbatuta dago.'
+        : 'Ya hay una reserva de día completo para esa fecha.', 'f-franja');
+    }
+    if (franja === 'dia_completo' && existing.length > 0) {
+      addError(eu
+        ? 'Ezin da egun osoa erreserbatu: dagoeneko erreserbak daude.'
+        : 'No se puede reservar el día completo: ya hay reservas ese día.', 'f-franja');
+    }
+    // Para franjas de comida o cena, controlar capacidad por planta
+    if (franja !== 'dia_completo' && planta) {
+      let resBaja = 0, resSup = 0;
+      existing.forEach(r => {
+        // Considerar reservas en misma franja o de día completo
+        if (r.franja === franja || r.franja === 'dia_completo') {
+          if (r.planta === 'baja') resBaja += (r.numeroMesas || 0);
+          else if (r.planta === 'superior') resSup += (r.numeroMesas || 0);
+          // si r.planta es 'ambas' (día completo anterior), suma toda la capacidad
+          if (r.planta === 'ambas') {
+            resBaja = PLANTA_CAP.baja;
+            resSup  = PLANTA_CAP.superior;
+          }
+        }
+      });
+      const maxOnFloor   = PLANTA_CAP[planta] || 0;
+      const reservedOnFl = planta === 'baja' ? resBaja : resSup;
+      const disponible   = maxOnFloor - reservedOnFl;
+      if (mesas > disponible) {
+        const floorTxt = planta === 'baja'
+          ? (eu ? 'beheko solairuan' : 'en la planta baja')
+          : (eu ? 'goiko solairuan'  : 'en la planta superior');
+        addError(eu
+          ? `Ez dago mahai nahikorik ${floorTxt}.`
+          : `No quedan suficientes mesas ${floorTxt}.`, 'f-mesas');
+      }
+    }
+
+    // Comprobar conflictos de uso de cocina y equipamiento
+    if (usoCocina === 'si') {
+      // Obtener reservas en misma fecha y franja (o día completo), incluyendo día completo
+      const equipRes = getReservas().filter(r => r.fechaReservada === fecha && r.estado !== 'cancelada' && (r.franja === franja || r.franja === 'dia_completo'));
+      // Conflicto horno eléctrico
+      if (hornoE === 'si' && equipRes.some(r => r.hornoElectrico === 'si')) {
+        addError(eu ? 'Horno elektrikoa dagoeneko erabilita dago.' : 'El horno eléctrico ya está reservado para esa franja.', 'f-horno-e');
+      }
+      // Conflicto horno de gas
+      if (hornoG === 'si' && equipRes.some(r => r.hornoGas === 'si')) {
+        addError(eu ? 'Gas labea dagoeneko erabilita dago.' : 'El horno de gas ya está reservado para esa franja.', 'f-horno-g');
+      }
+      // Conflicto plancha de gas
+      if (plancha === 'si' && equipRes.some(r => r.planchaGas === 'si')) {
+        addError(eu ? 'Gas plaka dagoeneko erabilita dago.' : 'La plancha de gas ya está reservada para esa franja.', 'f-plancha');
+      }
+      // Conflicto fuegos: sumar fuegos utilizados por otras reservas
+      const usedF = equipRes.reduce((sum, r) => sum + (r.numeroFuegos || 0), 0);
+      if (fuegos + usedF > MAX_FUEGOS) {
+        addError(eu ? 'Ez dago nahikoa su erabilgarri.' : 'No quedan fuegos disponibles para esa franja.', 'f-fuegos');
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    errorFields.forEach(fid => {
+      const el = document.getElementById(fid);
+      if (!el) return;
+      if (el.type === 'checkbox') {
+        el.closest('.check-group')?.classList.add('input-error');
+      } else {
+        el.classList.add('input-error');
+      }
+    });
+    alertsDiv.innerHTML = `<div class="alert alert-error">${errors.map(er => `⚠️ ${er}`).join('<br>')}</div>`;
+    const firstEl = errorFields.length ? document.getElementById(errorFields[0]) : null;
+    const scrollTo = firstEl ? (firstEl.closest('.form-group, .check-group') || firstEl) : alertsDiv;
+    scrollTo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(150);
+    return;
+  }
+
+  const socio = getSocios().find(s => s.id === socioId);
+  // Calcular mesas totales y planta asignada
+  const mesasTotales   = franja === 'dia_completo' ? (PLANTA_CAP.baja + PLANTA_CAP.superior) : mesas;
+  const plantaAsignada = franja === 'dia_completo' ? 'ambas' : planta;
+  const reserva = {
+    id:                 Date.now().toString(),
+    fechaSolicitud:     new Date().toISOString(),
+    socioResponsable:   socio ? `Nº ${socioId} – ${socio.nombre}` : socioId,
+    socioId,
+    socioNombre:        socio ? socio.nombre : socioId,
+    socioNumero:        socioId,
+    fechaReservada:     fecha,
+    franja,
+    planta:             plantaAsignada,
+    numeroMesas:        mesasTotales,
+    numeroComensales:   document.getElementById('f-comsls') ? comsls : 0,
+    comensalesEstimados: document.getElementById('f-comsls') ? comsls : 0,
+    minComputable:      mesasTotales * 5,
+    usoCocina,
+    hornoElectrico:     usoCocina === 'si' ? hornoE : 'no',
+    hornoGas:           usoCocina === 'si' ? hornoG : 'no',
+    numeroFuegos:       usoCocina === 'si' ? fuegos : 0,
+    planchaGas:         usoCocina === 'si' ? plancha : 'no',
+    observaciones:      obs,
+    confirmacionLimpieza: true,
+    codigoCancelacion:  generarCodigoCancelacion(),
+    estado:             'confirmada'
+  };
+
+  const btn = document.getElementById('btn-reservar');
+  btn.disabled = true;
+  btn.textContent = '⏳ Guardando...';
+  try {
+    const result = await apiCall({ action: 'addReserva', data: reserva });
+    if (!result.ok) throw new Error(result.error || 'Error al guardar');
+    const updated = await apiCall({ action: 'getReservas' });
+    _cache.reservas = Array.isArray(updated) ? updated.map(normalizeReserva) : _cache.reservas;
+  } catch(err) {
+    alertsDiv.innerHTML = `<div class="alert alert-error">❌ Error de conexión. Inténtalo de nuevo.</div>`;
+    btn.disabled = false;
+    btn.textContent = '✅ Confirmar reserva / Baieztatu erreserba';
+    return;
+  }
+  btn.disabled = false;
+  btn.textContent = '✅ Confirmar reserva / Baieztatu erreserba';
+
+  // Guardar código en localStorage como respaldo local
+  try {
+    const lc = JSON.parse(localStorage.getItem('azk_codes') || '{}');
+    lc[reserva.id] = reserva.codigoCancelacion;
+    localStorage.setItem('azk_codes', JSON.stringify(lc));
+  } catch(e) {}
+
+  alertsDiv.innerHTML = `
+    <div class="confirm-box">
+      <div class="confirm-title">✅ ${eu ? 'Erreserba baieztatuta!' : '¡Reserva confirmada!'}</div>
+      <div class="confirm-row"><span class="confirm-label">${eu ? 'Bazkidea' : 'Socio'}:</span> Nº ${reserva.socioNumero} – ${reserva.socioNombre}</div>
+      <div class="confirm-row"><span class="confirm-label">${eu ? 'Eguna' : 'Fecha'}:</span> ${fmtDate(reserva.fechaReservada)}</div>
+      <div class="confirm-row"><span class="confirm-label">${eu ? 'Franja' : 'Franja'}:</span> ${franjaLabel(reserva.franja)}</div>
+      <div class="confirm-row"><span class="confirm-label">${eu ? 'Solairua' : 'Planta'}:</span> ${reserva.planta === 'ambas' ? (eu ? 'Egun osoa' : 'Ambas') : (reserva.planta === 'baja' ? (eu ? 'Beheko solairua' : 'Planta baja') : (eu ? 'Goiko solairua' : 'Planta superior'))}</div>
+      <div class="confirm-row"><span class="confirm-label">${eu ? 'Mahaia/k' : 'Mesas'}:</span> ${reserva.numeroMesas}</div>
+      <div class="confirm-row"><span class="confirm-label">${eu ? 'Gutxienekoa' : 'Mín. pago'}:</span> ${reserva.minComputable} ${eu ? 'lagun' : 'personas'}</div>
+      ${obs ? `<div class="confirm-row"><span class="confirm-label">${eu ? 'Oharrak' : 'Notas'}:</span> ${obs}</div>` : ''}
+    </div>
+    <div class="cancel-code-box">
+      <div class="cc-label">🔑 ${eu ? 'Ezeztapen kodea' : 'Código de cancelación'}</div>
+      <div class="cc-code">${reserva.codigoCancelacion}</div>
+      <div class="cc-hint">${eu ? 'Gorde ezazu — erreserba ezeztatzeko beharko duzu.' : 'Guárdalo — lo necesitarás si quieres cancelar esta reserva.'}</div>
+    </div>
+    <div class="notice warning" style="margin-top:10px;">
+      ⚠️ <strong>${eu ? 'Kontuan izan' : 'Recuerda'}:</strong>
+      ${eu
+        ? 'Erreserbatuz gero, beste bazkide batek erabil zezakeen tokia hartzen ari zara. Azken orduko ezeztatzeek txokoari eta zure kideei kalte egiten diete. <strong>Behar adina aurretik ezeztatu ezean, batzordeak gutxieneko ordainketa eskatu ahal izango dizu</strong>, azkenean etortzen ez bazara ere.'
+        : 'Al reservar estás ocupando un espacio que otro socio podría aprovechar. Las cancelaciones de última hora perjudican al txoko y a tus compañeros. <strong>Si no cancelas con antelación suficiente, la junta podrá exigirte el pago mínimo correspondiente</strong>, aunque finalmente no hagas uso de la reserva.'
+      }
+    </div>`;
+
+  document.getElementById('reserva-form').reset();
+  toggleCocina(); updateMinBox();
+  alertsDiv.scrollIntoView({ behavior: 'smooth' });
+  renderCalendar();
+}
+
+/* =========================================================
+   MIS RESERVAS
+========================================================= */
+let mrFilter = 'activas';
+
+function filterMR(f) {
+  mrFilter = f;
+  document.getElementById('tab-activas').classList.toggle('active', f === 'activas');
+  document.getElementById('tab-historial').classList.toggle('active', f === 'historial');
+  renderMisReservas();
+}
+
+function populateMRSocioSelect() {
+  const sel = document.getElementById('mr-socio');
+  sel.innerHTML = `<option value="">${t('todosLos')}</option>`;
+  getSociosActivos().forEach(s => {
+    const opt = document.createElement('option'); opt.value = s.id;
+    opt.textContent = `Nº ${s.id} – ${s.nombre}`; sel.appendChild(opt);
+  });
+}
+
+function renderMisReservas() {
+  const container = document.getElementById('mr-list');
+  const socFilter = document.getElementById('mr-socio').value;
+  let res = getReservas();
+
+  if (socFilter) res = res.filter(r => r.socioId === socFilter);
+
+  if (mrFilter === 'activas') {
+    res = res.filter(r => r.estado !== 'cancelada' && r.fechaReservada >= todayStr());
+    res.sort((a,b) => a.fechaReservada.localeCompare(b.fechaReservada));
+  } else {
+    res = res.filter(r => r.estado === 'cancelada' || r.fechaReservada < todayStr());
+    res.sort((a,b) => b.fechaReservada.localeCompare(a.fechaReservada));
+  }
+
+  if (res.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="ei">${mrFilter === 'activas' ? '📭' : '📚'}</div>
+      <div class="et">${t('sinReservas')}</div>
+      <div class="eh">${mrFilter === 'activas' ? t('sinReservasHint') : ''}</div>
+    </div>`; return;
+  }
+  container.innerHTML = res.map(r => renderReservaCard(r, false)).join('');
+}
+
+function renderReservaCard(r, isAdmin) {
+  const bdgCls = r.estado === 'confirmada' ? 'badge-ok' : r.estado === 'cancelada' ? 'badge-no' : 'badge-pend';
+  const bdgTxt = r.estado === 'confirmada' ? t('confirm') : r.estado === 'cancelada' ? t('cancel') : t('pend');
+  const canCancel = r.estado !== 'cancelada' && r.fechaReservada >= todayStr();
+  const cancelFn  = isAdmin ? `adminCancelRes('${r.id}')` : `cancelReserva('${r.id}')`;
+  const eu = lang === 'eu';
+
+  const cocinaInfo = r.usoCocina === 'si'
+    ? `<span>🔥 ${eu ? 'Sukaldea' : 'Cocina'}: H.E=${r.hornoElectrico} H.G=${r.hornoGas} F=${r.numeroFuegos} P=${r.planchaGas}</span>`
+    : '';
+
+  return `<div class="reserva-card ${r.estado === 'cancelada' ? 'cancelada' : ''}">
+    <div class="reserva-card-top">
+      <span class="reserva-socio">${r.socioResponsable || `Nº ${r.socioNumero} – ${r.socioNombre}`}</span>
+      <span class="badge ${bdgCls}">${bdgTxt}</span>
+    </div>
+    <div class="reserva-info">
+      <span>📅 ${fmtDate(r.fechaReservada)}</span>
+      <span>⏰ ${franjaLabel(r.franja)}</span>
+      <span>🪑 ${r.numeroMesas} ${eu ? 'mahai' : 'mesa'}${r.numeroMesas > 1 && !eu ? 's' : ''}</span>
+      <span>🏠 ${r.planta === 'ambas' ? (eu ? 'Egun osoa' : 'Ambas') : (r.planta === 'baja' ? (eu ? 'Beheko solairua' : 'Planta baja') : (eu ? 'Goiko solairua' : 'Planta superior'))}</span>
+      <span>👥 ${r.numeroComensales || r.comensalesEstimados || '–'} ${eu ? 'lagun' : 'pers.'}</span>
+      <span>💶 mín. ${r.minComputable || r.numeroMesas*5} ${eu ? 'lagun' : 'pers.'}</span>
+      ${cocinaInfo}
+      ${r.observaciones ? `<span>📝 ${r.observaciones}</span>` : ''}
+    </div>
+    ${canCancel ? `<div class="reserva-footer">
+      <button class="btn btn-danger btn-sm" onclick="${cancelFn}">${t('cancelarRes')}</button>
+    </div>` : ''}
+  </div>`;
+}
+
+function cancelReserva(id) {
+  mostrarModalCancelacion(id);
+}
+
+function mostrarModalCancelacion(id) {
+  document.getElementById('cancel-modal')?.remove();
+  const eu = lang === 'eu';
+  const overlay = document.createElement('div');
+  overlay.id = 'cancel-modal';
+  overlay.className = 'cancel-modal-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="cancel-modal">
+      <div class="cm-icon">🔑</div>
+      <div class="cm-title">${eu ? 'Erreserba ezeztatu' : 'Cancelar reserva'}</div>
+      <div class="cm-hint">${eu ? 'Sartu erreserba egiterakoan jaso zenuen 4 karaktereko kodea.' : 'Introduce el código de 4 caracteres que recibiste al confirmar la reserva.'}</div>
+      <input id="cancel-code-input" type="text" maxlength="4"
+        placeholder="A7K2" autocomplete="off" autocorrect="off" spellcheck="false"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter') confirmarCancelacion('${id}')">
+      <div class="cm-error" id="cancel-code-error"></div>
+      <div class="cm-btns">
+        <button class="btn btn-outline" onclick="document.getElementById('cancel-modal').remove()" style="flex:1;">
+          ${eu ? 'Itzuli' : 'Volver'}
+        </button>
+        <button class="btn btn-danger" onclick="confirmarCancelacion('${id}')" style="flex:1;">
+          ${eu ? 'Ezeztatu' : 'Cancelar'}
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => document.getElementById('cancel-code-input')?.focus(), 80);
+}
+
+async function confirmarCancelacion(id) {
+  const r = getReservas().find(r => String(r.id) === String(id));
+  const input = document.getElementById('cancel-code-input');
+  const errEl = document.getElementById('cancel-code-error');
+  if (!input || !r) return;
+
+  // Código desde Sheets o respaldo en localStorage
+  let codigoEsperado = r.codigoCancelacion || '';
+  if (!codigoEsperado) {
+    try { codigoEsperado = (JSON.parse(localStorage.getItem('azk_codes') || '{}'))[String(id)] || ''; } catch(e) {}
+  }
+
+  const codigo = input.value.trim().toUpperCase();
+  if (!codigoEsperado || codigo !== codigoEsperado) {
+    errEl.textContent = lang === 'eu'
+      ? '❌ Kode okerra. Egiaztatu jaso zenuen kodea.'
+      : '❌ Código incorrecto. Comprueba el código que recibiste.';
+    input.style.borderColor = 'var(--error)';
+    input.value = '';
+    input.focus();
+    return;
+  }
+
+  document.getElementById('cancel-modal')?.remove();
+  try {
+    await apiCall({ action: 'cancelReserva', id: String(id) });
+    const updated = await apiCall({ action: 'getReservas' });
+    _cache.reservas = Array.isArray(updated) ? updated.map(normalizeReserva) : _cache.reservas;
+    showToast(lang === 'eu' ? '✅ Erreserba ezeztatuta' : '✅ Reserva cancelada correctamente', 'ok');
+  } catch(e) {
+    showToast(lang === 'eu' ? '❌ Errorea. Saiatu berriro.' : '❌ Error de conexión. Inténtalo de nuevo.', 'err');
+    return;
+  }
+  renderMisReservas();
+  renderCalendar();
+}
+
+/* =========================================================
+   NORMAS + DOCUMENTOS
+========================================================= */
+function normasTab(tab) {
+  document.getElementById('normas-content').classList.toggle('hidden', tab !== 'normas');
+  document.getElementById('docs-content').classList.toggle('hidden', tab !== 'docs');
+  document.getElementById('ntab-normas').classList.toggle('active', tab === 'normas');
+  document.getElementById('ntab-docs').classList.toggle('active', tab === 'docs');
+}
+
+/* =========================================================
+   NORMAS
+========================================================= */
+function renderNormas() {
+  const ns = [
+    { es: 'La reserva debe hacerla un socio responsable.',              eu: 'Erreserbak bazkide arduradun batek egin behar ditu.' },
+    { es: 'Las reservas se hacen por mesas, no por personas.',          eu: 'Erreserbak mahaikako dira, ez pertsonakakoak.' },
+    { es: 'No se puede reservar con más de un mes de antelación.',      eu: 'Ezin da hilabete bat baino lehenago erreserba egin.' },
+    { es: 'El primero que reserva tiene preferencia.',                  eu: 'Lehenengo erreserbatzen duenak lehentasuna du.' },
+    { es: 'La Junta puede bloquear determinados días.',                 eu: 'Batzordeak egun batzuk blokeatu ditzake.' },
+    { es: 'El socio responsable responde de sus invitados.',            eu: 'Bazkide arduraduna bere gonbidatuen erantzule da.' },
+    { es: 'El socio responsable debe dejar el local limpio y cerrado.', eu: 'Bazkide arduraduna lokala garbi eta itxita utzi behar du.' },
+    { es: 'Los consumos deben liquidarse según las normas internas.',   eu: 'Kontsumoak barne-arauei jarraiki kitatu behar dira.' },
+    { es: 'Si no vas a usar la reserva, cancélala cuanto antes.',      eu: 'Erreserba erabiliko ez baduzu, ahalik eta lasterren ezeztatu.' },
+    { es: 'Cualquier incidencia será revisada por la Junta Directiva.',eu: 'Edozein gorabehera Batzordeak aztertuko du.' },
+  ];
+  document.getElementById('normas-list').innerHTML = ns.map((n, i) =>
+    `<div class="norma-item"><span class="norma-num">${i+1}</span><span>${lang === 'eu' ? n.eu : n.es}</span></div>`
+  ).join('');
+}
+
+/* =========================================================
+   ADMIN – PIN
+========================================================= */
+let pinBuf = '';
+let adminMode = false;
+
+function pinPress(d) {
+  if (pinBuf.length >= 4) return;
+  pinBuf += d; updatePinDisplay();
+  if (pinBuf.length === 4) setTimeout(pinOK, 220);
+}
+function pinDel() { pinBuf = pinBuf.slice(0, -1); updatePinDisplay(); }
+function updatePinDisplay() {
+  let s = '';
+  for (let i = 0; i < 4; i++) s += i < pinBuf.length ? '●' : '·';
+  document.getElementById('pin-display').textContent = s;
+}
+function pinOK() {
+  if (pinBuf === getCfg().pin) {
+    adminMode = true; pinBuf = ''; updatePinDisplay();
+    document.getElementById('pin-error').classList.add('hidden');
+    document.getElementById('admin-pin-view').classList.add('hidden');
+    document.getElementById('admin-content').classList.remove('hidden');
+    renderAdminContent();
+  } else {
+    pinBuf = ''; updatePinDisplay();
+    const el = document.getElementById('pin-error');
+    el.textContent = lang === 'eu' ? '❌ PIN okerra. Saiatu berriro.' : '❌ PIN incorrecto. Inténtalo de nuevo.';
+    el.classList.remove('hidden');
+  }
+}
+function adminLogout() {
+  adminMode = false; pinBuf = ''; updatePinDisplay();
+  document.getElementById('admin-pin-view').classList.remove('hidden');
+  document.getElementById('admin-content').classList.add('hidden');
+}
+function renderAdminScreen() {
+  if (adminMode) {
+    document.getElementById('admin-pin-view').classList.add('hidden');
+    document.getElementById('admin-content').classList.remove('hidden');
+    renderAdminContent();
+  } else {
+    document.getElementById('admin-pin-view').classList.remove('hidden');
+    document.getElementById('admin-content').classList.add('hidden');
+  }
+}
+
+/* =========================================================
+   ADMIN – CONTENIDO
+========================================================= */
+let adminCurrentTab = 'reservas';
+
+function adminTab(tab) {
+  adminCurrentTab = tab;
+  ['reservas','bloquear','bloqueados','avisos-admin','socios','informe'].forEach(t => {
+    document.getElementById('at-' + t).classList.toggle('active', t === tab);
+  });
+  renderAdminTabContent();
+}
+
+function renderAdminContent() { renderAdminStats(); renderAdminTabContent(); }
+
+function renderAdminStats() {
+  const res = getReservas();
+  const conf = res.filter(r => r.estado === 'confirmada');
+  const mesas = conf.reduce((s, r) => s + (r.numeroMesas || 0), 0);
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-value">${res.length}</div><div class="stat-label">Total reservas</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:var(--success)">${conf.length}</div><div class="stat-label">Confirmadas</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:var(--error)">${res.filter(r=>r.estado==='cancelada').length}</div><div class="stat-label">Canceladas</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:var(--accent)">${mesas}</div><div class="stat-label">Total mesas</div></div>
+    </div>`;
+}
+
+function renderAdminTabContent() {
+  const cont = document.getElementById('admin-tab');
+
+  if (adminCurrentTab === 'reservas') {
+    let res = getReservas().slice().sort((a,b) => b.fechaReservada.localeCompare(a.fechaReservada));
+    if (res.length === 0) {
+      cont.innerHTML = `<div class="empty-state"><div class="ei">📭</div><div class="et">No hay reservas</div></div>`;
+      return;
+    }
+    cont.innerHTML = res.map(r => renderReservaCard(r, true)).join('');
+
+  } else if (adminCurrentTab === 'bloquear') {
+    cont.innerHTML = `
+      <div class="card">
+        <div class="card-title">🚫 Bloquear día</div>
+        <form onsubmit="bloquearDia(event)">
+          <div class="form-group">
+            <label>Fecha / Eguna</label>
+            <input type="date" id="blq-fecha" required min="${todayStr()}">
+          </div>
+          <div class="form-group">
+            <label>Motivo / Arrazoia</label>
+            <input type="text" id="blq-motivo" placeholder="Ej: Asamblea general" required>
+          </div>
+          <div class="form-group">
+            <label>Bloqueado por</label>
+            <input type="text" id="blq-por" value="Junta Directiva">
+          </div>
+          <button type="submit" class="btn btn-primary">🚫 Bloquear este día</button>
+        </form>
+        <div id="blq-alert" style="margin-top:8px;"></div>
+      </div>`;
+
+  } else if (adminCurrentTab === 'bloqueados') {
+    const bloqs = getBloq();
+    if (bloqs.length === 0) {
+      cont.innerHTML = `<div class="empty-state"><div class="ei">📅</div><div class="et">No hay días bloqueados</div></div>`;
+      return;
+    }
+    cont.innerHTML = bloqs.map(b => `
+      <div class="reserva-card">
+        <div class="reserva-card-top">
+          <span class="reserva-socio">📅 ${fmtDate(b.fecha)}</span>
+          <button class="btn btn-danger btn-sm" onclick="desbloquear('${b.fecha}')">Desbloquear</button>
+        </div>
+        <div class="reserva-info">
+          <span>🚫 ${b.motivo}</span><span>👤 ${b.bloqueadoPor}</span>
+        </div>
+      </div>`).join('');
+
+  } else if (adminCurrentTab === 'avisos-admin') {
+    const avisos = getAvisos().slice().sort((a,b) => String(b.id).localeCompare(String(a.id)));
+    const tipoLabel = { info: '📢', urgente: '🚨', evento: '📅' };
+    cont.innerHTML = `
+      <div class="card">
+        <div class="card-title">➕ Publicar aviso</div>
+        <form onsubmit="submitAviso(event)">
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="av-tipo">
+              <option value="info">📢 Informativo</option>
+              <option value="urgente">🚨 Urgente</option>
+              <option value="evento">📅 Evento</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Título</label>
+            <input type="text" id="av-titulo" placeholder="Título del aviso" required>
+          </div>
+          <div class="form-group">
+            <label>Mensaje</label>
+            <textarea id="av-msg" rows="3" placeholder="Texto del aviso..." required></textarea>
+          </div>
+          <div class="check-group" style="margin-bottom:12px;">
+            <input type="checkbox" id="av-fijado">
+            <label for="av-fijado">📌 Fijar arriba (aviso importante)</label>
+          </div>
+          <button type="submit" class="btn btn-primary">📢 Publicar aviso</button>
+        </form>
+        <div id="av-alert" style="margin-top:8px;"></div>
+      </div>
+      ${avisos.length ? `<div class="card-title" style="margin-top:4px;">Avisos publicados</div>` : ''}
+      ${avisos.map(a => `
+        <div class="aviso-card ${a.tipo}" style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div class="av-tipo">${tipoLabel[a.tipo]||''} ${a.tipo} ${a.fijado?'· 📌':''}</div>
+              <div class="av-titulo">${a.titulo}</div>
+              <div class="av-msg">${a.mensaje}</div>
+              <div class="av-fecha">${fmtDate(a.fecha)}</div>
+            </div>
+          </div>
+          <div class="reserva-footer">
+            <button class="btn btn-outline btn-sm" onclick="toggleFijarAviso('${a.id}',${!a.fijado})">
+              ${a.fijado ? '📌 Desfijar' : '📌 Fijar'}
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="archivarAviso('${a.id}')">Archivar</button>
+          </div>
+        </div>`).join('')}`;
+
+  } else if (adminCurrentTab === 'informe') {
+    cont.innerHTML = `
+      <div class="card" style="text-align:center; padding:30px 20px;">
+        <div style="font-size:48px; margin-bottom:12px;">📋</div>
+        <div style="font-size:17px; font-weight:800; color:var(--primary); margin-bottom:6px;">Generar Informe PDF</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.6;">
+          Genera un listado completo de todas las reservas registradas,<br>listo para imprimir o guardar como PDF.
+        </div>
+        <button class="btn btn-primary" onclick="generarInforme()" style="max-width:260px; margin:0 auto;">
+          📄 Generar y abrir informe
+        </button>
+      </div>`;
+
+  } else if (adminCurrentTab === 'socios') {
+    const socios = getSocios().slice().sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric:true}));
+    const activos = socios.filter(s => s.estado === 'activo').length;
+    cont.innerHTML = `
+      <div class="stats-grid" style="margin-bottom:10px;">
+        <div class="stat-card"><div class="stat-value" style="color:var(--success)">${activos}</div><div class="stat-label">Socios activos</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--error)">${socios.length - activos}</div><div class="stat-label">De baja</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <div class="card-title">➕ Añadir socio</div>
+        <form onsubmit="addSocioAdmin(event)">
+          <div style="display:flex;gap:8px;">
+            <div class="form-group" style="width:80px;margin-bottom:0;">
+              <label>Nº</label>
+              <input type="number" id="socio-id" min="1" max="99" placeholder="21" required>
+            </div>
+            <div class="form-group" style="flex:1;margin-bottom:0;">
+              <label>Nombre completo</label>
+              <input type="text" id="socio-nombre" placeholder="Nombre y apellidos" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-8">➕ Añadir socio</button>
+        </form>
+      </div>
+
+      ${socios.map(s => `
+        <div class="reserva-card ${s.estado !== 'activo' ? 'cancelada' : ''}">
+          <div class="reserva-card-top">
+            <span class="reserva-socio">Nº ${s.id} – ${s.nombre}</span>
+            <span class="badge ${s.estado === 'activo' ? 'badge-ok' : 'badge-no'}">${s.estado === 'activo' ? 'Activo' : 'Baja'}</span>
+          </div>
+          ${s.estado !== 'activo' && s.fechaBaja ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Baja: ${fmtDate(s.fechaBaja)}</div>` : ''}
+          <div class="reserva-footer">
+            ${s.estado === 'activo'
+              ? `<button class="btn btn-danger btn-sm" onclick="toggleSocio('${s.id}','baja')">Dar de baja</button>`
+              : `<button class="btn btn-success btn-sm" onclick="toggleSocio('${s.id}','activo')">Reactivar</button>`}
+          </div>
+        </div>`).join('')}
+
+      <div class="card mt-12">
+        <div class="card-title">🔐 Cambiar PIN de administración</div>
+        <form onsubmit="cambiarPin(event)">
+          <div class="form-group">
+            <label>PIN actual</label>
+            <input type="password" id="pin-old" maxlength="4" placeholder="PIN actual">
+          </div>
+          <div class="form-group">
+            <label>Nuevo PIN (4 dígitos)</label>
+            <input type="password" id="pin-new" maxlength="4" placeholder="Nuevo PIN">
+          </div>
+          <button type="submit" class="btn btn-primary" style="max-width:200px;">Cambiar PIN</button>
+        </form>
+        <div id="pin-chg-alert" style="margin-top:8px;"></div>
+      </div>`;
+  }
+}
+
+async function bloquearDia(e) {
+  e.preventDefault();
+  const fecha  = document.getElementById('blq-fecha').value;
+  const motivo = document.getElementById('blq-motivo').value.trim();
+  const por    = document.getElementById('blq-por').value.trim() || 'Junta Directiva';
+  const alEl   = document.getElementById('blq-alert');
+
+  if (getBloq().some(b => b.fecha === fecha)) {
+    alEl.innerHTML = `<div class="alert alert-error">Este día ya está bloqueado.</div>`; return;
+  }
+  try {
+    await apiCall({ action: 'addBloq', data: { fecha, motivo, bloqueadoPor: por } });
+    const updated = await apiCall({ action: 'getBloq' });
+    _cache.bloq = Array.isArray(updated) ? updated : _cache.bloq;
+  } catch(e) {
+    alEl.innerHTML = `<div class="alert alert-error">❌ Error de conexión.</div>`; return;
+  }
+  alEl.innerHTML = `<div class="alert alert-success">✅ Día bloqueado correctamente.</div>`;
+  document.getElementById('blq-fecha').value  = '';
+  document.getElementById('blq-motivo').value = '';
+  renderCalendar();
+}
+
+async function desbloquear(fecha) {
+  if (!confirm('¿Desbloquear este día?')) return;
+  try {
+    await apiCall({ action: 'deleteBloq', fecha });
+    const updated = await apiCall({ action: 'getBloq' });
+    _cache.bloq = Array.isArray(updated) ? updated : _cache.bloq;
+  } catch(e) { alert('Error de conexión. Inténtalo de nuevo.'); return; }
+  renderAdminTabContent(); renderCalendar();
+}
+
+async function adminCancelRes(id) {
+  if (!confirm('¿Cancelar esta reserva?')) return;
+  try {
+    await apiCall({ action: 'cancelReserva', id: String(id) });
+    const updated = await apiCall({ action: 'getReservas' });
+    _cache.reservas = Array.isArray(updated) ? updated.map(normalizeReserva) : _cache.reservas;
+  } catch(e) { alert('Error de conexión. Inténtalo de nuevo.'); return; }
+  renderAdminContent(); renderCalendar();
+}
+
+async function toggleSocio(id, estado) {
+  const update = { id, estado };
+  if (estado === 'baja') update.fechaBaja = new Date().toISOString().substring(0, 10);
+  if (estado === 'activo') update.fechaBaja = '';
+  try {
+    await apiCall({ action: 'updateSocio', data: update });
+    const updated = await apiCall({ action: 'getSocios' });
+    _cache.socios = Array.isArray(updated) ? updated.map(normalizeSocio) : _cache.socios;
+    showToast(estado === 'activo' ? '✅ Socio reactivado' : '✅ Socio dado de baja', 'ok');
+  } catch(e) { showToast('❌ Error: ' + e.message, 'err'); return; }
+  renderAdminTabContent();
+}
+
+async function addSocioAdmin(e) {
+  e.preventDefault();
+  const nombre = document.getElementById('socio-nombre').value.trim();
+  const id     = document.getElementById('socio-id').value.trim().padStart(2, '0');
+  if (!nombre || !id) return;
+  if (getSocios().some(s => s.id === id)) {
+    showToast('❌ Ya existe un socio con ese número', 'err'); return;
+  }
+  try {
+    await apiCall({ action: 'addSocio', data: { id, nombre, estado: 'activo', fechaBaja: '' } });
+    const updated = await apiCall({ action: 'getSocios' });
+    _cache.socios = Array.isArray(updated) ? updated.map(normalizeSocio) : _cache.socios;
+    showToast('✅ Socio añadido correctamente', 'ok');
+  } catch(e) { showToast('❌ Error: ' + e.message, 'err'); return; }
+  renderAdminTabContent();
+}
+
+function cambiarPin(e) {
+  e.preventDefault();
+  const old  = document.getElementById('pin-old').value;
+  const nw   = document.getElementById('pin-new').value;
+  const cfg  = getCfg();
+  const alEl = document.getElementById('pin-chg-alert');
+  if (old !== cfg.pin) { alEl.innerHTML = `<div class="alert alert-error">PIN actual incorrecto.</div>`; return; }
+  if (!/^\d{4}$/.test(nw)) { alEl.innerHTML = `<div class="alert alert-error">El nuevo PIN debe tener exactamente 4 dígitos.</div>`; return; }
+  saveCfg({ ...cfg, pin: nw });
+  alEl.innerHTML = `<div class="alert alert-success">✅ PIN cambiado correctamente.</div>`;
+  document.getElementById('pin-old').value = '';
+  document.getElementById('pin-new').value = '';
+}
+
+/* =========================================================
+   AVISOS – ADMIN
+========================================================= */
+async function submitAviso(e) {
+  e.preventDefault();
+  const alEl = document.getElementById('av-alert');
+  const aviso = {
+    id:      Date.now().toString(),
+    fecha:   new Date().toISOString().substring(0, 10),
+    tipo:    document.getElementById('av-tipo').value,
+    titulo:  document.getElementById('av-titulo').value.trim(),
+    mensaje: document.getElementById('av-msg').value.trim(),
+    fijado:  document.getElementById('av-fijado').checked,
+    visible: true
+  };
+  try {
+    await apiCall({ action: 'addAviso', data: aviso });
+    const updated = await apiCall({ action: 'getAvisos' });
+    _cache.avisos = Array.isArray(updated) ? updated.map(normalizeAviso) : _cache.avisos;
+    checkAvisosBadge();
+    renderAvisoBanner();
+    showToast('✅ Aviso publicado correctamente', 'ok');
+    renderAdminTabContent();
+  } catch(err) {
+    showToast('❌ Error: ' + err.message, 'err', 4000);
+  }
+}
+
+async function archivarAviso(id) {
+  if (!confirm('¿Archivar este aviso? Dejará de verse para los socios.')) return;
+  try {
+    await apiCall({ action: 'updateAviso', data: { id, visible: false } });
+    const updated = await apiCall({ action: 'getAvisos' });
+    _cache.avisos = Array.isArray(updated) ? updated.map(normalizeAviso) : _cache.avisos;
+    renderAvisoBanner();
+    showToast('Aviso archivado', 'ok');
+    renderAdminTabContent();
+  } catch(e) { showToast('Error de conexión', 'err'); }
+}
+
+async function toggleFijarAviso(id, fijar) {
+  try {
+    await apiCall({ action: 'updateAviso', data: { id, fijado: fijar } });
+    const updated = await apiCall({ action: 'getAvisos' });
+    _cache.avisos = Array.isArray(updated) ? updated.map(normalizeAviso) : _cache.avisos;
+    showToast(fijar ? '📌 Aviso fijado' : 'Aviso desfijado', 'ok');
+    renderAdminTabContent();
+  } catch(e) { showToast('Error de conexión', 'err'); }
+}
+
+/* =========================================================
+   INFORME PDF
+========================================================= */
+function generarInforme() {
+  const reservas = getReservas().slice().sort((a,b) => a.fechaReservada.localeCompare(b.fechaReservada));
+  const now = new Date().toLocaleDateString('es-ES', { year:'numeric', month:'long', day:'numeric' });
+  const conf = reservas.filter(r => r.estado === 'confirmada');
+  const canc = reservas.filter(r => r.estado === 'cancelada');
+  const totalMesas = conf.reduce((s,r) => s + (r.numeroMesas||0), 0);
+
+  const rows = reservas.map(r => `
+    <tr class="${r.estado === 'cancelada' ? 'row-canc' : ''}">
+      <td>${fmtDate(r.fechaReservada)}</td>
+      <td>${franjaLabel(r.franja)}</td>
+      <td>${r.socioResponsable || r.socioNombre || '–'}</td>
+      <td>${r.planta === 'baja' ? 'Baja' : r.planta === 'superior' ? 'Superior' : 'Ambas'}</td>
+      <td style="text-align:center">${r.numeroMesas}</td>
+      <td style="text-align:center">${r.numeroComensales || r.comensalesEstimados || '–'}</td>
+      <td class="est-${r.estado}">${r.estado === 'confirmada' ? '✓ Confirmada' : '✗ Cancelada'}</td>
+    </tr>`).join('');
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Informe Reservas – Txoko Azkena</title>
+  <style>
+    @page { margin: 18mm 14mm; }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{ font-family:Arial,sans-serif; font-size:11px; color:#2C1810; background:#fff; }
+    .noprint{ background:#6B1A1A; color:#fff; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .noprint button{ background:#C8952A; border:none; color:#fff; padding:8px 20px; border-radius:6px; font-size:13px; font-weight:700; cursor:pointer; }
+    .hdr{ display:flex; justify-content:space-between; align-items:flex-start; border-bottom:3px solid #6B1A1A; padding-bottom:12px; margin-bottom:16px; }
+    .hdr-l h1{ font-size:22px; color:#6B1A1A; font-weight:900; }
+    .hdr-l h2{ font-size:12px; color:#8B2A2A; margin-top:3px; }
+    .hdr-r{ text-align:right; font-size:10px; color:#6B5B52; line-height:1.8; }
+    .rtitle{ background:#6B1A1A; color:#fff; padding:8px 14px; border-radius:6px; font-size:13px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:14px; }
+    .stats{ display:flex; gap:10px; margin-bottom:16px; }
+    .stat{ flex:1; border:1px solid #E0D5C8; border-radius:8px; padding:10px; text-align:center; }
+    .sv{ font-size:26px; font-weight:900; color:#6B1A1A; }
+    .sl{ font-size:9px; color:#6B5B52; margin-top:2px; }
+    table{ width:100%; border-collapse:collapse; }
+    th{ background:#6B1A1A; color:#fff; padding:7px 8px; text-align:left; font-size:10px; font-weight:700; }
+    td{ padding:6px 8px; border-bottom:1px solid #F0E8DC; font-size:10px; vertical-align:middle; }
+    tr:nth-child(even) td{ background:#FDFAF5; }
+    tr.row-canc td{ opacity:0.45; text-decoration:line-through; }
+    .est-confirmada{ color:#2E7D32; font-weight:700; }
+    .est-cancelada{ color:#C62828; font-weight:700; }
+    .footer{ margin-top:18px; border-top:1px solid #E0D5C8; padding-top:8px; font-size:9px; color:#6B5B52; display:flex; justify-content:space-between; }
+    @media print{ .noprint{ display:none!important; } }
+  </style></head><body>
+  <div class="noprint">
+    <span style="font-size:14px;font-weight:700;">🍽️ Vista previa del informe</span>
+    <button onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+  </div>
+  <div class="hdr">
+    <div class="hdr-l"><h1>🍽️ Txoko Azkena</h1><h2>Asociación Gastronómica Azkena · Basauri</h2></div>
+    <div class="hdr-r">CIF: G95368627<br>C/ Pozokoetxe, 2 – Bajo<br>48970 Basauri (Bizkaia)<br>azkenabasauri@gmail.com</div>
+  </div>
+  <div class="rtitle"><span>📋 LIBRO DIETARIO DIGITAL – LISTADO DE RESERVAS</span><span>Generado: ${now}</span></div>
+  <div class="stats">
+    <div class="stat"><div class="sv">${reservas.length}</div><div class="sl">Total reservas</div></div>
+    <div class="stat"><div class="sv" style="color:#2E7D32">${conf.length}</div><div class="sl">Confirmadas</div></div>
+    <div class="stat"><div class="sv" style="color:#C62828">${canc.length}</div><div class="sl">Canceladas</div></div>
+    <div class="stat"><div class="sv" style="color:#C8952A">${totalMesas}</div><div class="sl">Mesas totales</div></div>
+  </div>
+  <table>
+    <thead><tr><th>Fecha</th><th>Franja</th><th>Socio responsable</th><th>Planta</th><th>Mesas</th><th>Pers.</th><th>Estado</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">No hay reservas registradas</td></tr>'}</tbody>
+  </table>
+  <div class="footer">
+    <span>Libro Dietario Digital · Txoko Azkena · Basauri</span>
+    <span>Reg. Asociaciones País Vasco: AS/B/11831/2005</span>
+  </div>
+  </body></html>`;
+
+  const win = window.open('', '_blank', 'width=920,height=700');
+  win.document.write(html);
+  win.document.close();
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+document.addEventListener('DOMContentLoaded', async () => {
+  initCalendar();
+  renderCalendar();
+  renderNormas();
+  applyTR();
+  await loadAllData();
+  renderCalendar();
+  initReservaForm();
+  populateMRSocioSelect();
+});
+</script>
+</body>
+</html>
