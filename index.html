@@ -437,6 +437,42 @@
     .aviso-banner .ab-txt { flex: 1; }
     .aviso-banner .ab-title { font-weight: 800; color: #C62828; }
 
+    /* Votaciones */
+    .voto-card { background:var(--card); border-radius:12px; padding:14px; margin-bottom:10px; border:1px solid var(--border); box-shadow:0 1px 5px var(--shadow); }
+    .voto-card.cerrada { opacity:0.75; }
+    .voto-pregunta { font-size:15px; font-weight:800; color:var(--text); margin-bottom:4px; line-height:1.4; }
+    .voto-meta { font-size:11px; color:var(--text-muted); margin-bottom:12px; }
+    .voto-btns { display:flex; gap:8px; margin-bottom:12px; }
+    .voto-btn { flex:1; padding:10px 6px; border:none; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; transition:transform 0.1s,opacity 0.1s; }
+    .voto-btn:active { transform:scale(0.96); }
+    .voto-btn.si  { background:#E8F5E9; color:#2E7D32; border:2px solid #A5D6A7; }
+    .voto-btn.no  { background:#FFEBEE; color:#C62828; border:2px solid #FFCDD2; }
+    .voto-btn.abs { background:#FFF3E0; color:#E65100; border:2px solid #FFE0B2; }
+    .voto-btn.voted-si  { background:#2E7D32; color:#fff; border-color:#2E7D32; }
+    .voto-btn.voted-no  { background:#C62828; color:#fff; border-color:#C62828; }
+    .voto-btn.voted-abs { background:#E65100; color:#fff; border-color:#E65100; }
+    .voto-result { margin-top:8px; }
+    .voto-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; font-size:11px; }
+    .voto-bar-label { width:80px; font-weight:700; }
+    .voto-bar-track { flex:1; background:#F0E8DC; border-radius:4px; height:12px; }
+    .voto-bar-fill { height:100%; border-radius:4px; transition:width 0.4s ease; }
+    .voto-bar-pct { width:32px; text-align:right; color:var(--text-muted); }
+    .badge-activa  { background:#E8F5E9; color:#2E7D32; }
+    .badge-cerrada { background:#F5F5F5; color:#757575; }
+
+    /* Incidencias */
+    .incid-card { background:var(--card); border-radius:12px; padding:13px; margin-bottom:8px; border-left:4px solid; box-shadow:0 1px 4px var(--shadow); }
+    .incid-card.urgente { border-color:#C62828; }
+    .incid-card.normal  { border-color:#1565C0; }
+    .incid-card.resuelta{ border-color:#2E7D32; opacity:0.7; }
+    .incid-titulo { font-size:13px; font-weight:800; color:var(--text); margin-bottom:3px; }
+    .incid-meta   { font-size:11px; color:var(--text-muted); margin-bottom:6px; }
+    .incid-desc   { font-size:12px; color:var(--text); line-height:1.5; }
+    .incid-notas  { font-size:11px; color:#1565C0; background:#E3F2FD; border-radius:6px; padding:6px 8px; margin-top:6px; }
+    .badge-abierta    { background:#FFEBEE; color:#C62828; }
+    .badge-en_proceso { background:#FFF3E0; color:#E65100; }
+    .badge-resuelta   { background:#E8F5E9; color:#2E7D32; }
+
     /* Documentos */
     .doc-item {
       display: flex; align-items: center; gap: 12px;
@@ -451,6 +487,18 @@
     .doc-name  { font-size: 14px; font-weight: 700; color: var(--primary); }
     .doc-meta  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .doc-arrow { font-size: 22px; color: var(--text-muted); font-weight: 300; }
+
+    /* Spinner carga API */
+    .api-loading {
+      position: fixed;
+      bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px);
+      right: 16px; width: 30px; height: 30px;
+      border: 3px solid rgba(107,26,26,0.15);
+      border-top-color: var(--primary);
+      border-radius: 50%; z-index: 600;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Toast notificación */
     .toast {
@@ -710,13 +758,20 @@
     <div id="mr-list"></div>
   </div>
 
-  <!-- ── AVISOS ── -->
+  <!-- ── COMUNIDAD ── -->
   <div class="screen" id="screen-avisos">
     <div class="screen-header">
-      <div class="screen-title" id="tt-av">📢 Avisos</div>
-      <div class="screen-subtitle" id="ts-av">Tablón de la Junta Directiva</div>
+      <div class="screen-title" id="tt-av">💬 Comunidad</div>
+      <div class="screen-subtitle" id="ts-av">Avisos · Votaciones · Incidencias</div>
     </div>
-    <div id="avisos-list"></div>
+    <div class="tab-bar">
+      <button class="tab-btn active" id="ctab-avisos" onclick="comunidadTab('avisos')" style="font-size:10px;">📢 Avisos</button>
+      <button class="tab-btn"        id="ctab-votos"  onclick="comunidadTab('votos')"  style="font-size:10px;">🗳️ Votaciones</button>
+      <button class="tab-btn"        id="ctab-incid"  onclick="comunidadTab('incid')"  style="font-size:10px;">🔧 Incidencias</button>
+    </div>
+    <div id="com-avisos"><div id="avisos-list"></div></div>
+    <div id="com-votos"  class="hidden"></div>
+    <div id="com-incid"  class="hidden"></div>
   </div>
 
   <!-- ── NORMAS ── -->
@@ -862,12 +917,14 @@
       <div id="admin-stats"></div>
 
       <div class="tab-bar">
-        <button class="tab-btn active" id="at-reservas"   onclick="adminTab('reservas')"   style="font-size:10.5px;">📋 Reservas</button>
-        <button class="tab-btn"        id="at-bloquear"   onclick="adminTab('bloquear')"   style="font-size:10.5px;">🚫 Bloquear</button>
-        <button class="tab-btn"        id="at-bloqueados" onclick="adminTab('bloqueados')" style="font-size:10.5px;">📅 Bloqueados</button>
-        <button class="tab-btn"        id="at-avisos-admin" onclick="adminTab('avisos-admin')" style="font-size:10.5px;">📢 Avisos</button>
-        <button class="tab-btn"        id="at-socios"     onclick="adminTab('socios')"     style="font-size:10.5px;">👥 Socios</button>
-        <button class="tab-btn"        id="at-informe"    onclick="adminTab('informe')"    style="font-size:10.5px;">📄 Informe</button>
+        <button class="tab-btn active" id="at-reservas"   onclick="adminTab('reservas')"   style="font-size:9.5px;">📋 Reservas</button>
+        <button class="tab-btn"        id="at-bloquear"   onclick="adminTab('bloquear')"   style="font-size:9.5px;">🚫 Bloquear</button>
+        <button class="tab-btn"        id="at-bloqueados" onclick="adminTab('bloqueados')" style="font-size:9.5px;">📅 Bloqueados</button>
+        <button class="tab-btn"        id="at-avisos-admin" onclick="adminTab('avisos-admin')" style="font-size:9.5px;">📢 Avisos</button>
+        <button class="tab-btn"        id="at-votos-admin"  onclick="adminTab('votos-admin')"  style="font-size:9.5px;">🗳️ Votos</button>
+        <button class="tab-btn"        id="at-incid-admin"  onclick="adminTab('incid-admin')"  style="font-size:9.5px;">🔧 Incid.</button>
+        <button class="tab-btn"        id="at-socios"     onclick="adminTab('socios')"     style="font-size:9.5px;">👥 Socios</button>
+        <button class="tab-btn"        id="at-informe"    onclick="adminTab('informe')"    style="font-size:9.5px;">📄 Informe</button>
       </div>
 
       <div id="admin-tab"></div>
@@ -891,8 +948,8 @@
     <span id="nl-mr">Reservas</span>
   </button>
   <button class="nav-btn" id="nav-avisos" onclick="navigate('avisos')">
-    <span class="nav-icon">📢</span>
-    <span id="nl-av">Avisos</span>
+    <span class="nav-icon">💬</span>
+    <span id="nl-av">Comunidad</span>
     <span class="nav-badge hidden" id="nav-badge-avisos"></span>
   </button>
   <button class="nav-btn" id="nav-normas" onclick="navigate('normas')">
@@ -919,7 +976,7 @@ const TR = {
     ttNormas: 'ℹ️ Normas', tsNormas: 'Arauak eta informazioa',
     ttAdmin: 'Panel Junta Directiva',
     nlCal: 'Calendario', nlRes: 'Reservar',
-    nlMr: 'Reservas', nlAv: 'Avisos', nlNor: 'Normas', nlAdm: 'Admin',
+    nlMr: 'Reservas', nlAv: 'Comunidad', nlNor: 'Normas', nlAdm: 'Admin',
     calResTitle: 'Reservas actuales',
     weekdays: ['Lu','Ma','Mi','Ju','Vi','Sá','Do'],
     months: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
@@ -943,7 +1000,7 @@ const TR = {
     ttNormas: 'ℹ️ Arauak', tsNormas: 'Arauak eta informazioa',
     ttAdmin: 'Batzorde Zuzentzailea',
     nlCal: 'Egutegia', nlRes: 'Erreserbatu',
-    nlMr: 'Erreserbak', nlAv: 'Iragarkiak', nlNor: 'Arauak', nlAdm: 'Admin',
+    nlMr: 'Erreserbak', nlAv: 'Komunitatea', nlNor: 'Arauak', nlAdm: 'Admin',
     calResTitle: 'Erreserba aktiboak',
     weekdays: ['Al','As','Az','Og','Or','La','Ig'],
     months: ['Urtarrila','Otsaila','Martxoa','Apirila','Maiatza','Ekaina','Uztaila','Abuztua','Iraila','Urria','Azaroa','Abendua'],
@@ -1030,7 +1087,7 @@ const SOCIOS_DEMO = [
 ];
 
 // Caché en memoria — se carga desde Google Sheets al iniciar
-let _cache = { reservas: [], socios: SOCIOS_DEMO, bloq: [], avisos: [] };
+let _cache = { reservas: [], socios: SOCIOS_DEMO, bloq: [], avisos: [], votaciones: [], incidencias: [] };
 
 function dbGet(key, def) {
   try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : def; }
@@ -1060,15 +1117,34 @@ function getBloq()     { return _cache.bloq; }
 function getCfg()      { return dbGet('azk_cfg', { pin: '1234' }); }
 function saveCfg(v)    { dbSet('azk_cfg', v); }
 
+let _loadingCount = 0;
+function _showSpinner() {
+  _loadingCount++;
+  if (!document.getElementById('api-loading')) {
+    const el = document.createElement('div');
+    el.id = 'api-loading'; el.className = 'api-loading';
+    document.body.appendChild(el);
+  }
+}
+function _hideSpinner() {
+  _loadingCount = Math.max(0, _loadingCount - 1);
+  if (_loadingCount === 0) document.getElementById('api-loading')?.remove();
+}
+
 async function apiCall(params) {
-  const url = new URL(API_URL);
-  Object.entries(params).forEach(([k, v]) =>
-    url.searchParams.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v))
-  );
-  const res  = await fetch(url.toString());
-  const data = await res.json();
-  if (data && data.error) throw new Error(data.error);
-  return data;
+  _showSpinner();
+  try {
+    const url = new URL(API_URL);
+    Object.entries(params).forEach(([k, v]) =>
+      url.searchParams.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v))
+    );
+    const res  = await fetch(url.toString());
+    const data = await res.json();
+    if (data && data.error) throw new Error(data.error);
+    return data;
+  } finally {
+    _hideSpinner();
+  }
 }
 
 function showToast(msg, type = 'ok', ms = 2800) {
@@ -1126,7 +1202,67 @@ function normalizeAviso(a) {
   };
 }
 
-function getAvisos() { return _cache.avisos; }
+function getAvisos()      { return _cache.avisos; }
+function getVotaciones()  { return _cache.votaciones; }
+function getIncidencias() { return _cache.incidencias; }
+
+function normalizeVotacion(v) {
+  return { ...v,
+    id: String(v.id||''), titulo: String(v.titulo||''), pregunta: String(v.pregunta||''),
+    fecha: toDateStr(v.fecha) || String(v.fecha||''),
+    fechaLimite: toDateStr(v.fechaLimite) || '',
+    estado: String(v.estado||'activa'), creadoPor: String(v.creadoPor||''),
+    avisoId: String(v.avisoId||''),
+    si: Number(v.si)||0, no: Number(v.no)||0, abstencion: Number(v.abstencion)||0, total: Number(v.total)||0,
+  };
+}
+
+function normalizeIncidencia(i) {
+  return { ...i,
+    id: String(i.id||''), socioId: String(i.socioId||''), socioNombre: String(i.socioNombre||''),
+    ubicacion: String(i.ubicacion||''), descripcion: String(i.descripcion||''),
+    urgencia: String(i.urgencia||'normal'), estado: String(i.estado||'abierta'),
+    notasAdmin: String(i.notasAdmin||''),
+    avisoId:    String(i.avisoId||''),
+    fecha: toDateStr(i.fecha) || String(i.fecha||''),
+    fechaResolucion: toDateStr(i.fechaResolucion) || '',
+  };
+}
+
+// Auto-cierre de votaciones caducadas
+async function autoExpireVotes() {
+  const hoy = todayStr();
+  const caducadas = getVotaciones().filter(v => v.estado==='activa' && v.fechaLimite && v.fechaLimite < hoy);
+  for (const v of caducadas) {
+    try {
+      const ops = [apiCall({ action:'updateVotacion', data:{ id:v.id, estado:'cerrada' } })];
+      if (v.avisoId) ops.push(apiCall({ action:'updateAviso', data:{ id:v.avisoId, visible:false, fijado:false,
+        titulo:`🔒 Votación cerrada: ${v.titulo}`,
+        mensaje:`La votación "${v.pregunta}" se cerró automáticamente.\n✅ ${v.si} · ❌ ${v.no} · ⬜ ${v.abstencion}`
+      }}));
+      await Promise.all(ops);
+    } catch(e) { console.log('autoExpire error:', e.message); }
+  }
+  if (caducadas.length > 0) {
+    const [updV, updA] = await Promise.all([
+      apiCall({ action:'getVotaciones' }), apiCall({ action:'getAvisos' })
+    ]);
+    _cache.votaciones = Array.isArray(updV) ? updV.map(normalizeVotacion) : _cache.votaciones;
+    _cache.avisos     = Array.isArray(updA) ? updA.map(normalizeAviso)    : _cache.avisos;
+    checkAvisosBadge(); renderAvisoBanner();
+  }
+}
+
+let _comunidadTab = 'avisos';
+function comunidadTab(tab) {
+  _comunidadTab = tab;
+  ['avisos','votos','incid'].forEach(t => {
+    document.getElementById('com-'+t)?.classList.toggle('hidden', t !== tab);
+    document.getElementById('ctab-'+t)?.classList.toggle('active', t === tab);
+  });
+  if (tab === 'votos') renderVotaciones();
+  if (tab === 'incid') renderIncidencias();
+}
 
 function checkAvisosBadge() {
   const badge = document.getElementById('nav-badge-avisos');
@@ -1208,20 +1344,24 @@ function showLoading(show) {
 async function loadAllData() {
   showLoading(true);
   try {
-    const [reservas, socios, bloq, avisos, cfg] = await Promise.all([
+    const [reservas, socios, bloq, avisos, cfg, votaciones, incidencias] = await Promise.all([
       apiCall({ action: 'getReservas' }),
       apiCall({ action: 'getSocios' }),
       apiCall({ action: 'getBloq' }),
       apiCall({ action: 'getAvisos' }),
-      apiCall({ action: 'getConfig' })
+      apiCall({ action: 'getConfig' }),
+      apiCall({ action: 'getVotaciones' }),
+      apiCall({ action: 'getIncidencias' })
     ]);
-    _cache.reservas = Array.isArray(reservas) ? reservas.map(normalizeReserva) : [];
-    _cache.socios   = Array.isArray(socios)   ? socios.map(normalizeSocio)   : SOCIOS_DEMO;
-    _cache.bloq     = Array.isArray(bloq)     ? bloq     : [];
-    _cache.avisos   = Array.isArray(avisos)   ? avisos.map(normalizeAviso) : [];
-    // Sincronizar PIN desde Sheets
+    _cache.reservas    = Array.isArray(reservas)    ? reservas.map(normalizeReserva)    : [];
+    _cache.socios      = Array.isArray(socios)      ? socios.map(normalizeSocio)        : SOCIOS_DEMO;
+    _cache.bloq        = Array.isArray(bloq)        ? bloq                              : [];
+    _cache.avisos      = Array.isArray(avisos)      ? avisos.map(normalizeAviso)        : [];
+    _cache.votaciones  = Array.isArray(votaciones)  ? votaciones.map(normalizeVotacion) : [];
+    _cache.incidencias = Array.isArray(incidencias) ? incidencias.map(normalizeIncidencia) : [];
     if (cfg && cfg.pin) saveCfg({ ...getCfg(), pin: String(cfg.pin) });
     checkAvisosBadge();
+    await autoExpireVotes();
   } catch(e) {
     console.warn('Error cargando datos de Google Sheets:', e);
   }
@@ -1266,7 +1406,7 @@ function navigate(screen) {
   if (screen === 'calendario')  renderCalendar();
   if (screen === 'reserva')     initReservaForm();
   if (screen === 'misreservas') { populateMRSocioSelect(); renderMisReservas(); }
-  if (screen === 'avisos')      { renderAvisos(); markAvisosRead(); }
+  if (screen === 'avisos')      { _comunidadTab='avisos'; comunidadTab('avisos'); renderAvisos(); markAvisosRead(); }
   if (screen === 'normas')      renderNormas();
   if (screen === 'admin')       renderAdminScreen();
 
@@ -1324,7 +1464,7 @@ function renderCalReservaList() {
     const dateTxt   = fmtDate(r.fechaReservada);
     const franjaTxt = franjaLabel(r.franja);
     const plantaTxt = plantaLabel(r.planta);
-    const mesaWord  = lang === 'eu' ? (r.numeroMesas > 1 ? 'mahai' : 'mahai') : (r.numeroMesas > 1 ? 'mesas' : 'mesa');
+    const mesaWord  = lang === 'eu' ? 'mahai' : (r.numeroMesas > 1 ? 'mesas' : 'mesa');
     html += `<div class="franja-row"><span>${dateTxt} – ${franjaTxt}</span><span>${r.numeroMesas} ${mesaWord} · ${plantaTxt}</span></div>`;
   });
   listEl.innerHTML = html;
@@ -1583,6 +1723,196 @@ function renderAvisoBanner() {
     </div>`;
   const calCard = document.querySelector('#screen-calendario .card');
   if (calCard) calCard.parentNode.insertBefore(banner, calCard);
+}
+
+/* =========================================================
+   VOTACIONES
+========================================================= */
+function renderVotaciones() {
+  const cont = document.getElementById('com-votos');
+  if (!cont) return;
+  // Solo votaciones activas en Comunidad — las cerradas solo las ve Admin
+  const votos = getVotaciones().filter(v => v.estado === 'activa')
+    .slice().sort((a,b) => String(b.id).localeCompare(String(a.id)));
+  const socioId = document.getElementById('f-socio')?.value || '';
+  const misVotos = JSON.parse(localStorage.getItem('azk_mis_votos') || '{}');
+
+  if (!votos.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="ei">🗳️</div><div class="et">No hay votaciones abiertas</div><div class="eh">La junta publicará aquí las próximas votaciones.</div></div>`;
+    return;
+  }
+
+  cont.innerHTML = votos.map(v => {
+    const total   = v.total || 0;
+    const pct     = x => total > 0 ? Math.round(x/total*100) : 0;
+    const miVoto  = misVotos[v.id];
+    const activa  = v.estado === 'activa';
+    const limite  = v.fechaLimite ? ` · Límite: ${fmtDate(v.fechaLimite)}` : '';
+    const resultHtml = `
+      <div class="voto-result">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:5px;">📊 ${total} voto${total!==1?'s':''} emitido${total!==1?'s':''}</div>
+        ${[['✅ Sí','si','#2E7D32'],['❌ No','no','#C62828'],['⬜ Abstención','abstencion','#E65100']].map(([lb,k,c])=>`
+        <div class="voto-bar-row">
+          <span class="voto-bar-label" style="color:${c}">${lb}</span>
+          <div class="voto-bar-track"><div class="voto-bar-fill" style="width:${pct(v[k])}%;background:${c};"></div></div>
+          <span class="voto-bar-pct">${v[k]} (${pct(v[k])}%)</span>
+        </div>`).join('')}
+      </div>`;
+
+    const socioOpts = getSociosActivos().map(s=>`<option value="${s.id}">${padId(s.id)} – ${s.nombre}</option>`).join('');
+    const btnHtml = activa && !miVoto ? `
+      <div class="form-group" style="margin-bottom:8px;">
+        <label style="font-size:11px;">Tu nombre</label>
+        <select id="voto-socio-${v.id}" required>
+          <option value="">-- Selecciona --</option>
+          ${socioOpts}
+        </select>
+      </div>
+      <div class="voto-btns">
+        <button class="voto-btn si"  onclick="votar('${v.id}','si')">✅ Sí</button>
+        <button class="voto-btn no"  onclick="votar('${v.id}','no')">❌ No</button>
+        <button class="voto-btn abs" onclick="votar('${v.id}','abstencion')">⬜ Abstención</button>
+      </div>` : miVoto ? `
+      <div class="notice info" style="margin-bottom:8px;font-size:12px;">
+        ✓ Has votado: <strong>${miVoto==='si'?'✅ Sí':miVoto==='no'?'❌ No':'⬜ Abstención'}</strong>
+      </div>` : '';
+
+    return `<div class="voto-card ${v.estado}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+        <span class="badge ${v.estado==='activa'?'badge-activa':'badge-cerrada'}">${v.estado==='activa'?'🟢 Activa':'🔒 Cerrada'}</span>
+        <span style="font-size:10px;color:var(--text-muted)">${fmtDate(v.fecha)}${limite}</span>
+      </div>
+      <div class="voto-pregunta">${escapeHtml(v.pregunta)}</div>
+      <div class="voto-meta">Creada por: ${escapeHtml(v.creadoPor)}</div>
+      ${btnHtml}
+      ${resultHtml}
+    </div>`;
+  }).join('');
+}
+
+async function votar(votoId, respuesta) {
+  const socioId = document.getElementById(`voto-socio-${votoId}`)?.value;
+  const socio   = getSociosActivos().find(s => s.id === socioId);
+  if (!socio) { showToast('❌ Selecciona tu nombre antes de votar.', 'err'); return; }
+  const misVotos = JSON.parse(localStorage.getItem('azk_mis_votos') || '{}');
+  if (misVotos[votoId]) { showToast('Ya has votado en esta votación.', 'err'); return; }
+  try {
+    const res = await apiCall({ action: 'addRespuesta', data: {
+      id: Date.now().toString(), votoId, socioId: socio.id, socioNombre: socio.nombre, respuesta, fecha: new Date().toISOString().substring(0,10)
+    }});
+    misVotos[votoId] = respuesta;
+    localStorage.setItem('azk_mis_votos', JSON.stringify(misVotos));
+    const updated = await apiCall({ action: 'getVotaciones' });
+    _cache.votaciones = Array.isArray(updated) ? updated.map(normalizeVotacion) : _cache.votaciones;
+    showToast(`✅ Voto registrado: ${respuesta==='si'?'Sí':respuesta==='no'?'No':'Abstención'}`, 'ok');
+    renderVotaciones();
+  } catch(e) { showToast('❌ Error: ' + e.message, 'err'); }
+}
+
+/* =========================================================
+   INCIDENCIAS
+========================================================= */
+function renderIncidencias() {
+  const cont = document.getElementById('com-incid');
+  if (!cont) return;
+  const incidencias = getIncidencias().slice().sort((a,b) => {
+    const order = { abierta:0, en_proceso:1, resuelta:2 };
+    if ((order[a.estado]||0) !== (order[b.estado]||0)) return (order[a.estado]||0) - (order[b.estado]||0);
+    return String(b.id).localeCompare(String(a.id));
+  });
+  const estadoBadge = e => ({
+    abierta:    `<span class="badge badge-abierta">🔴 Abierta</span>`,
+    en_proceso: `<span class="badge badge-en_proceso">🟡 En proceso</span>`,
+    resuelta:   `<span class="badge badge-resuelta">🟢 Resuelta</span>`
+  }[e] || e);
+
+  cont.innerHTML = `
+    <div class="card">
+      <div class="card-title">🔧 Reportar incidencia</div>
+      <form onsubmit="submitIncidencia(event)">
+        <div class="form-group">
+          <label>Socio que reporta</label>
+          <select id="inc-socio" required>
+            <option value="">-- Selecciona tu nombre --</option>
+            ${getSociosActivos().map(s=>`<option value="${s.id}">${s.id} – ${s.nombre}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ubicación</label>
+          <select id="inc-ubi">
+            <option value="Cocina">Cocina</option>
+            <option value="Salón planta baja">Salón planta baja</option>
+            <option value="Salón planta superior">Salón planta superior</option>
+            <option value="Baños">Baños</option>
+            <option value="Bodega / Almacén">Bodega / Almacén</option>
+            <option value="Exterior">Exterior</option>
+            <option value="Instalación eléctrica">Instalación eléctrica</option>
+            <option value="Otra">Otra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Descripción del problema</label>
+          <textarea id="inc-desc" rows="2" placeholder="Describe el problema con detalle..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Urgencia</label>
+          <select id="inc-urg">
+            <option value="normal">⚪ Normal — se puede usar con precaución</option>
+            <option value="urgente">🔴 Urgente — impide el uso del local</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">🔧 Reportar incidencia</button>
+      </form>
+    </div>
+    ${incidencias.length ? `<div class="card-title" style="margin-top:4px;">Incidencias registradas</div>` : ''}
+    ${incidencias.map(i => `
+      <div class="incid-card ${i.urgencia==='urgente'?'urgente':'normal'} ${i.estado==='resuelta'?'resuelta':''}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+          <span class="incid-titulo">📍 ${escapeHtml(i.ubicacion)}</span>
+          ${estadoBadge(i.estado)}
+        </div>
+        <div class="incid-meta">${fmtDate(i.fecha)} · ${escapeHtml(i.socioNombre)} ${i.urgencia==='urgente'?'· 🔴 <strong>Urgente</strong>':''}</div>
+        <div class="incid-desc">${escapeHtml(i.descripcion)}</div>
+        ${i.notasAdmin ? `<div class="incid-notas">💬 Junta: ${escapeHtml(i.notasAdmin)}</div>` : ''}
+        ${i.estado==='resuelta'&&i.fechaResolucion ? `<div style="font-size:10px;color:var(--success);margin-top:4px;">✅ Resuelta el ${fmtDate(i.fechaResolucion)}</div>` : ''}
+      </div>`).join('')}
+    ${!incidencias.length ? `<div class="empty-state"><div class="ei">🔧</div><div class="et">Sin incidencias</div><div class="eh">Todo en orden en el txoko.</div></div>` : ''}`;
+}
+
+async function submitIncidencia(e) {
+  e.preventDefault();
+  const socioId = document.getElementById('inc-socio')?.value;
+  const socio   = getSociosActivos().find(s => s.id === socioId);
+  if (!socio) { showToast('❌ Selecciona tu nombre.', 'err'); return; }
+  const avisoId = (Date.now()+1).toString();
+  const inc = {
+    id: Date.now().toString(), fecha: new Date().toISOString().substring(0,10),
+    socioId: socio.id, socioNombre: `Nº ${padId(socio.id)} – ${socio.nombre}`,
+    ubicacion:   document.getElementById('inc-ubi').value,
+    descripcion: document.getElementById('inc-desc').value.trim(),
+    urgencia:    document.getElementById('inc-urg').value,
+    estado: 'abierta', fechaResolucion: '', notasAdmin: '', avisoId
+  };
+  try {
+    await apiCall({ action: 'addIncidencia', data: inc });
+    const aviso = {
+      id: avisoId, fecha: inc.fecha,
+      tipo: inc.urgencia === 'urgente' ? 'urgente' : 'info',
+      titulo: `🔧 Incidencia en ${inc.ubicacion}`,
+      mensaje: inc.descripcion + '\n— ' + socio.nombre,
+      fijado: inc.urgencia === 'urgente', visible: true
+    };
+    await apiCall({ action: 'addAviso', data: aviso });
+    const [updInc, updAv] = await Promise.all([
+      apiCall({ action: 'getIncidencias' }),
+      apiCall({ action: 'getAvisos' })
+    ]);
+    _cache.incidencias = Array.isArray(updInc) ? updInc.map(normalizeIncidencia) : _cache.incidencias;
+    _cache.avisos      = Array.isArray(updAv)  ? updAv.map(normalizeAviso)       : _cache.avisos;
+    checkAvisosBadge(); renderAvisoBanner();
+    showToast('✅ Incidencia reportada y aviso enviado a la junta.', 'ok');
+    renderIncidencias();
+  } catch(err) { showToast('❌ Error: ' + err.message, 'err'); }
 }
 
 /* =========================================================
@@ -2218,7 +2548,7 @@ function pinOK() {
   }
 }
 function adminLogout() {
-  adminMode = false; pinBuf = ''; updatePinDisplay();
+  adminMode = false; pinBuf = ''; adminCurrentTab = 'reservas'; updatePinDisplay();
   document.getElementById('admin-pin-view').classList.remove('hidden');
   document.getElementById('admin-content').classList.add('hidden');
 }
@@ -2240,7 +2570,7 @@ let adminCurrentTab = 'reservas';
 
 function adminTab(tab) {
   adminCurrentTab = tab;
-  ['reservas','bloquear','bloqueados','avisos-admin','socios','informe'].forEach(t => {
+  ['reservas','bloquear','bloqueados','avisos-admin','votos-admin','incid-admin','socios','informe'].forEach(t => {
     document.getElementById('at-' + t).classList.toggle('active', t === tab);
   });
   renderAdminTabContent();
@@ -2360,6 +2690,83 @@ function renderAdminTabContent() {
             <button class="btn btn-danger btn-sm" onclick="archivarAviso('${a.id}')">Archivar</button>
           </div>
         </div>`).join('')}`;
+
+  } else if (adminCurrentTab === 'votos-admin') {
+    const votos = getVotaciones().slice().sort((a,b) => String(b.id).localeCompare(String(a.id)));
+    cont.innerHTML = `
+      <div class="card">
+        <div class="card-title">➕ Nueva votación</div>
+
+        <div class="notice warning" style="margin-bottom:12px;">
+          ⚠️ <strong>Antes de publicar, ten en cuenta:</strong>
+          <ul style="margin:6px 0 0 16px;font-size:12px;line-height:1.8;">
+            <li>Formula la pregunta de forma que solo admita <strong>Sí / No / Abstención</strong> como respuesta.</li>
+            <li>❌ Incorrecto: <em>"¿Qué hacemos con la nevera?"</em></li>
+            <li>✅ Correcto: <em>"¿Aprobamos comprar una nevera nueva?"</em></li>
+          </ul>
+        </div>
+
+        <div class="notice info" style="margin-bottom:12px;">
+          📋 <strong>¿Para qué sirven estas votaciones?</strong>
+          <div style="font-size:12px;line-height:1.8;margin-top:4px;">
+            Para <strong>sondear la opinión de los socios</strong> de forma rápida sobre decisiones ordinarias del txoko.<br><br>
+            ⚠️ <strong>Las decisiones que afectan a Estatutos, Régimen Interno, expulsión de socios o disolución de la sociedad deben tomarse en Asamblea General</strong>, con presencia física o cesión de voto firmada. Estas NO pueden formalizarse a través de la app.
+          </div>
+        </div>
+
+        <form onsubmit="submitVotacionAdmin(event)">
+          <div class="form-group">
+            <label>Pregunta</label>
+            <input type="text" id="vot-preg" placeholder="¿Aprobamos...? ¿Estáis de acuerdo con...?" required>
+          </div>
+          <div class="form-group">
+            <label>Fecha límite (opcional)</label>
+            <input type="date" id="vot-limite">
+          </div>
+          <button type="submit" class="btn btn-primary">🗳️ Publicar votación</button>
+        </form>
+      </div>
+      ${votos.map(v => `
+        <div class="voto-card ${v.estado}" style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <span class="badge ${v.estado==='activa'?'badge-activa':'badge-cerrada'}">${v.estado==='activa'?'🟢 Activa':'🔒 Cerrada'}</span>
+            <span style="font-size:9px;color:var(--text-muted)">${v.si}✅ ${v.no}❌ ${v.abstencion}⬜ · ${v.total} votos</span>
+          </div>
+          <div class="voto-pregunta" style="font-size:13px;">${escapeHtml(v.pregunta)}</div>
+          <div class="reserva-footer" style="margin-top:8px;">
+            ${v.estado==='activa'
+              ? `<button class="btn btn-danger btn-sm" onclick="cerrarVotacion('${v.id}')">🔒 Cerrar votación</button>`
+              : `<button class="btn btn-outline btn-sm" onclick="publicarResultadoVotacion('${v.id}')">📢 Publicar resultado</button>`}
+          </div>
+        </div>`).join('')}`;
+
+  } else if (adminCurrentTab === 'incid-admin') {
+    const incidencias = getIncidencias().slice().sort((a,b) => {
+      const order={abierta:0,en_proceso:1,resuelta:2};
+      return (order[a.estado]||0)-(order[b.estado]||0)||String(b.id).localeCompare(String(a.id));
+    });
+    const estadoBadge = e=>({abierta:`<span class="badge badge-abierta">🔴 Abierta</span>`,en_proceso:`<span class="badge badge-en_proceso">🟡 En proceso</span>`,resuelta:`<span class="badge badge-resuelta">🟢 Resuelta</span>`}[e]||e);
+    cont.innerHTML = incidencias.length ? incidencias.map(i=>`
+      <div class="incid-card ${i.urgencia==='urgente'?'urgente':'normal'} ${i.estado==='resuelta'?'resuelta':''}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+          <span class="incid-titulo">📍 ${escapeHtml(i.ubicacion)}</span>${estadoBadge(i.estado)}
+        </div>
+        <div class="incid-meta">${fmtDate(i.fecha)} · ${escapeHtml(i.socioNombre)}</div>
+        <div class="incid-desc">${escapeHtml(i.descripcion)}</div>
+        ${i.notasAdmin?`<div class="incid-notas">💬 ${escapeHtml(i.notasAdmin)}</div>`:''}
+        <div class="reserva-footer" style="gap:6px;">
+          ${i.estado!=='resuelta'?`
+            <select id="est-${i.id}" style="flex:1;padding:6px;font-size:11px;border:1px solid var(--border);border-radius:6px;">
+              <option value="abierta" ${i.estado==='abierta'?'selected':''}>🔴 Abierta</option>
+              <option value="en_proceso" ${i.estado==='en_proceso'?'selected':''}>🟡 En proceso</option>
+              <option value="resuelta">🟢 Resuelta</option>
+            </select>
+            <input id="nota-${i.id}" type="text" placeholder="Nota (opcional)" value="${escapeHtml(i.notasAdmin)}" style="flex:1;padding:6px;font-size:11px;border:1px solid var(--border);border-radius:6px;">
+            <button class="btn btn-primary btn-sm" onclick="actualizarIncidencia('${i.id}')">Guardar</button>
+          `:'<span style="font-size:11px;color:var(--success)">✅ Resuelta</span>'}
+        </div>
+      </div>`).join('')
+    : `<div class="empty-state"><div class="ei">🔧</div><div class="et">Sin incidencias</div></div>`;
 
   } else if (adminCurrentTab === 'informe') {
     cont.innerHTML = `
@@ -2576,6 +2983,135 @@ async function toggleFijarAviso(id, fijar) {
 }
 
 /* =========================================================
+   ADMIN – VOTACIONES E INCIDENCIAS
+========================================================= */
+async function submitVotacionAdmin(e) {
+  e.preventDefault();
+  const pregunta = document.getElementById('vot-preg').value.trim();
+  const limite   = document.getElementById('vot-limite').value;
+  const avisoId  = (Date.now()+1).toString();
+  const votacion = {
+    id: Date.now().toString(), fecha: new Date().toISOString().substring(0,10),
+    titulo: pregunta.substring(0,50), pregunta, fechaLimite: limite,
+    estado: 'activa', creadoPor: 'Junta Directiva', avisoId
+  };
+  const aviso = {
+    id: avisoId, fecha: votacion.fecha, tipo: 'urgente',
+    titulo: '🗳️ Votación abierta',
+    mensaje: pregunta + (limite ? `\nFecha límite: ${fmtDate(limite)}` : '') + '\n\n📲 Vota en Comunidad → Votaciones.',
+    fijado: true, visible: true
+  };
+  try {
+    await Promise.all([
+      apiCall({ action: 'addVotacion', data: votacion }),
+      apiCall({ action: 'addAviso',    data: aviso })
+    ]);
+    const [updV, updA] = await Promise.all([
+      apiCall({ action: 'getVotaciones' }),
+      apiCall({ action: 'getAvisos' })
+    ]);
+    _cache.votaciones = Array.isArray(updV) ? updV.map(normalizeVotacion) : _cache.votaciones;
+    _cache.avisos     = Array.isArray(updA) ? updA.map(normalizeAviso)    : _cache.avisos;
+    checkAvisosBadge(); renderAvisoBanner();
+    showToast('✅ Votación publicada y aviso urgente enviado.', 'ok');
+    renderAdminTabContent();
+  } catch(err) { showToast('❌ Error: ' + err.message, 'err'); }
+}
+
+async function publicarResultadoVotacion(id) {
+  const v = getVotaciones().find(v => v.id === id);
+  if (!v) return;
+  const total = v.total || 0;
+  const pct   = x => total > 0 ? Math.round(x/total*100) : 0;
+  const aviso = {
+    id: Date.now().toString(), fecha: new Date().toISOString().substring(0,10),
+    tipo: 'evento',
+    titulo: `🗳️ Resultado: ${v.titulo}`,
+    mensaje: `Pregunta: "${v.pregunta}"\n\n` +
+             `✅ Sí: ${v.si} votos (${pct(v.si)}%)\n` +
+             `❌ No: ${v.no} votos (${pct(v.no)}%)\n` +
+             `⬜ Abstención: ${v.abstencion} votos (${pct(v.abstencion)}%)\n` +
+             `Total votantes: ${total}`,
+    fijado: false, visible: true
+  };
+  try {
+    await apiCall({ action: 'addAviso', data: aviso });
+    const updA = await apiCall({ action: 'getAvisos' });
+    _cache.avisos = Array.isArray(updA) ? updA.map(normalizeAviso) : _cache.avisos;
+    checkAvisosBadge(); renderAvisoBanner();
+    showToast('📢 Resultado publicado como aviso.', 'ok');
+  } catch(e) { showToast('❌ Error: ' + e.message, 'err'); }
+}
+
+async function cerrarVotacion(id) {
+  if (!confirm('¿Cerrar esta votación? Los socios ya no podrán votar.')) return;
+  const voto = getVotaciones().find(v => v.id === id);
+  try {
+    const ops = [apiCall({ action: 'updateVotacion', data: { id, estado: 'cerrada' } })];
+    // Archivar aviso vinculado
+    if (voto?.avisoId) ops.push(apiCall({ action: 'updateAviso', data: { id: voto.avisoId, visible: false, fijado: false,
+      titulo: `🔒 Votación cerrada: ${voto.titulo}`,
+      mensaje: `La votación "${voto.pregunta}" ha sido cerrada.\n✅ ${voto.si} · ❌ ${voto.no} · ⬜ ${voto.abstencion}`
+    }}));
+    await Promise.all(ops);
+    const [updV, updA] = await Promise.all([
+      apiCall({ action: 'getVotaciones' }),
+      apiCall({ action: 'getAvisos' })
+    ]);
+    _cache.votaciones = Array.isArray(updV) ? updV.map(normalizeVotacion) : _cache.votaciones;
+    _cache.avisos     = Array.isArray(updA) ? updA.map(normalizeAviso)    : _cache.avisos;
+    checkAvisosBadge(); renderAvisoBanner();
+    showToast('🔒 Votación cerrada y aviso archivado.', 'ok');
+    renderAdminTabContent();
+  } catch(e) { showToast('❌ Error: ' + e.message, 'err'); }
+}
+
+async function actualizarIncidencia(id) {
+  const estado  = document.getElementById('est-'+id)?.value;
+  const notas   = document.getElementById('nota-'+id)?.value.trim();
+  const incOld  = getIncidencias().find(i => i.id === id);
+  const upd     = { id, estado, notasAdmin: notas };
+  if (estado === 'resuelta') upd.fechaResolucion = new Date().toISOString().substring(0,10);
+
+  const estadoLabel = { en_proceso:'🟡 En proceso', resuelta:'✅ Resuelta' };
+  const ops = [apiCall({ action: 'updateIncidencia', data: upd })];
+
+  if (incOld?.avisoId) {
+    // Actualizar el aviso existente con respuesta de la junta
+    const resuelta = estado === 'resuelta';
+    const avisoUpd = {
+      id: incOld.avisoId,
+      tipo: resuelta ? 'info' : 'info',
+      titulo: `🔧 ${estadoLabel[estado]||estado}: ${incOld.ubicacion}`,
+      mensaje: `Incidencia reportada por ${incOld.socioNombre}:\n"${incOld.descripcion}"\n\n` +
+               `${estadoLabel[estado]||estado}` +
+               (notas ? `\n💬 Junta: ${notas}` : ''),
+      visible: !resuelta, // si resuelta → se archiva y desaparece
+      fijado: false
+    };
+    ops.push(apiCall({ action: 'updateAviso', data: avisoUpd }));
+  }
+
+  try {
+    // Ejecutar update incidencia siempre; aviso vinculado falla silenciosamente si no existe
+    await ops[0];
+    if (ops[1]) { try { await ops[1]; } catch(e) { console.log('Aviso vinculado no encontrado:', e.message); } }
+    const [updInc, updAv] = await Promise.all([
+      apiCall({ action: 'getIncidencias' }),
+      apiCall({ action: 'getAvisos' })
+    ]);
+    _cache.incidencias = Array.isArray(updInc) ? updInc.map(normalizeIncidencia) : _cache.incidencias;
+    _cache.avisos      = Array.isArray(updAv)  ? updAv.map(normalizeAviso)       : _cache.avisos;
+    checkAvisosBadge(); renderAvisoBanner();
+    const msg = estado === 'resuelta'
+      ? '✅ Incidencia resuelta y aviso archivado.'
+      : '✅ Incidencia actualizada · Aviso actualizado con respuesta de la junta.';
+    showToast(msg, 'ok');
+    renderAdminTabContent();
+  } catch(e) { showToast('❌ Error: ' + e.message, 'err'); }
+}
+
+/* =========================================================
    INFORME PDF
 ========================================================= */
 function generarInforme() {
@@ -2731,14 +3267,13 @@ function generarInforme() {
 
   // ── DATOS GRÁFICOS ──
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const porMes = Array(12).fill(0), porMesCocina = Array(12).fill(0), porMesLimp = Array(12).fill(0);
+  const porMes = Array(12).fill(0), porMesCocina = Array(12).fill(0);
   reservas.forEach(r => {
     if (r.fechaReservada) {
       const m = new Date(r.fechaReservada + 'T12:00:00').getMonth();
       if (m >= 0 && m < 12) {
         porMes[m]++;
-        if (r.usoCocina === 'si')        porMesCocina[m]++;
-        if (r.limpiezaExterna === 'si')  porMesLimp[m]++;
+        if (r.usoCocina === 'si') porMesCocina[m]++;
       }
     }
   });
