@@ -604,7 +604,7 @@
         <!-- Comensales -->
         <div class="form-group">
           <label for="f-comsls" id="lbl-comsls">Comensales estimados <span class="label-eu">/ Lagun kopurua</span></label>
-          <input type="number" id="f-comsls" min="1" max="60" placeholder="Nº de personas previstas" required>
+          <input type="number" id="f-comsls" min="1" max="60" placeholder="Nº de personas previstas" required onchange="updateCosteLimpieza()" oninput="updateCosteLimpieza()">
         </div>
 
         <!-- Cocina -->
@@ -651,6 +651,27 @@
         <!-- Aviso cocina -->
         <div class="notice kitchen hidden" id="notice-cocina">
           🔥 <strong>Cocina / Sukaldea:</strong> Al finalizar comprueba que horno eléctrico, horno de gas, fuegos, plancha, cocina, gas, luces y demás elementos quedan <strong>apagados y en buen estado</strong>.
+        </div>
+
+        <!-- Limpieza externa -->
+        <div class="notice warning">
+          🧹 <strong>Recomendación de la Junta:</strong>
+          El txoko es la casa de <strong>todos</strong>. Se recomienda encarecidamente contratar el servicio de limpieza externa para dejar las instalaciones en perfectas condiciones para el siguiente socio.
+          <em style="display:block; margin-top:4px; font-size:12px; opacity:0.85;">Txokoa bazkide guztien etxea da. Kanpoko garbiketa zerbitzua kontratatzea gomendatzen da.</em>
+        </div>
+
+        <div class="form-group">
+          <label for="f-limp-ext">🧹 ¿Contratas limpieza externa? <span class="label-eu">/ Kanpoko garbiketa?</span></label>
+          <select id="f-limp-ext" onchange="updateCosteLimpieza()">
+            <option value="no">No — Me encargo yo / Nik egingo dut</option>
+            <option value="si">Sí — Contrato servicio externo / Bai, kanpoko zerbitzua</option>
+          </select>
+          <div id="coste-limpieza-box" class="min-box hidden" style="background:var(--success); margin-top:6px;">
+            🧹 <span id="coste-limpieza-txt"></span>
+          </div>
+          <div class="notice info" id="aviso-llamar-limpieza" style="margin-top:8px; display:none;">
+            📞 <strong>Importante:</strong> Marcar esta opción <strong>no contrata automáticamente el servicio</strong>. Es tu responsabilidad llamar y confirmar con el personal de limpieza antes de la fecha. Esta casilla solo registra tu intención.
+          </div>
         </div>
 
         <!-- Limpieza -->
@@ -1054,6 +1075,24 @@ function showToast(msg, type = 'ok', ms = 2800) {
   setTimeout(() => t.remove(), ms);
 }
 
+function updateCosteLimpieza() {
+  const sel  = document.getElementById('f-limp-ext');
+  const box  = document.getElementById('coste-limpieza-box');
+  const txt  = document.getElementById('coste-limpieza-txt');
+  const comsls = parseInt(document.getElementById('f-comsls')?.value) || 0;
+  if (!sel || !box || !txt) return;
+  const avisoLlamar = document.getElementById('aviso-llamar-limpieza');
+  if (sel.value === 'si') {
+    const coste = Math.max(comsls * 1.5, 15);
+    txt.textContent = `Coste estimado: ${coste.toFixed(2)}€ (${comsls} pers. × 1,50€ · mín. 15€)`;
+    box.classList.remove('hidden');
+    if (avisoLlamar) avisoLlamar.style.display = 'block';
+  } else {
+    box.classList.add('hidden');
+    if (avisoLlamar) avisoLlamar.style.display = 'none';
+  }
+}
+
 function generarCodigoCancelacion() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = '';
@@ -1124,6 +1163,8 @@ function normalizeReserva(r) {
     hornoElectrico:       String(r.hornoElectrico  || 'no'),
     hornoGas:             String(r.hornoGas        || 'no'),
     planchaGas:           String(r.planchaGas      || 'no'),
+    limpiezaExterna:      String(r.limpiezaExterna   || 'no'),
+    costeLimpieza:        Number(r.costeLimpieza)   || 0,
     codigoCancelacion:    String(r.codigoCancelacion || ''),
     observaciones:        String(r.observaciones   || ''),
     numeroMesas:          Number(r.numeroMesas)         || 0,
@@ -1715,8 +1756,10 @@ async function submitReserva(e) {
   const hornoG    = document.getElementById('f-horno-g').value;
   const fuegos    = parseInt(document.getElementById('f-fuegos').value) || 0;
   const plancha   = document.getElementById('f-plancha').value;
-  const obs       = document.getElementById('f-obs').value.trim();
-  const limpieza  = document.getElementById('f-limpieza').checked;
+  const obs            = document.getElementById('f-obs').value.trim();
+  const limpieza       = document.getElementById('f-limpieza').checked;
+  const limpiezaExt    = document.getElementById('f-limp-ext')?.value || 'no';
+  const costeLimpieza  = limpiezaExt === 'si' ? Math.max(comsls * 1.5, 15) : 0;
   const errors = [];
   const errorFields = [];
   const eu = lang === 'eu';
@@ -1859,6 +1902,8 @@ async function submitReserva(e) {
     planchaGas:         usoCocina === 'si' ? plancha : 'no',
     observaciones:      obs,
     confirmacionLimpieza: true,
+    limpiezaExterna:    limpiezaExt,
+    costeLimpieza:      costeLimpieza,
     codigoCancelacion:  generarCodigoCancelacion(),
     estado:             'confirmada'
   };
@@ -1985,6 +2030,7 @@ function renderReservaCard(r, isAdmin) {
       <span>🪑 ${r.numeroMesas} ${eu ? 'mahai' : 'mesa'}${r.numeroMesas > 1 && !eu ? 's' : ''}</span>
       <span>🏠 ${r.planta === 'ambas' ? (eu ? 'Egun osoa' : 'Ambas') : (r.planta === 'baja' ? (eu ? 'Beheko solairua' : 'Planta baja') : (eu ? 'Goiko solairua' : 'Planta superior'))}</span>
       <span>👥 ${r.numeroComensales || r.comensalesEstimados || '–'} ${eu ? 'lagun' : 'pers.'}</span>
+      ${r.limpiezaExterna === 'si' ? `<span>🧹 Limp. externa (${r.costeLimpieza?.toFixed ? r.costeLimpieza.toFixed(2) : r.costeLimpieza}€)</span>` : ''}
       <span>💶 mín. ${r.minComputable || r.numeroMesas*5} ${eu ? 'lagun' : 'pers.'}</span>
       ${cocinaInfo}
       ${r.observaciones ? `<span>📝 ${r.observaciones}</span>` : ''}
