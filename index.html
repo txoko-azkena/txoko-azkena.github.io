@@ -4310,48 +4310,47 @@ function generarCuentaPDF() {
   const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <title>Cuenta · Txoko Azkena</title>
 <style>
-@page{size:A4 portrait;margin:8mm;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
 body{font-family:Arial,Helvetica,sans-serif;background:#f5edd6;color:#2c1810;padding:12px;}
-.page{width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(107,26,26,.2);}
+.page{max-width:520px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(107,26,26,.2);}
 /* CABECERA horizontal compacta */
 .hdr{background:linear-gradient(135deg,#4a0f0f,#6b1a1a);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:12px;}
 .hdr img{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.35);flex-shrink:0;}
 .hdr-mid{flex:1;}
 .hdr-mid h1{font-size:15px;font-weight:700;letter-spacing:.5px;}
 .hdr-mid .sub{font-size:10px;opacity:.8;margin-top:1px;}
-.hdr-right{text-align:right;font-size:9px;opacity:.85;line-height:1.6;}
+.hdr-right{text-align:right;font-size:10px;opacity:.85;line-height:1.6;}
 .hdr-badge{background:#c8952a;border-radius:10px;padding:2px 8px;font-size:9px;font-weight:700;display:inline-block;margin-top:3px;}
 /* INFO reserva — 2 columnas */
-.info{background:#f5edd6;padding:6px 14px;display:grid;grid-template-columns:1fr 1fr;gap:1px 10px;border-bottom:2px solid #c8952a;}
-.it{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
+.info{background:#f5edd6;padding:7px 14px;display:grid;grid-template-columns:1fr 1fr;gap:1px 10px;border-bottom:2px solid #c8952a;}
+.it{display:flex;justify-content:space-between;font-size:12px;padding:2px 0;}
 .it span:first-child{color:#6b5b52;}
 .it span:last-child{font-weight:600;}
 /* SECCIONES */
-.sec{padding:6px 14px;border-bottom:1px solid #e0d5c8;}
-.sec-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#6b1a1a;margin-bottom:4px;}
+.sec{padding:7px 14px;border-bottom:1px solid #e0d5c8;}
+.sec-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#6b1a1a;margin-bottom:5px;}
 .muted span{color:#aaa!important;font-weight:400!important;}
 /* Bebidas detalladas */
-.beb-cat{margin-bottom:5px;}
+.beb-cat{margin-bottom:6px;}
 .beb-cat:last-child{margin-bottom:0;}
-.beb-cat-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#c8952a;margin-bottom:2px;border-bottom:1px dotted #e0d5c8;padding-bottom:2px;}
-.it-det{display:grid;grid-template-columns:1fr 52px 80px 52px;gap:2px 6px;font-size:10px;padding:1px 0;align-items:center;}
+.beb-cat-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#c8952a;margin-bottom:3px;border-bottom:1px dotted #e0d5c8;padding-bottom:2px;}
+.it-det{display:grid;grid-template-columns:1fr 52px 80px 54px;gap:2px 6px;font-size:11px;padding:2px 0;align-items:center;}
 .det-nom{color:#4a3728;}
 .det-tipo{color:#6b5b52;background:#f5edd6;border-radius:3px;padding:1px 4px;text-align:center;font-size:9px;}
-.det-calc{color:#6b5b52;font-size:9px;white-space:nowrap;}
+.det-calc{color:#6b5b52;font-size:10px;white-space:nowrap;}
 .det-sub{font-weight:700;white-space:nowrap;text-align:right;}
 /* Costes fijos y extras */
-.it-f{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
+.it-f{display:flex;justify-content:space-between;font-size:12px;padding:2px 0;}
 .it-f span:last-child{font-weight:600;white-space:nowrap;}
 /* TOTAL */
-.tot{background:#6b1a1a;color:#fff;padding:10px 14px;}
-.tl{display:flex;justify-content:space-between;font-size:11px;opacity:.85;padding:1px 0;}
-.tm{display:flex;justify-content:space-between;font-size:20px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.35);}
-.foot{text-align:center;padding:5px 14px;font-size:9px;color:#9b8b82;}
+.tot{background:#6b1a1a;color:#fff;padding:12px 14px;}
+.tl{display:flex;justify-content:space-between;font-size:12px;opacity:.85;padding:2px 0;}
+.tm{display:flex;justify-content:space-between;font-size:22px;font-weight:700;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.35);}
+.foot{text-align:center;padding:6px 14px;font-size:10px;color:#9b8b82;}
 /* Botón solo en pantalla */
 .noprint{text-align:center;margin-bottom:10px;}
 .btn-p{background:#6b1a1a;color:#fff;border:none;padding:9px 28px;border-radius:7px;font-size:13px;cursor:pointer;}
-@media print{body{background:#fff;padding:0;}.page{border-radius:0;box-shadow:none;}.noprint{display:none!important;}}
+@media print{body{background:#fff;padding:0;}.page{border-radius:0;box-shadow:none;max-width:100%;}.noprint{display:none!important;}}
 </style></head><body>
 <div class="noprint"><button class="btn-p" onclick="window.print()">🖨️ Guardar PDF / Imprimir</button></div>
 <div class="page">
