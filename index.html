@@ -1565,7 +1565,7 @@ async function loadAllData() {
     ]);
     _cache.reservas    = Array.isArray(reservas)    ? reservas.map(normalizeReserva)    : [];
     _cache.socios      = Array.isArray(socios)      ? socios.map(normalizeSocio)        : SOCIOS_DEMO;
-    _cache.bloq        = Array.isArray(bloq)        ? bloq                              : [];
+    _cache.bloq        = Array.isArray(bloq)        ? bloq.map(b => ({ ...b, fecha: toDateStr(b.fecha) })) : [];
     _cache.avisos      = Array.isArray(avisos)      ? avisos.map(normalizeAviso)        : [];
     _cache.votaciones  = Array.isArray(votaciones)  ? votaciones.map(normalizeVotacion) : [];
     _cache.incidencias = Array.isArray(incidencias) ? incidencias.map(normalizeIncidencia) : [];
