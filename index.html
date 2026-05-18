@@ -1469,10 +1469,15 @@ function comunidadTab(tab) {
   if (tab === 'incid') renderIncidencias();
 }
 
+function _avisosSeenKey() {
+  const s = getSession();
+  return s ? `azk_avisos_seen_${s.socioId}` : 'azk_avisos_seen_guest';
+}
+
 function checkAvisosBadge() {
   const badge = document.getElementById('nav-badge-avisos');
   if (!badge) return;
-  const lastSeen = localStorage.getItem('azk_avisos_seen') || '0';
+  const lastSeen = localStorage.getItem(_avisosSeenKey()) || '0';
   const hasNew = _cache.avisos.some(a => Number(a.id) > Number(lastSeen));
   badge.classList.toggle('hidden', !hasNew);
 }
@@ -1480,7 +1485,7 @@ function checkAvisosBadge() {
 function markAvisosRead() {
   if (_cache.avisos.length === 0) return;
   const maxId = Math.max(..._cache.avisos.map(a => Number(a.id) || 0));
-  localStorage.setItem('azk_avisos_seen', String(maxId));
+  localStorage.setItem(_avisosSeenKey(), String(maxId));
   const badge = document.getElementById('nav-badge-avisos');
   if (badge) badge.classList.add('hidden');
 }
