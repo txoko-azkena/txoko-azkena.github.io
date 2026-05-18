@@ -584,6 +584,30 @@
     .confirm-box .confirm-title { font-weight: 800; color: var(--success); font-size: 15px; margin-bottom: 8px; }
     .confirm-box .confirm-row { font-size: 13px; display: flex; gap: 6px; padding: 3px 0; }
     .confirm-box .confirm-label { font-weight: 700; color: var(--text-muted); min-width: 100px; }
+
+    /* ── CALCULADORA ── */
+    .calc-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
+    .calc-row:last-child { border-bottom:none; }
+    .calc-counter { display:flex; align-items:center; gap:10px; }
+    .calc-counter button { width:32px; height:32px; border-radius:50%; border:2px solid var(--primary); background:none; color:var(--primary); font-size:18px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; }
+    .calc-counter span { min-width:24px; text-align:center; font-size:16px; font-weight:700; }
+    .calc-toggle { display:flex; border:1.5px solid var(--border); border-radius:20px; overflow:hidden; }
+    .calc-tog-btn { padding:5px 12px; font-size:11px; font-weight:600; border:none; background:none; cursor:pointer; color:var(--text-muted); transition:background 0.15s; }
+    .calc-tog-btn.active { background:var(--primary); color:#fff; }
+    .calc-fijo-row { display:flex; justify-content:space-between; padding:4px 0; font-size:13px; }
+    .calc-beb-row { display:flex; align-items:center; gap:6px; padding:7px 0; border-bottom:1px solid var(--border); }
+    .calc-beb-row:last-child { border-bottom:none; }
+    .calc-beb-name { flex:1; font-size:11px; color:var(--text); line-height:1.3; }
+    .calc-beb-counts { display:flex; gap:8px; }
+    .calc-beb-unit { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .calc-beb-label { font-size:9px; color:var(--text-muted); font-weight:700; white-space:nowrap; }
+    .calc-counter-sm { display:flex; align-items:center; gap:3px; }
+    .calc-counter-sm button { width:24px; height:24px; border-radius:50%; border:1.5px solid var(--primary); background:none; color:var(--primary); font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; }
+    .calc-counter-sm span { min-width:16px; text-align:center; font-size:13px; font-weight:700; }
+    .calc-beb-total { font-size:11px; font-weight:700; color:var(--primary); min-width:38px; text-align:right; }
+    .calc-total-bar { background:var(--primary); color:#fff; border-radius:12px; padding:14px 16px; margin:8px 0 4px; }
+    .calc-total-line { display:flex; justify-content:space-between; font-size:13px; padding:2px 0; opacity:0.9; }
+    .calc-total-main { display:flex; justify-content:space-between; font-size:20px; font-weight:800; padding-top:10px; margin-top:8px; border-top:1px solid rgba(255,255,255,0.4); }
   </style>
 </head>
 <body>
@@ -672,8 +696,13 @@
   <!-- ── NUEVA RESERVA ── -->
   <div class="screen" id="screen-reserva">
     <div class="screen-header">
-      <div class="screen-title" id="tt-nr">➕ Nueva Reserva</div>
-      <div class="screen-subtitle" id="ts-nr">Erreserba berria</div>
+      <div class="screen-title">📅 Reservas</div>
+      <div class="screen-subtitle">Erreserba · Nueva / Ver</div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="navigate('reserva')">➕ Nueva</button>
+      <button class="tab-btn" onclick="navigate('misreservas')">📋 Ver reservas</button>
     </div>
 
     <div id="form-alerts"></div>
@@ -815,8 +844,13 @@
   <!-- ── MIS RESERVAS ── -->
   <div class="screen" id="screen-misreservas">
     <div class="screen-header">
-      <div class="screen-title" id="tt-mr">📋 Reservas</div>
-      <div class="screen-subtitle" id="ts-mr">Historial de reservas</div>
+      <div class="screen-title">📅 Reservas</div>
+      <div class="screen-subtitle">Erreserba · Nueva / Ver</div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn" onclick="navigate('reserva')">➕ Nueva</button>
+      <button class="tab-btn active" onclick="navigate('misreservas')">📋 Ver reservas</button>
     </div>
 
     <div class="card" style="padding:10px 14px; margin-bottom:8px;">
@@ -955,6 +989,134 @@
     </div>
   </div>
 
+  <!-- ── CALCULADORA ── -->
+  <div class="screen" id="screen-calc">
+    <div class="screen-header">
+      <div class="screen-title">🧮 Calculadora</div>
+      <div class="screen-subtitle">Cuenta del txoko</div>
+    </div>
+
+    <!-- Banner reserva (solo visible cuando se abre desde una reserva) -->
+    <div id="calc-res-banner" class="notice info" style="display:none;margin-bottom:4px;">
+      📋 <strong>Reserva:</strong> <span id="calc-res-banner-txt"></span>
+    </div>
+
+    <!-- Comensales y configuración -->
+    <div class="card">
+      <div class="card-title">👥 Comensales y configuración</div>
+      <div class="calc-row">
+        <span style="font-size:13px;">Nº comensales</span>
+        <div class="calc-counter">
+          <button onclick="calcAdj('comensales',-1)">−</button>
+          <span id="calc-comensales">0</span>
+          <button onclick="calcAdj('comensales',1)">+</button>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span style="font-size:13px;">Reserva <span id="calc-lock-reserva" style="display:none;font-size:11px;">🔒</span></span>
+        <div class="calc-toggle">
+          <button id="ctog-sinres" class="calc-tog-btn active" onclick="calcSetReserva(false)">Sin reserva</button>
+          <button id="ctog-conres" class="calc-tog-btn"        onclick="calcSetReserva(true)">Con reserva</button>
+        </div>
+      </div>
+      <div class="calc-row" id="calc-mesas-row" style="display:none;">
+        <span style="font-size:13px;">Nº mesas <span id="calc-lock-mesas" style="display:none;font-size:11px;">🔒</span></span>
+        <div class="calc-counter">
+          <button id="calc-mesas-minus" onclick="calcAdj('mesas',-1)">−</button>
+          <span id="calc-mesas">1</span>
+          <button id="calc-mesas-plus" onclick="calcAdj('mesas',1)">+</button>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span style="font-size:13px;">¿Usa cocina? <span id="calc-lock-cocina" style="display:none;font-size:11px;">🔒</span></span>
+        <div class="calc-toggle">
+          <button id="ctog-nococ"  class="calc-tog-btn active" onclick="calcSetCocina(false)">No</button>
+          <button id="ctog-cocina" class="calc-tog-btn"        onclick="calcSetCocina(true)">Sí</button>
+        </div>
+      </div>
+      <div class="calc-row" style="border-bottom:none;">
+        <div>
+          <div style="font-size:13px;">🧹 ¿Limpieza externa?</div>
+          <div style="font-size:10px;color:var(--text-muted);">Sí → max(comens.×1,5€ ; 15€) · No → 0€</div>
+        </div>
+        <div class="calc-toggle">
+          <button id="ctog-nolimp" class="calc-tog-btn active" onclick="calcSetLimp(false)">No</button>
+          <button id="ctog-limp"   class="calc-tog-btn"        onclick="calcSetLimp(true)">Sí</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Costes fijos (auto) -->
+    <div class="card">
+      <div class="card-title">📊 Costes fijos</div>
+      <div class="calc-fijo-row"><span id="clbl-reserva">Sin reserva (0 × 1,00€)</span><span id="cval-reserva">0,00 €</span></div>
+      <div class="calc-fijo-row"><span id="clbl-cocina">Cocina (0 × 0,50€)</span><span id="cval-cocina">0,00 €</span></div>
+      <div class="calc-fijo-row"><span id="clbl-limpieza">Limpieza externa (no)</span><span id="cval-limpieza">0,00 €</span></div>
+      <div class="calc-fijo-row" style="font-weight:700;border-top:1px solid var(--border);padding-top:6px;margin-top:4px;">
+        <span>Subtotal fijos</span><span id="cval-fijos">0,00 €</span>
+      </div>
+    </div>
+
+    <!-- Bebidas (generadas por JS) -->
+    <div id="calc-bebs-container"></div>
+
+    <!-- Extras -->
+    <div class="card">
+      <div class="card-title">🫙 Extras</div>
+      <div class="calc-row">
+        <div><div style="font-size:13px;">Aceite extra</div><div style="font-size:10px;color:var(--text-muted);">6,00 € / unidad</div></div>
+        <div class="calc-counter">
+          <button onclick="calcAdj('aceite',-1)">−</button>
+          <span id="calc-aceite">0</span>
+          <button onclick="calcAdj('aceite',1)">+</button>
+        </div>
+      </div>
+      <div class="calc-row" style="border-bottom:none;">
+        <div><div style="font-size:13px;">Descorche</div><div style="font-size:10px;color:var(--text-muted);">1,00 € / botella</div></div>
+        <div class="calc-counter">
+          <button onclick="calcAdj('descorche',-1)">−</button>
+          <span id="calc-descorche">0</span>
+          <button onclick="calcAdj('descorche',1)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bote -->
+    <div class="card">
+      <div class="card-title">💰 Bote (opcional)</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="number" id="calc-bote" min="0" step="0.5" placeholder="0,00"
+          style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:16px;font-weight:700;"
+          oninput="calcUpdate()">
+        <span style="font-size:14px;color:var(--text-muted);">€</span>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="calc-total-bar">
+      <div class="calc-total-line"><span>Costes fijos</span><span id="cres-fijos">15,00 €</span></div>
+      <div class="calc-total-line"><span>Consumiciones</span><span id="cres-bebs">0,00 €</span></div>
+      <div class="calc-total-line"><span>Extras</span><span id="cres-extras">0,00 €</span></div>
+      <div class="calc-total-line"><span>Bote</span><span id="cres-bote">0,00 €</span></div>
+      <div class="calc-total-main"><span>GUZTIRA / TOTAL</span><span id="cres-total">15,00 €</span></div>
+    </div>
+
+    <!-- Botón confirmar (solo visible cuando viene de una reserva) -->
+    <button id="calc-btn-confirmar" class="btn btn-primary" style="width:100%;display:none;" onclick="calcConfirmar()">
+      💾 Guardar cuenta
+    </button>
+    <!-- Paso "¿Estás seguro?" -->
+    <div id="calc-confirmar-seguro" style="display:none; background:var(--warning-bg,#FFF8E1); border:1.5px solid #F9A825; border-radius:10px; padding:14px; text-align:center;">
+      <div style="font-weight:700; margin-bottom:10px;">¿Estás seguro de que los datos son correctos?</div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-primary" style="flex:1;" onclick="calcGuardar()">✅ Sí, guardar</button>
+        <button class="btn btn-outline" style="flex:1;" onclick="calcCancelarConfirmar()">❌ No, revisar</button>
+      </div>
+    </div>
+
+    <button class="btn btn-outline" style="width:100%;margin-bottom:80px;" onclick="calcReset()">🔄 Nueva cuenta</button>
+  </div>
+
   <!-- ── ADMIN ── -->
   <div class="screen" id="screen-admin">
 
@@ -1019,13 +1181,9 @@
     <span class="nav-icon">📅</span>
     <span id="nl-cal">Calendario</span>
   </button>
-  <button class="nav-btn" id="nav-reserva" onclick="navigate('reserva')">
+  <button class="nav-btn" id="nav-reservas" onclick="navigate('reserva')">
     <span class="nav-icon">➕</span>
-    <span id="nl-res">Reservar</span>
-  </button>
-  <button class="nav-btn" id="nav-misreservas" onclick="navigate('misreservas')">
-    <span class="nav-icon">📋</span>
-    <span id="nl-mr">Reservas</span>
+    <span>Reservas</span>
   </button>
   <button class="nav-btn" id="nav-avisos" onclick="navigate('avisos')">
     <span class="nav-icon">💬</span>
@@ -1035,6 +1193,10 @@
   <button class="nav-btn" id="nav-normas" onclick="navigate('normas')">
     <span class="nav-icon">📋</span>
     <span id="nl-nor">Normas/Docs</span>
+  </button>
+  <button class="nav-btn" id="nav-calc" onclick="navigate('calc')">
+    <span class="nav-icon">🧮</span>
+    <span>Calc</span>
   </button>
   <button class="nav-btn" id="nav-admin" onclick="navigate('admin')">
     <span class="nav-icon">⚙️</span>
@@ -1180,6 +1342,8 @@ function getSession() {
     if (Date.now() - s.loginTime > SESSION_DAYS * 86400000) {
       localStorage.removeItem(SESSION_KEY); return null;
     }
+    // Normalizar formato del ID (ej: "4" → "04")
+    if (s.socioId) s.socioId = padId(s.socioId);
     return s;
   } catch(e) { return null; }
 }
@@ -1623,7 +1787,9 @@ function navigate(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
-  document.getElementById('nav-' + screen).classList.add('active');
+  const navMap = { reserva: 'reservas', misreservas: 'reservas' };
+  const navId = navMap[screen] || screen;
+  document.getElementById('nav-' + navId).classList.add('active');
   currentScreen = screen;
 
   if (screen === 'calendario')  renderCalendar();
@@ -1631,6 +1797,7 @@ function navigate(screen) {
   if (screen === 'misreservas') { populateMRSocioSelect(); renderMisReservas(); }
   if (screen === 'avisos')      { _comunidadTab='avisos'; comunidadTab('avisos'); renderAvisos(); markAvisosRead(); }
   if (screen === 'normas')      renderNormas();
+  if (screen === 'calc')        initCalc();
   if (screen === 'admin')       renderAdminScreen();
 
   window.scrollTo(0, 0);
@@ -2597,6 +2764,12 @@ function renderReservaCard(r, isAdmin) {
     ? `<span>🔥 ${eu ? 'Sukaldea' : 'Cocina'}: H.E=${r.hornoElectrico} H.G=${r.hornoGas} F=${r.numeroFuegos} P=${r.planchaGas}</span>`
     : '';
 
+  // Botones del footer (calculados fuera del template para evitar errores)
+  const footerBtns = [];
+  if (canCancel) footerBtns.push(`<button class="btn btn-danger btn-sm" onclick="${cancelFn}">${t('cancelarRes')}</button>`);
+  if (r.estado !== 'cancelada') footerBtns.push(`<button class="btn btn-outline btn-sm" onclick="abrirCalcDesdeReserva('${r.id}')">🧮 Cuenta</button>`);
+  const footer = footerBtns.length ? `<div class="reserva-footer">${footerBtns.join('')}</div>` : '';
+
   return `<div class="reserva-card ${r.estado === 'cancelada' ? 'cancelada' : ''}">
     <div class="reserva-card-top">
       <span class="reserva-socio">${r.socioResponsable || `Nº ${r.socioNumero} – ${r.socioNombre}`}</span>
@@ -2613,9 +2786,7 @@ function renderReservaCard(r, isAdmin) {
       ${cocinaInfo}
       ${r.observaciones ? `<span>📝 ${r.observaciones}</span>` : ''}
     </div>
-    ${canCancel ? `<div class="reserva-footer">
-      <button class="btn btn-danger btn-sm" onclick="${cancelFn}">${t('cancelarRes')}</button>
-    </div>` : ''}
+    ${footer}
   </div>`;
 }
 
@@ -3747,6 +3918,488 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
+
+/* =========================================================
+   CALCULADORA DE CUENTA
+========================================================= */
+const CALC_PRODS = [
+  {id:0,  cat:'🍸 Licores',   nom:'Hierbas / Café / Patxaran Nav. / Martini',              txup:1.2,  copa:1.7 },
+  {id:1,  cat:'🍸 Licores',   nom:'Baileys / Crema Orujo / Patxaran Baines',               txup:2.0,  copa:2.5 },
+  {id:2,  cat:'🥃 Kopazo',    nom:'Absolut / Beefeater / Brugal / Ballantines / Habana 3a',txup:2.0,  copa:2.5 },
+  {id:3,  cat:'🥃 Kopazo',    nom:'White Label / Barceló / Drambu / Brugal',               txup:2.5,  copa:3.0 },
+  {id:4,  cat:'🥃 Kopazo',    nom:'Cardenal Mendoza / Bombay azul',                        txup:3.5,  copa:4.0 },
+  {id:5,  cat:'🥃 Kopazo',    nom:'Cardhu',                                                txup:5.0,  copa:6.0 },
+  {id:6,  cat:'🍷 Vinos',     nom:'Crianza / Verdejo',                                     unit:4.25 },
+  {id:7,  cat:'🍷 Vinos',     nom:'Reserva sin etiquetar',                                 unit:5.25 },
+  {id:8,  cat:'🍷 Vinos',     nom:'Marqués de Vitoria',                                    unit:7.50 },
+  {id:9,  cat:'🍺 Cervezas',  nom:'San Miguel / Estrella',                                 unit:1.20 },
+  {id:10, cat:'🥤 Refrescos', nom:'Kas / Coca-Cola / Tónica / Bitter / Agua 1,5L',        unit:1.20 },
+  {id:11, cat:'🥤 Refrescos', nom:'Agua mineral 0,5L',                                     unit:0.50 },
+  {id:12, cat:'☕ Cafés',     nom:'Café',                                                   unit:0.80 },
+];
+
+const calcState = {
+  comensales:0, mesas:1, conReserva:false, cocina:false,
+  aceite:0, descorche:0,
+  beb:{}
+};
+
+function initCalc() {
+  const container = document.getElementById('calc-bebs-container');
+  if (!container || container.dataset.built) return;
+  container.dataset.built = '1';
+  const cats = [...new Set(CALC_PRODS.map(p => p.cat))];
+  let html = '';
+  cats.forEach(cat => {
+    const prods = CALC_PRODS.filter(p => p.cat === cat);
+    html += `<div class="card"><div class="card-title">${cat}</div>`;
+    prods.forEach(p => {
+      if (p.txup !== undefined) {
+        html += `<div class="calc-beb-row">
+          <div class="calc-beb-name">${p.nom}</div>
+          <div class="calc-beb-counts">
+            <div class="calc-beb-unit">
+              <div class="calc-beb-label">TXUP ${eur(p.txup)}</div>
+              <div class="calc-counter-sm">
+                <button onclick="calcBebAdj(${p.id},'t',-1)">−</button>
+                <span id="cb-${p.id}-t">0</span>
+                <button onclick="calcBebAdj(${p.id},'t',1)">+</button>
+              </div>
+            </div>
+            <div class="calc-beb-unit">
+              <div class="calc-beb-label">COPA ${eur(p.copa)}</div>
+              <div class="calc-counter-sm">
+                <button onclick="calcBebAdj(${p.id},'c',-1)">−</button>
+                <span id="cb-${p.id}-c">0</span>
+                <button onclick="calcBebAdj(${p.id},'c',1)">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="calc-beb-total" id="cb-${p.id}-tot">—</div>
+        </div>`;
+      } else {
+        html += `<div class="calc-beb-row">
+          <div class="calc-beb-name">${p.nom}</div>
+          <div class="calc-beb-counts">
+            <div class="calc-beb-unit">
+              <div class="calc-beb-label">${eur(p.unit)}</div>
+              <div class="calc-counter-sm">
+                <button onclick="calcBebAdj(${p.id},'u',-1)">−</button>
+                <span id="cb-${p.id}-u">0</span>
+                <button onclick="calcBebAdj(${p.id},'u',1)">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="calc-beb-total" id="cb-${p.id}-tot">—</div>
+        </div>`;
+      }
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+  calcUpdate();
+}
+
+function calcAdj(field, delta) {
+  if (field === 'comensales') {
+    const minimo = calcState._reservaComensales || 0;
+    const nuevo  = calcState.comensales + delta;
+    if (delta < 0 && nuevo < minimo) {
+      showToast(`⚠️ En la reserva ya figuraban ${minimo} personas`, 'warn', 3500);
+      return;
+    }
+    calcState.comensales = Math.max(0, nuevo);
+  }
+  else if (field === 'mesas') {
+    const minMesas = calcState._reservaMesas || 1;
+    const nuevoM   = calcState.mesas + delta;
+    if (delta < 0 && nuevoM < minMesas) {
+      showToast(`⚠️ En la reserva ya figuraban ${minMesas} mesa${minMesas > 1 ? 's' : ''}`, 'warn', 3500);
+      return;
+    }
+    calcState.mesas = Math.max(1, nuevoM);
+  }
+  else if (field === 'aceite')   calcState.aceite   = Math.max(0, calcState.aceite + delta);
+  else if (field === 'descorche')calcState.descorche= Math.max(0, calcState.descorche + delta);
+  const el = document.getElementById('calc-' + field);
+  if (el) el.textContent = calcState[field];
+  calcUpdate();
+}
+
+function calcSetReserva(val) {
+  calcState.conReserva = val;
+  document.getElementById('ctog-sinres').classList.toggle('active', !val);
+  document.getElementById('ctog-conres').classList.toggle('active',  val);
+  document.getElementById('calc-mesas-row').style.display = val ? '' : 'none';
+  calcUpdate();
+}
+
+function calcSetLimp(val) {
+  calcState.limpExt = val;
+  document.getElementById('ctog-nolimp').classList.toggle('active', !val);
+  document.getElementById('ctog-limp').classList.toggle('active',  val);
+  calcUpdate();
+}
+
+function calcSetCocina(val) {
+  if (!val && calcState._reservaCocina) {
+    showToast('⚠️ En la reserva ya figuraba uso de cocina: Sí', 'warn', 3500);
+    return;
+  }
+  calcState.cocina = val;
+  document.getElementById('ctog-nococ').classList.toggle('active', !val);
+  document.getElementById('ctog-cocina').classList.toggle('active',  val);
+  calcUpdate();
+}
+
+function calcBebAdj(id, tipo, delta) {
+  const key = `${id}_${tipo}`;
+  calcState.beb[key] = Math.max(0, (calcState.beb[key] || 0) + delta);
+  const el = document.getElementById(`cb-${id}-${tipo}`);
+  if (el) el.textContent = calcState.beb[key];
+  const prod = CALC_PRODS.find(p => p.id === id);
+  let rowTotal = prod.txup !== undefined
+    ? (calcState.beb[`${id}_t`]||0)*prod.txup + (calcState.beb[`${id}_c`]||0)*prod.copa
+    : (calcState.beb[`${id}_u`]||0)*prod.unit;
+  const totEl = document.getElementById(`cb-${id}-tot`);
+  if (totEl) totEl.textContent = rowTotal > 0 ? eur(rowTotal) : '—';
+  calcUpdate();
+}
+
+function calcUpdate() {
+  const c = calcState;
+  const reservaVal = c.conReserva ? c.mesas * 5.0 : c.comensales * 1.0;
+  const cocinaVal  = c.cocina ? c.comensales * 0.5 : 0;
+  const limpRaw    = c.comensales * 1.5;
+  const limpVal    = c.limpExt ? Math.max(15.0, limpRaw) : 0;
+  const fijosTotal = reservaVal + cocinaVal + limpVal;
+
+  setTxt('clbl-reserva', c.conReserva
+    ? `Con reserva (${c.mesas} × 5,00€)`
+    : `Sin reserva (${c.comensales} × 1,00€)`);
+  setTxt('cval-reserva', eur(reservaVal));
+  setTxt('clbl-cocina',  `Cocina (${c.comensales} × 0,50€)`);
+  setTxt('cval-cocina',  eur(cocinaVal));
+  if (!c.limpExt) {
+    setTxt('clbl-limpieza', 'Limpieza externa (no contratada)');
+  } else if (limpRaw < 15) {
+    setTxt('clbl-limpieza', `Limpieza (${c.comensales}×1,50€ → mín. 15,00€)`);
+  } else {
+    setTxt('clbl-limpieza', `Limpieza (${c.comensales} × 1,50€)`);
+  }
+  setTxt('cval-limpieza', eur(limpVal));
+  setTxt('cval-fijos',    eur(fijosTotal));
+
+  let bebTotal = 0;
+  CALC_PRODS.forEach(p => {
+    bebTotal += p.txup !== undefined
+      ? (c.beb[`${p.id}_t`]||0)*p.txup + (c.beb[`${p.id}_c`]||0)*p.copa
+      : (c.beb[`${p.id}_u`]||0)*p.unit;
+  });
+  const extrasTotal = c.aceite * 6.0 + c.descorche * 1.0;
+  const boteVal = parseFloat(document.getElementById('calc-bote')?.value || 0) || 0;
+  const total   = fijosTotal + bebTotal + extrasTotal + boteVal;
+
+  setTxt('cres-fijos',  eur(fijosTotal));
+  setTxt('cres-bebs',   eur(bebTotal));
+  setTxt('cres-extras', eur(extrasTotal));
+  setTxt('cres-bote',   eur(boteVal));
+  setTxt('cres-total',  eur(total));
+}
+
+function calcReset() {
+  calcState.comensales=0; calcState.mesas=1;
+  calcState.conReserva=false; calcState.cocina=false;
+  calcState.aceite=0; calcState.descorche=0; calcState.beb={};
+  calcState.limpExt = false;
+  calcState._fromReserva = null;
+  calcState._reservaComensales = 0;
+  calcState._reservaMesas  = 0;
+  calcState._reservaCocina = false;
+  ['comensales','mesas','aceite','descorche'].forEach(f => {
+    const el = document.getElementById('calc-'+f);
+    if (el) el.textContent = f==='mesas' ? '1' : '0';
+  });
+  const boteEl = document.getElementById('calc-bote');
+  if (boteEl) boteEl.value = '';
+  calcSetReserva(false);
+  calcSetCocina(false);
+  calcSetLimp(false);
+  // Desbloquear todo
+  ['ctog-sinres','ctog-conres','ctog-nococ','ctog-cocina'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.disabled = false;
+  });
+  ['calc-mesas-minus','calc-mesas-plus'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.disabled = false;
+  });
+  ['calc-lock-reserva','calc-lock-mesas','calc-lock-cocina'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  const banner = document.getElementById('calc-res-banner');
+  if (banner) banner.style.display = 'none';
+  const btnConf = document.getElementById('calc-btn-confirmar');
+  if (btnConf) { btnConf.style.display = 'none'; btnConf.dataset.step = ''; }
+  const btnSeguro = document.getElementById('calc-confirmar-seguro');
+  if (btnSeguro) btnSeguro.style.display = 'none';
+  CALC_PRODS.forEach(p => {
+    ['t','c','u'].forEach(tipo => {
+      const el = document.getElementById(`cb-${p.id}-${tipo}`);
+      if (el) el.textContent = '0';
+    });
+    const totEl = document.getElementById(`cb-${p.id}-tot`);
+    if (totEl) totEl.textContent = '—';
+  });
+  calcUpdate();
+}
+
+function abrirCalcDesdeReserva(id) {
+  const r    = getReservas().find(res => res.id === id);
+  if (!r) return;
+  const sess = getSession();
+  if (sess?.socioId) {
+    // Extraer nº socio de las distintas fuentes posibles
+    const rawNum = r.socioNumero || r.socioId
+      || ((r.socioResponsable || '').match(/N[oº°]\s*(\d+)/i) || [])[1]
+      || '0';
+    if (parseInt(rawNum) !== parseInt(sess.socioId)) {
+      showToast('⚠️ Solo puedes añadir la cuenta a tus propias reservas', 'warn', 3500);
+      return;
+    }
+  }
+  calcReset();
+  // Mínimos de la reserva (no se puede bajar de estos valores)
+  calcState._fromReserva       = r.id;
+  calcState._reservaComensales = parseInt(r.numeroComensales || r.comensalesEstimados) || 0;
+  calcState._reservaMesas      = parseInt(r.numeroMesas) || 1;
+  calcState._reservaCocina     = r.usoCocina === 'si';
+  // Valores iniciales = los de la reserva
+  calcState.comensales = calcState._reservaComensales;
+  calcState.mesas      = calcState._reservaMesas;
+  calcState.conReserva = true;
+  calcState.cocina     = calcState._reservaCocina;
+  calcState.limpExt    = r.limpiezaExterna === 'si';
+  navigate('calc');
+  // Sincronizar UI
+  document.getElementById('calc-comensales').textContent = calcState.comensales;
+  document.getElementById('calc-mesas').textContent      = calcState.mesas;
+  calcSetReserva(true);
+  if (calcState.cocina)   calcSetCocina(true);
+  if (calcState.limpExt)  calcSetLimp(true);
+  // Solo reserva bloqueada (soft-lock en mesas y cocina via avisos)
+  ['ctog-sinres','ctog-conres'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.disabled = true;
+  });
+  ['calc-lock-reserva','calc-lock-mesas','calc-lock-cocina'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'inline';
+  });
+  // Banner informativo
+  const banner = document.getElementById('calc-res-banner');
+  if (banner) {
+    banner.style.display = '';
+    const txt = `${fmtDate(r.fechaReservada)} · ${franjaLabel(r.franja)} · ${r.socioResponsable || r.socioNombre}`;
+    document.getElementById('calc-res-banner-txt').textContent = txt;
+  }
+  // Mostrar botón confirmar
+  const btnConf = document.getElementById('calc-btn-confirmar');
+  if (btnConf) btnConf.style.display = '';
+  calcUpdate();
+}
+
+function calcConfirmar() {
+  document.getElementById('calc-btn-confirmar').style.display  = 'none';
+  document.getElementById('calc-confirmar-seguro').style.display = '';
+  document.getElementById('calc-confirmar-seguro').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+function calcCancelarConfirmar() {
+  document.getElementById('calc-btn-confirmar').style.display  = '';
+  document.getElementById('calc-confirmar-seguro').style.display = 'none';
+}
+function calcGuardar() {
+  document.getElementById('calc-confirmar-seguro').style.display = 'none';
+  const btnConf = document.getElementById('calc-btn-confirmar');
+  if (btnConf) btnConf.style.display = 'none';
+  // PASO 2 (próximo): guardar en Sheet via apiCall
+  showToast('✅ Cuenta guardada · Abriendo PDF…', 'ok', 3000);
+  setTimeout(() => generarCuentaPDF(), 400);
+}
+
+function generarCuentaPDF() {
+  const c = calcState;
+  const r = c._fromReserva ? getReservas().find(res => res.id === c._fromReserva) : null;
+
+  // ── Cálculos ──────────────────────────────────────────
+  const reservaVal  = c.conReserva ? c.mesas * 5.0 : c.comensales * 1.0;
+  const cocinaVal   = c.cocina ? c.comensales * 0.5 : 0;
+  const limpRaw     = c.comensales * 1.5;
+  const limpVal     = c.limpExt ? Math.max(15.0, limpRaw) : 0;
+  const fijosTotal  = reservaVal + cocinaVal + limpVal;
+  const aceiteVal   = c.aceite * 6.0;
+  const descVal     = c.descorche * 1.0;
+  const extrasTotal = aceiteVal + descVal;
+  const boteVal     = parseFloat(document.getElementById('calc-bote')?.value || 0) || 0;
+
+  // ── Líneas de bebidas detalladas por categoría ────────
+  let bebTotal = 0;
+  // Estructura: { cat: [ {nom, tipo, precio, qty, subtotal} ] }
+  const bebCats = {};
+  CALC_PRODS.forEach(p => {
+    if (p.txup !== undefined) {
+      const qt = c.beb[`${p.id}_t`] || 0;
+      const qc = c.beb[`${p.id}_c`] || 0;
+      if (qt > 0) {
+        const v = qt * p.txup; bebTotal += v;
+        if (!bebCats[p.cat]) bebCats[p.cat] = [];
+        bebCats[p.cat].push({ nom: p.nom, tipo: 'Txupito', precio: p.txup, qty: qt, sub: v });
+      }
+      if (qc > 0) {
+        const v = qc * p.copa; bebTotal += v;
+        if (!bebCats[p.cat]) bebCats[p.cat] = [];
+        bebCats[p.cat].push({ nom: p.nom, tipo: 'Copa', precio: p.copa, qty: qc, sub: v });
+      }
+    } else {
+      const qu = c.beb[`${p.id}_u`] || 0;
+      if (qu > 0) {
+        const v = qu * p.unit; bebTotal += v;
+        if (!bebCats[p.cat]) bebCats[p.cat] = [];
+        bebCats[p.cat].push({ nom: p.nom, tipo: 'Ud.', precio: p.unit, qty: qu, sub: v });
+      }
+    }
+  });
+  const total = fijosTotal + bebTotal + extrasTotal + boteVal;
+
+  // ── Helpers HTML ──────────────────────────────────────
+  const row  = (lbl, val) => `<div class="it"><span>${lbl}</span><span>${eur(val)}</span></div>`;
+  const now  = new Date().toLocaleDateString('es-ES', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+  // ── Secciones ─────────────────────────────────────────
+  const secInfo = r ? `
+    <div class="it"><span>👤 Socio</span><span><strong>${r.socioResponsable}</strong></span></div>
+    <div class="it"><span>📅 Fecha</span><span>${fmtDate(r.fechaReservada)}</span></div>
+    <div class="it"><span>⏰ Franja</span><span>${franjaLabel(r.franja)}</span></div>
+    <div class="it"><span>🏠 Planta</span><span>${r.planta==='baja'?'Planta baja':r.planta==='superior'?'Planta superior':'Ambas plantas'}</span></div>
+    <div class="it"><span>🪑 Mesas</span><span>${c.mesas}</span></div>
+    <div class="it"><span>👥 Comensales</span><span>${c.comensales}</span></div>`
+  : `<div class="it"><span>👥 Comensales</span><span>${c.comensales}</span></div>`;
+
+  const secFijos = [
+    row(c.conReserva ? `Con reserva (${c.mesas} mesa${c.mesas>1?'s':''} × 5,00€)` : `Sin reserva (${c.comensales} × 1,00€)`, reservaVal),
+    cocinaVal > 0 ? row(`🔥 Cocina (${c.comensales} × 0,50€)`, cocinaVal) : '',
+    limpVal   > 0 ? row(`🧹 Limpieza ext. ${limpRaw<15?'(mín. 15,00€)':`(${c.comensales}×1,50€)`}`, limpVal) : '',
+  ].join('');
+
+  const catKeys = Object.keys(bebCats);
+  const secBebs = catKeys.length ? catKeys.map(cat => {
+    const items = bebCats[cat].map(l =>
+      `<div class="it-det">
+        <span class="det-nom">${l.nom}</span>
+        <span class="det-tipo">${l.tipo}</span>
+        <span class="det-calc">${l.qty} × ${eur(l.precio)}</span>
+        <span class="det-sub">${eur(l.sub)}</span>
+      </div>`
+    ).join('');
+    return `<div class="beb-cat"><div class="beb-cat-t">${cat}</div>${items}</div>`;
+  }).join('')
+  : `<div class="it muted"><span>Sin consumiciones</span><span>0,00 €</span></div>`;
+
+  const secExtras = [
+    c.aceite    > 0 ? row(`🫙 Aceite extra ×${c.aceite}`, aceiteVal)   : '',
+    c.descorche > 0 ? row(`🍾 Descorche ×${c.descorche}`, descVal)      : '',
+  ].filter(Boolean).join('');
+
+  // ── HTML completo — A4 vertical, una página ───────────
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>Cuenta · Txoko Azkena</title>
+<style>
+@page{size:A4 portrait;margin:8mm;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5edd6;color:#2c1810;padding:12px;}
+.page{width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(107,26,26,.2);}
+/* CABECERA horizontal compacta */
+.hdr{background:linear-gradient(135deg,#4a0f0f,#6b1a1a);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:12px;}
+.hdr img{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.35);flex-shrink:0;}
+.hdr-mid{flex:1;}
+.hdr-mid h1{font-size:15px;font-weight:700;letter-spacing:.5px;}
+.hdr-mid .sub{font-size:10px;opacity:.8;margin-top:1px;}
+.hdr-right{text-align:right;font-size:9px;opacity:.85;line-height:1.6;}
+.hdr-badge{background:#c8952a;border-radius:10px;padding:2px 8px;font-size:9px;font-weight:700;display:inline-block;margin-top:3px;}
+/* INFO reserva — 2 columnas */
+.info{background:#f5edd6;padding:6px 14px;display:grid;grid-template-columns:1fr 1fr;gap:1px 10px;border-bottom:2px solid #c8952a;}
+.it{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
+.it span:first-child{color:#6b5b52;}
+.it span:last-child{font-weight:600;}
+/* SECCIONES */
+.sec{padding:6px 14px;border-bottom:1px solid #e0d5c8;}
+.sec-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#6b1a1a;margin-bottom:4px;}
+.muted span{color:#aaa!important;font-weight:400!important;}
+/* Bebidas detalladas */
+.beb-cat{margin-bottom:5px;}
+.beb-cat:last-child{margin-bottom:0;}
+.beb-cat-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#c8952a;margin-bottom:2px;border-bottom:1px dotted #e0d5c8;padding-bottom:2px;}
+.it-det{display:grid;grid-template-columns:1fr 52px 80px 52px;gap:2px 6px;font-size:10px;padding:1px 0;align-items:center;}
+.det-nom{color:#4a3728;}
+.det-tipo{color:#6b5b52;background:#f5edd6;border-radius:3px;padding:1px 4px;text-align:center;font-size:9px;}
+.det-calc{color:#6b5b52;font-size:9px;white-space:nowrap;}
+.det-sub{font-weight:700;white-space:nowrap;text-align:right;}
+/* Costes fijos y extras */
+.it-f{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
+.it-f span:last-child{font-weight:600;white-space:nowrap;}
+/* TOTAL */
+.tot{background:#6b1a1a;color:#fff;padding:10px 14px;}
+.tl{display:flex;justify-content:space-between;font-size:11px;opacity:.85;padding:1px 0;}
+.tm{display:flex;justify-content:space-between;font-size:20px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.35);}
+.foot{text-align:center;padding:5px 14px;font-size:9px;color:#9b8b82;}
+/* Botón solo en pantalla */
+.noprint{text-align:center;margin-bottom:10px;}
+.btn-p{background:#6b1a1a;color:#fff;border:none;padding:9px 28px;border-radius:7px;font-size:13px;cursor:pointer;}
+@media print{body{background:#fff;padding:0;}.page{border-radius:0;box-shadow:none;}.noprint{display:none!important;}}
+</style></head><body>
+<div class="noprint"><button class="btn-p" onclick="window.print()">🖨️ Guardar PDF / Imprimir</button></div>
+<div class="page">
+  <div class="hdr">
+    <img src="${LOGO_SRC}" alt="Azkena">
+    <div class="hdr-mid">
+      <h1>Txoko Azkena</h1>
+      <div class="sub">Cuenta de reserva</div>
+    </div>
+    <div class="hdr-right">
+      ${r ? `${fmtDate(r.fechaReservada)}<br>${franjaLabel(r.franja)}` : now}
+      <div class="hdr-badge">Basauri</div>
+    </div>
+  </div>
+  ${r ? `<div class="info">
+    <div class="it"><span>👤 Socio</span><span>${r.socioResponsable}</span></div>
+    <div class="it"><span>🏠 Planta</span><span>${r.planta==='baja'?'Baja':r.planta==='superior'?'Superior':'Ambas'}</span></div>
+    <div class="it"><span>🪑 Mesas</span><span>${c.mesas}</span></div>
+    <div class="it"><span>👥 Comensales</span><span>${c.comensales}</span></div>
+  </div>` : `<div class="info"><div class="it"><span>👥 Comensales</span><span>${c.comensales}</span></div></div>`}
+  <div class="sec">
+    <div class="sec-t">📊 Costes fijos</div>
+    <div class="it-f"><span>${c.conReserva?`Con reserva (${c.mesas}×5,00€)`:`Sin reserva (${c.comensales}×1,00€)`}</span><span>${eur(reservaVal)}</span></div>
+    ${cocinaVal>0?`<div class="it-f"><span>🔥 Cocina (${c.comensales}×0,50€)</span><span>${eur(cocinaVal)}</span></div>`:''}
+    ${limpVal>0?`<div class="it-f"><span>🧹 Limpieza ext. ${limpRaw<15?'(mín. 15,00€)':`(${c.comensales}×1,50€)`}</span><span>${eur(limpVal)}</span></div>`:''}
+  </div>
+  <div class="sec"><div class="sec-t">🍸 Consumiciones</div>${secBebs}</div>
+  ${secExtras?`<div class="sec"><div class="sec-t">🫙 Extras</div>${secExtras}</div>`:''}
+  ${boteVal>0?`<div class="sec"><div class="sec-t">💰 Bote</div><div class="it-f"><span>Aportación voluntaria</span><span>${eur(boteVal)}</span></div></div>`:''}
+  <div class="tot">
+    <div class="tl"><span>Costes fijos</span><span>${eur(fijosTotal)}</span></div>
+    <div class="tl"><span>Consumiciones</span><span>${eur(bebTotal)}</span></div>
+    ${extrasTotal>0?`<div class="tl"><span>Extras</span><span>${eur(extrasTotal)}</span></div>`:''}
+    ${boteVal>0?`<div class="tl"><span>Bote</span><span>${eur(boteVal)}</span></div>`:''}
+    <div class="tm"><span>GUZTIRA / TOTAL</span><span>${eur(total)}</span></div>
+  </div>
+  <div class="foot">Txoko Azkena · Basauri · ${now}</div>
+</div>
+</body></html>`;
+
+  const win = window.open('', '_blank', 'width=640,height=820');
+  if (!win) { showToast('❌ El navegador bloqueó la ventana emergente. Permite los popups.', 'err', 4000); return; }
+  win.document.write(html);
+  win.document.close();
+}
+
+function setTxt(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+function eur(val) { return val.toFixed(2).replace('.',',') + ' €'; }
 </script>
 </body>
 </html>
