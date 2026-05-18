@@ -985,8 +985,7 @@
 
       <div class="tab-bar">
         <button class="tab-btn active" id="at-reservas"   onclick="adminTab('reservas')"   style="font-size:9.5px;">📋 Reservas</button>
-        <button class="tab-btn"        id="at-bloquear"   onclick="adminTab('bloquear')"   style="font-size:9.5px;">🚫 Bloquear</button>
-        <button class="tab-btn"        id="at-bloqueados" onclick="adminTab('bloqueados')" style="font-size:9.5px;">📅 Bloqueados</button>
+        <button class="tab-btn"        id="at-bloquear"   onclick="adminTab('bloquear')"   style="font-size:9.5px;">🚫 Días</button>
         <button class="tab-btn"        id="at-avisos-admin" onclick="adminTab('avisos-admin')" style="font-size:9.5px;">📢 Avisos</button>
         <button class="tab-btn"        id="at-votos-admin"  onclick="adminTab('votos-admin')"  style="font-size:9.5px;">🗳️ Votos</button>
         <button class="tab-btn"        id="at-incid-admin"  onclick="adminTab('incid-admin')"  style="font-size:9.5px;">🔧 Incid.</button>
@@ -2784,7 +2783,7 @@ let adminCurrentTab = 'reservas';
 
 function adminTab(tab) {
   adminCurrentTab = tab;
-  ['reservas','bloquear','bloqueados','avisos-admin','votos-admin','incid-admin','socios','informe'].forEach(t => {
+  ['reservas','bloquear','avisos-admin','votos-admin','incid-admin','socios','informe'].forEach(t => {
     document.getElementById('at-' + t).classList.toggle('active', t === tab);
   });
   renderAdminTabContent();
@@ -2817,6 +2816,19 @@ function renderAdminTabContent() {
     cont.innerHTML = res.map(r => renderReservaCard(r, true)).join('');
 
   } else if (adminCurrentTab === 'bloquear') {
+    const bloqs = getBloq();
+    const listaHtml = bloqs.length === 0
+      ? `<div class="empty-state"><div class="ei">📅</div><div class="et">No hay días bloqueados</div></div>`
+      : bloqs.map(b => `
+          <div class="reserva-card">
+            <div class="reserva-card-top">
+              <span class="reserva-socio">📅 ${fmtDate(b.fecha)}</span>
+              <button class="btn btn-danger btn-sm" onclick="desbloquear('${b.fecha}')">Desbloquear</button>
+            </div>
+            <div class="reserva-info">
+              <span>🚫 ${b.motivo}</span><span>👤 ${b.bloqueadoPor}</span>
+            </div>
+          </div>`).join('');
     cont.innerHTML = `
       <div class="card">
         <div class="card-title">🚫 Bloquear día</div>
@@ -2833,27 +2845,18 @@ function renderAdminTabContent() {
             <label>Bloqueado por</label>
             <input type="text" id="blq-por" value="Junta Directiva">
           </div>
+          <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="blq-aviso" checked style="width:auto;margin:0;">
+            <label for="blq-aviso" style="margin:0;">Publicar aviso en Comunidad</label>
+          </div>
           <button type="submit" class="btn btn-primary">🚫 Bloquear este día</button>
         </form>
         <div id="blq-alert" style="margin-top:8px;"></div>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="card-title" style="padding:0 4px 8px;">📅 Días bloqueados</div>
+        ${listaHtml}
       </div>`;
-
-  } else if (adminCurrentTab === 'bloqueados') {
-    const bloqs = getBloq();
-    if (bloqs.length === 0) {
-      cont.innerHTML = `<div class="empty-state"><div class="ei">📅</div><div class="et">No hay días bloqueados</div></div>`;
-      return;
-    }
-    cont.innerHTML = bloqs.map(b => `
-      <div class="reserva-card">
-        <div class="reserva-card-top">
-          <span class="reserva-socio">📅 ${fmtDate(b.fecha)}</span>
-          <button class="btn btn-danger btn-sm" onclick="desbloquear('${b.fecha}')">Desbloquear</button>
-        </div>
-        <div class="reserva-info">
-          <span>🚫 ${b.motivo}</span><span>👤 ${b.bloqueadoPor}</span>
-        </div>
-      </div>`).join('');
 
   } else if (adminCurrentTab === 'avisos-admin') {
     const avisos = getAvisos().slice().sort((a,b) => String(b.id).localeCompare(String(a.id)));
@@ -3056,10 +3059,11 @@ function renderAdminTabContent() {
 
 async function bloquearDia(e) {
   e.preventDefault();
-  const fecha  = document.getElementById('blq-fecha').value;
-  const motivo = document.getElementById('blq-motivo').value.trim();
-  const por    = document.getElementById('blq-por').value.trim() || 'Junta Directiva';
-  const alEl   = document.getElementById('blq-alert');
+  const fecha      = document.getElementById('blq-fecha').value;
+  const motivo     = document.getElementById('blq-motivo').value.trim();
+  const por        = document.getElementById('blq-por').value.trim() || 'Junta Directiva';
+  const crearAviso = document.getElementById('blq-aviso').checked;
+  const alEl       = document.getElementById('blq-alert');
 
   if (getBloq().some(b => b.fecha === fecha)) {
     alEl.innerHTML = `<div class="alert alert-error">Este día ya está bloqueado.</div>`; return;
@@ -3068,13 +3072,28 @@ async function bloquearDia(e) {
     await apiCall({ action: 'addBloq', data: { fecha, motivo, bloqueadoPor: por } });
     const updated = await apiCall({ action: 'getBloq' });
     _cache.bloq = Array.isArray(updated) ? updated : _cache.bloq;
+    if (crearAviso) {
+      const aviso = {
+        id:      Date.now().toString(),
+        fecha:   new Date().toISOString().substring(0, 10),
+        tipo:    'info',
+        titulo:  `🚫 Día bloqueado: ${fmtDate(fecha)}`,
+        mensaje: motivo,
+        fijado:  false,
+        visible: true
+      };
+      await apiCall({ action: 'addAviso', data: aviso });
+      const avisosUp = await apiCall({ action: 'getAvisos' });
+      _cache.avisos = Array.isArray(avisosUp) ? avisosUp.map(normalizeAviso) : _cache.avisos;
+      checkAvisosBadge();
+      renderAvisoBanner();
+    }
   } catch(e) {
     alEl.innerHTML = `<div class="alert alert-error">❌ Error de conexión.</div>`; return;
   }
   alEl.innerHTML = `<div class="alert alert-success">✅ Día bloqueado correctamente.</div>`;
-  document.getElementById('blq-fecha').value  = '';
-  document.getElementById('blq-motivo').value = '';
   renderCalendar();
+  renderAdminTabContent();
 }
 
 async function desbloquear(fecha) {
