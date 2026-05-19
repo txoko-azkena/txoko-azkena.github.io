@@ -3637,26 +3637,29 @@ function generarInforme() {
         known: true
       };
     }
-    // Sin cuenta — estimar fijos desde la reserva
+    // Sin cuenta — fijos conocidos desde la reserva, consumiciones desconocidas
     if (entry._type === 'reserva') {
       const com = entry.numeroComensales || entry.comensalesEstimados || 0;
+      const reserva  = (entry.numeroMesas||0) * 5.0;
+      const cocina   = entry.usoCocina === 'si' ? com * 0.5 : 0;
+      const limpieza = entry.limpiezaExterna === 'si' ? Math.max(com*1.5, 15) : 0;
       return {
-        reserva:  (entry.numeroMesas||0) * 5.0,
-        cocina:   entry.usoCocina === 'si' ? com * 0.5 : 0,
-        limpieza: entry.limpiezaExterna === 'si' ? Math.max(com*1.5, 15) : 0,
-        consumiciones: null, extras: null, bote: null, total: null, known: false
+        reserva, cocina, limpieza,
+        consumiciones: null, extras: null, bote: null,
+        total: reserva + cocina + limpieza,  // total parcial (solo fijos)
+        known: false, partial: true
       };
     }
-    return { reserva:0, cocina:0, limpieza:0, consumiciones:0, extras:0, bote:0, total:0, known:false };
+    return { reserva:0, cocina:0, limpieza:0, consumiciones:0, extras:0, bote:0, total:0, known:false, partial:false };
   };
 
   // ── Celda financiera con color ────────────────────────
   const fCell = (val) => {
     if (val === null || val === undefined)
-      return `<td style="text-align:right;color:#C0B090;font-size:9px">–</td>`;
+      return `<td style="text-align:right;color:#C0B090;font-size:13px">–</td>`;
     if (val === 0)
-      return `<td style="text-align:right;background:#FFEBEE;color:#C62828;font-size:9px;font-weight:700;padding:2px 5px;">0€</td>`;
-    return `<td style="text-align:right;background:#E8F5E9;color:#2E7D32;font-size:9px;font-weight:700;padding:2px 5px;">${val.toFixed(2)}€</td>`;
+      return `<td style="text-align:right;background:#FFEBEE;color:#C62828;font-size:13px;font-weight:700;padding:4px 7px;">0€</td>`;
+    return `<td style="text-align:right;background:#E8F5E9;color:#2E7D32;font-size:13px;font-weight:700;padding:4px 7px;">${val.toFixed(2)}€</td>`;
   };
 
   // ── Unificar entradas ─────────────────────────────────
@@ -3706,15 +3709,17 @@ function generarInforme() {
     const cd  = parseCD(e);
     const com = e._type==='reserva' ? (e.numeroComensales||e.comensalesEstimados||'–') : (cd?.comensales||'–');
     const totalCell = fn.total != null
-      ? `<td style="text-align:right;font-weight:800;font-size:9px;color:#1B5E20;background:#C8E6C9;padding:2px 4px;">${fn.total.toFixed(2)}€</td>`
-      : `<td style="text-align:right;color:#9E9E9E;font-size:8px">–</td>`;
+      ? fn.partial
+        ? `<td style="text-align:right;font-weight:800;font-size:13px;color:#E65100;background:#FFF3E0;padding:4px 7px;" title="Solo fijos — sin consumiciones">≥${fn.total.toFixed(2)}€</td>`
+        : `<td style="text-align:right;font-weight:800;font-size:13px;color:#1B5E20;background:#C8E6C9;padding:4px 7px;">${fn.total.toFixed(2)}€</td>`
+      : `<td style="text-align:right;color:#9E9E9E;font-size:13px">–</td>`;
     return `
     <tr class="${e._type==='reserva'&&e.estado==='cancelada'?'row-canc':''}">
       <td style="color:#9E9E9E;text-align:center;font-size:7.5px">${i+1}</td>
-      <td style="white-space:nowrap;font-size:9px">${fmtDate(e._fecha)}</td>
+      <td style="white-space:nowrap;font-size:13px">${fmtDate(e._fecha)}</td>
       <td>${tipoBadge(e._type)}${e._type==='reserva'?'<br>'+fBadge(e.franja):''}</td>
-      <td style="width:160px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px" title="${escapeHtml(e._socio)}">${escapeHtml(e._socio||'–')}</td>
-      <td style="text-align:center;font-size:9px">${com}</td>
+      <td style="width:180px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px" title="${escapeHtml(e._socio)}">${escapeHtml(e._socio||'–')}</td>
+      <td style="text-align:center;font-size:13px;font-weight:600">${com}</td>
       ${fCell(fn.reserva)}
       ${fCell(fn.cocina)}
       ${fCell(fn.limpieza)}
@@ -3750,7 +3755,7 @@ function generarInforme() {
     .sub-val{ font-size:13px; font-weight:900; color:#6B1A1A; }
     .section-title{ font-size:10px; font-weight:800; color:#6B1A1A; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px; padding-bottom:4px; border-bottom:2px solid #6B1A1A; }
     table{ width:100%; border-collapse:collapse; }
-    thead th{ background:#6B1A1A; color:#fff; padding:6px 6px; text-align:left; font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; }
+    thead th{ background:#6B1A1A; color:#fff; padding:10px 8px; text-align:left; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; }
     thead th:first-child{ border-radius:6px 0 0 0; } thead th:last-child{ border-radius:0 6px 0 0; }
     tbody tr:nth-child(even) td{ background:#FDFAF5; }
     tbody tr:nth-child(odd)  td{ background:#fff; }
@@ -3814,19 +3819,19 @@ function generarInforme() {
   <div class="section-title">📋 Uso del Txoko — Reservas y Cuentas (${allE.length} registros)</div>
   <table>
     <thead><tr>
-      <th style="width:22px;text-align:center">Nº</th>
-      <th style="width:78px">Fecha</th>
-      <th style="width:90px">Tipo</th>
-      <th style="width:160px">Socio</th>
-      <th style="width:36px;text-align:center">Pers.</th>
-      <th style="width:62px;text-align:right">💰 Reserva</th>
-      <th style="width:58px;text-align:right">🔥 Cocina</th>
-      <th style="width:58px;text-align:right">🧹 Limp.</th>
-      <th style="width:72px;text-align:right">🍸 Consum.</th>
-      <th style="width:58px;text-align:right">🫙 Extras</th>
-      <th style="width:52px;text-align:right">💰 Bote</th>
-      <th style="width:68px;text-align:right">TOTAL</th>
-      <th style="width:30px;text-align:center">Est.</th>
+      <th style="width:28px;text-align:center">Nº</th>
+      <th style="width:90px">Fecha</th>
+      <th style="width:105px">Tipo</th>
+      <th style="width:180px">Socio</th>
+      <th style="width:52px;text-align:center">Comens.</th>
+      <th style="width:75px;text-align:right">💰 Reserva</th>
+      <th style="width:70px;text-align:right">🔥 Cocina</th>
+      <th style="width:70px;text-align:right">🧹 Limp.</th>
+      <th style="width:85px;text-align:right">🍸 Consum.</th>
+      <th style="width:70px;text-align:right">🫙 Extras</th>
+      <th style="width:65px;text-align:right">💰 Bote</th>
+      <th style="width:80px;text-align:right">TOTAL</th>
+      <th style="width:35px;text-align:center">Est.</th>
     </tr></thead>
     <tbody>${rows || `<tr><td colspan="13" style="text-align:center;padding:20px;color:#9E9E9E;font-style:italic">No hay registros</td></tr>`}</tbody>
   </table>
