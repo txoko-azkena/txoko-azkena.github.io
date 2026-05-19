@@ -4024,12 +4024,12 @@ function generarInforme() {
       ${conCuenta > 0 ? `
       <div style="font-size:8px;color:#6B5B52;margin-bottom:6px;">Detalle por reserva con cuenta registrada:</div>
       <div style="display:flex;flex-direction:column;gap:3px;">
-        ${conf.filter(r => parseCuenta(r)?.totales?.total != null)
-          .sort((a,b) => (parseCuenta(b).totales.total) - (parseCuenta(a).totales.total))
+        ${allE.filter(e => parseCD(e)?.totales?.total != null)
+          .sort((a,b) => (parseCD(b).totales.total) - (parseCD(a).totales.total))
           .slice(0,10)
           .map(r => {
-            const ct = parseCuenta(r).totales.total;
-            const maxT = Math.max(...conf.filter(rx=>parseCuenta(rx)?.totales?.total!=null).map(rx=>parseCuenta(rx).totales.total));
+            const ct = parseCD(r).totales.total;
+            const maxT = Math.max(...allE.filter(ex=>parseCD(ex)?.totales?.total!=null).map(ex=>parseCD(ex).totales.total));
             return `<div style="display:flex;align-items:center;gap:6px;">
               <span style="font-size:7px;color:#6B5B52;width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${fmtDate(r.fechaReservada)}</span>
               <span style="font-size:7px;color:#4A3728;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(r.socioResponsable||r.socioNombre||'')}</span>
