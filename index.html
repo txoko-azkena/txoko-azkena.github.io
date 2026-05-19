@@ -3653,17 +3653,19 @@ function generarInforme() {
   // ── Celda financiera con color ────────────────────────
   const fCell = (val) => {
     if (val === null || val === undefined)
-      return `<td style="text-align:right;color:#C0B090;font-size:7.5px">–</td>`;
+      return `<td style="text-align:right;color:#C0B090;font-size:9px">–</td>`;
     if (val === 0)
-      return `<td style="text-align:right;background:#FFEBEE;color:#C62828;font-size:8px;font-weight:700;padding:2px 4px;">0€</td>`;
-    return `<td style="text-align:right;background:#E8F5E9;color:#2E7D32;font-size:8px;font-weight:700;padding:2px 4px;">${val.toFixed(2)}€</td>`;
+      return `<td style="text-align:right;background:#FFEBEE;color:#C62828;font-size:9px;font-weight:700;padding:2px 5px;">0€</td>`;
+    return `<td style="text-align:right;background:#E8F5E9;color:#2E7D32;font-size:9px;font-weight:700;padding:2px 5px;">${val.toFixed(2)}€</td>`;
   };
 
   // ── Unificar entradas ─────────────────────────────────
   const resE = reservas.map(r => ({ ...r, _type:'reserva', _fecha:r.fechaReservada, _socio:r.socioResponsable||r.socioNombre||'' }));
   const libE = cuentasL.map(c => {
-    const cd = parseCD(c)||{};
-    return { ...c, _type:'libre', _fecha:c.fecha||cd.fechaCuenta||'', _socio:c.socioNombre||'' };
+    const cd  = parseCD(c)||{};
+    const raw = c.fecha || cd.fechaCuenta || '';
+    const fecha = toDateStr(raw) || (typeof raw === 'string' ? raw.substring(0,10) : '');
+    return { ...c, _type:'libre', _fecha:fecha, _socio:c.socioNombre||'' };
   });
   const allE = [...resE, ...libE].sort((a,b) => a._fecha.localeCompare(b._fecha));
 
@@ -3709,10 +3711,10 @@ function generarInforme() {
     return `
     <tr class="${e._type==='reserva'&&e.estado==='cancelada'?'row-canc':''}">
       <td style="color:#9E9E9E;text-align:center;font-size:7.5px">${i+1}</td>
-      <td style="white-space:nowrap;font-size:8px">${fmtDate(e._fecha)}</td>
+      <td style="white-space:nowrap;font-size:9px">${fmtDate(e._fecha)}</td>
       <td>${tipoBadge(e._type)}${e._type==='reserva'?'<br>'+fBadge(e.franja):''}</td>
-      <td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px" title="${escapeHtml(e._socio)}">${escapeHtml(e._socio||'–')}</td>
-      <td style="text-align:center;font-size:8px">${com}</td>
+      <td style="width:160px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px" title="${escapeHtml(e._socio)}">${escapeHtml(e._socio||'–')}</td>
+      <td style="text-align:center;font-size:9px">${com}</td>
       ${fCell(fn.reserva)}
       ${fCell(fn.cocina)}
       ${fCell(fn.limpieza)}
@@ -3813,18 +3815,18 @@ function generarInforme() {
   <table>
     <thead><tr>
       <th style="width:22px;text-align:center">Nº</th>
-      <th style="width:72px">Fecha</th>
-      <th style="width:80px">Tipo</th>
-      <th>Socio</th>
-      <th style="width:32px;text-align:center">Pers.</th>
-      <th style="width:52px;text-align:right">💰 Reserva</th>
-      <th style="width:48px;text-align:right">🔥 Cocina</th>
-      <th style="width:52px;text-align:right">🧹 Limp.</th>
-      <th style="width:60px;text-align:right">🍸 Consum.</th>
-      <th style="width:46px;text-align:right">🫙 Extras</th>
-      <th style="width:42px;text-align:right">💰 Bote</th>
-      <th style="width:58px;text-align:right">TOTAL</th>
-      <th style="width:28px;text-align:center">Est.</th>
+      <th style="width:78px">Fecha</th>
+      <th style="width:90px">Tipo</th>
+      <th style="width:160px">Socio</th>
+      <th style="width:36px;text-align:center">Pers.</th>
+      <th style="width:62px;text-align:right">💰 Reserva</th>
+      <th style="width:58px;text-align:right">🔥 Cocina</th>
+      <th style="width:58px;text-align:right">🧹 Limp.</th>
+      <th style="width:72px;text-align:right">🍸 Consum.</th>
+      <th style="width:58px;text-align:right">🫙 Extras</th>
+      <th style="width:52px;text-align:right">💰 Bote</th>
+      <th style="width:68px;text-align:right">TOTAL</th>
+      <th style="width:30px;text-align:center">Est.</th>
     </tr></thead>
     <tbody>${rows || `<tr><td colspan="13" style="text-align:center;padding:20px;color:#9E9E9E;font-style:italic">No hay registros</td></tr>`}</tbody>
   </table>
@@ -4003,7 +4005,7 @@ function generarInforme() {
 
     <!-- Cuentas registradas -->
     <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
-      <div class="section-title" style="margin-bottom:12px;">💰 Cuentas registradas</div>
+      <div class="section-title" style="margin-bottom:12px;">💰 Facturación — cuentas guardadas en la app</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
         <div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;">
           <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Cuentas registradas</div>
