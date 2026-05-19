@@ -3731,9 +3731,13 @@ function generarInforme() {
   const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
   <title>Uso del Txoko – Txoko Azkena</title>
   <style>
-    @page { size: A4 landscape; margin: 10mm 12mm; }
+    @page { size: A4 landscape; margin: 14mm 16mm; }
+    @page :first { margin-top: 10mm; }
     *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; color-adjust:exact !important; }
     body{ font-family:Arial,sans-serif; font-size:10px; color:#2C1810; background:#fff; }
+    .no-break { break-inside:avoid; page-break-inside:avoid; }
+    tbody tr  { break-inside:avoid; page-break-inside:avoid; }
+    .grid-row { break-inside:avoid; page-break-inside:avoid; }
     .noprint{ background:linear-gradient(135deg,#4A0F0F,#6B1A1A); color:#fff; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-radius:8px; }
     .noprint button{ background:#C8952A; border:none; color:#fff; padding:9px 22px; border-radius:6px; font-size:13px; font-weight:700; cursor:pointer; }
     .hdr{ background:linear-gradient(135deg,#4A0F0F,#6B1A1A); color:#fff; padding:12px 16px; border-radius:10px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
@@ -3793,7 +3797,7 @@ function generarInforme() {
       <strong>Informe generado: ${now}</strong>
     </div>
   </div>
-  <div class="stats">
+  <div class="stats no-break">
     <div class="stat"><div class="stat-icon">📋</div><div class="stat-val">${reservas.length}</div><div class="stat-lbl">Reservas</div></div>
     <div class="stat"><div class="stat-icon">🧾</div><div class="stat-val" style="color:#283593">${cuentasL.length}</div><div class="stat-lbl">Cuentas libres</div></div>
     <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" style="color:#2E7D32">${conf.length}</div><div class="stat-lbl">Confirmadas</div></div>
@@ -3805,7 +3809,7 @@ function generarInforme() {
     <div class="stat"><div class="stat-icon">💶</div><div class="stat-val" style="color:#C8952A">${totalLimp.toFixed(0)}€</div><div class="stat-lbl">Coste limp.</div></div>
     <div class="stat"><div class="stat-icon">💰</div><div class="stat-val" style="color:#2E7D32">${totalCuenta.toFixed(0)}€</div><div class="stat-lbl">Total facturado</div></div>
   </div>
-  <div class="sub-bar">
+  <div class="sub-bar no-break">
     <div class="sub-item"><span class="sub-label">🍴 Comidas</span><span class="sub-val">${porFranja.comida}</span></div>
     <div class="sub-item"><span class="sub-label">🌙 Cenas</span><span class="sub-val">${porFranja.cena}</span></div>
     <div class="sub-item"><span class="sub-label">☀️ Días completos</span><span class="sub-val">${porFranja.dia}</span></div>
@@ -3846,7 +3850,7 @@ function generarInforme() {
     const tot = vals.reduce((s,v)=>s+v,0)||1;
     return vals.map((v,i) => `<div style="flex:${v||0.01};background:${colors[i]};height:100%;${i===0?'border-radius:6px 0 0 6px;':''}${i===vals.length-1?'border-radius:0 6px 6px 0;':''}" title="${labels[i]}: ${v} (${Math.round(v/tot*100)}%)"></div>`).join('');
   };
-  const card     = (content) => `<div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:14px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">${content}</div>`;
+  const card     = (content) => `<div class="no-break" style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:14px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">${content}</div>`;
   const secT     = (t) => `<div class="section-title" style="margin-bottom:12px;">${t}</div>`;
   const kpi      = (icon,val,lbl,color='#6B1A1A') => `<div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#6B5B52;margin-bottom:3px;">${icon} ${lbl}</div><div style="font-size:22px;font-weight:900;color:${color};">${val}</div></div>`;
 
@@ -3917,7 +3921,7 @@ function generarInforme() {
     </div>
 
     <!-- FILA 1: Facturación mensual + Ranking uso -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+    <div class="grid-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
 
       ${card(`${secT('💰 Facturación mensual (cuentas registradas)')}
         <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;margin-bottom:6px;">
@@ -3951,7 +3955,7 @@ function generarInforme() {
     </div>
 
     <!-- FILA 2: Desglose económico + Franja + Planta -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+    <div class="grid-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
 
       ${card(`${secT('📊 Desglose económico')}
         <div style="display:flex;height:20px;border-radius:6px;overflow:hidden;margin-bottom:12px;">
@@ -4004,7 +4008,7 @@ function generarInforme() {
     </div>
 
     <!-- FILA 3: Ranking facturación + Actividad mensual -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+    <div class="grid-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
 
       ${card(`${secT('💰 Ranking socios por facturación')}
         ${rankFact.length>0 ? rankFact.slice(0,12).map(s=>`
