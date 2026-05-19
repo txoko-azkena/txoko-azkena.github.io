@@ -3658,12 +3658,23 @@ function generarInforme() {
   };
 
   // ── Unificar entradas ─────────────────────────────────
-  const resE = reservas.map(r => ({ ...r, _type:'reserva', _fecha:r.fechaReservada, _socio:r.socioResponsable||r.socioNombre||'' }));
+  const normSocio = r => {
+    // Si ya tiene formato "Nº XX – ..." lo usa; si no, lo construye
+    const raw = r.socioResponsable || r.socioNombre || '';
+    if (raw.startsWith('Nº ')) return raw;
+    const num = r.socioNumero || r.socioId ? padId(String(r.socioNumero || r.socioId || '')) : '';
+    return num && raw ? `Nº ${num} – ${raw}` : raw || '–';
+  };
+  const resE = reservas.map(r => ({ ...r, _type:'reserva', _fecha:r.fechaReservada, _socio:normSocio(r) }));
   const libE = cuentasL.map(c => {
-    const cd  = parseCD(c)||{};
-    const raw = c.fecha || cd.fechaCuenta || '';
+    const cd    = parseCD(c)||{};
+    const raw   = c.fecha || cd.fechaCuenta || '';
     const fecha = toDateStr(raw) || (typeof raw === 'string' ? raw.substring(0,10) : '');
-    return { ...c, _type:'libre', _fecha:fecha, _socio:c.socioNombre||'' };
+    // Normalizar al mismo formato que las reservas: "Nº XX – Nombre"
+    const num   = c.socioId ? padId(String(c.socioId)) : (cd.socioId ? padId(String(cd.socioId)) : '');
+    const nom   = c.socioNombre || cd.socioNombre || '';
+    const socio = num && nom ? `Nº ${num} – ${nom}` : (nom || num || '–');
+    return { ...c, _type:'libre', _fecha:fecha, _socio:socio };
   });
   const allE = [...resE, ...libE].sort((a,b) => a._fecha.localeCompare(b._fecha));
 
