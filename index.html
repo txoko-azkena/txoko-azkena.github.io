@@ -597,7 +597,7 @@
     .calc-fijo-row { display:flex; justify-content:space-between; padding:4px 0; font-size:13px; }
     .calc-beb-row { display:flex; align-items:center; gap:6px; padding:7px 0; border-bottom:1px solid var(--border); }
     .calc-beb-row:last-child { border-bottom:none; }
-    .calc-beb-name { flex:1; font-size:11px; color:var(--text); line-height:1.3; }
+    .calc-beb-name { flex:1; font-size:13px; color:var(--text); line-height:1.3; }
     .calc-beb-counts { display:flex; gap:8px; }
     .calc-beb-unit { display:flex; flex-direction:column; align-items:center; gap:2px; }
     .calc-beb-label { font-size:9px; color:var(--text-muted); font-weight:700; white-space:nowrap; }
@@ -1013,14 +1013,14 @@
         </div>
       </div>
       <div class="calc-row">
-        <span style="font-size:13px;" id="calc-lbl-reserva-tog">Reserva <span id="calc-lock-reserva" style="display:none;font-size:11px;">🔒</span></span>
+        <span style="font-size:13px;" id="calc-lbl-reserva-tog"><span id="calc-txt-reserva">Reserva</span> <span id="calc-lock-reserva" style="display:none;font-size:11px;">🔒</span></span>
         <div class="calc-toggle">
           <button id="ctog-sinres" class="calc-tog-btn active" onclick="calcSetReserva(false)"></button>
           <button id="ctog-conres" class="calc-tog-btn"        onclick="calcSetReserva(true)"></button>
         </div>
       </div>
       <div class="calc-row" id="calc-mesas-row" style="display:none;">
-        <span style="font-size:13px;" id="calc-lbl-mesas">Nº mesas <span id="calc-lock-mesas" style="display:none;font-size:11px;">🔒</span></span>
+        <span style="font-size:13px;" id="calc-lbl-mesas"><span id="calc-txt-mesas">Nº mesas</span> <span id="calc-lock-mesas" style="display:none;font-size:11px;">🔒</span></span>
         <div class="calc-counter">
           <button id="calc-mesas-minus" onclick="calcAdj('mesas',-1)">−</button>
           <span id="calc-mesas">1</span>
@@ -1028,7 +1028,7 @@
         </div>
       </div>
       <div class="calc-row">
-        <span style="font-size:13px;" id="calc-lbl-cocina">¿Usa cocina? <span id="calc-lock-cocina" style="display:none;font-size:11px;">🔒</span></span>
+        <span style="font-size:13px;" id="calc-lbl-cocina"><span id="calc-txt-cocina">¿Usa cocina?</span> <span id="calc-lock-cocina" style="display:none;font-size:11px;">🔒</span></span>
         <div class="calc-toggle">
           <button id="ctog-nococ"  class="calc-tog-btn active" onclick="calcSetCocina(false)"></button>
           <button id="ctog-cocina" class="calc-tog-btn"        onclick="calcSetCocina(true)"></button>
@@ -1332,13 +1332,12 @@ function renderCalcTexts() {
   const st = (id, key) => { const el = document.getElementById(id); if (el) el.textContent = t(key); };
   st('calc-tt',                'calcTitulo');
   st('calc-ts',                'calcSub');
-  st('calc-card-config',       'calcComens'); // reutilizamos clave cercana
   st('calc-lbl-comens',        'calcComens');
-  st('calc-lbl-reserva-tog',   'calcReserva');
+  st('calc-txt-reserva',       'calcReserva');
   st('ctog-sinres',            'calcSinRes');
   st('ctog-conres',            'calcConRes');
-  st('calc-lbl-mesas',         'calcMesas');
-  st('calc-lbl-cocina',        'calcCocina');
+  st('calc-txt-mesas',         'calcMesas');
+  st('calc-txt-cocina',        'calcCocina');
   st('ctog-nococ',             lang === 'eu' ? 'Ez' : 'No');
   st('ctog-cocina',            lang === 'eu' ? 'Bai' : 'Sí');
   st('calc-lbl-limp',          'calcLimp');
@@ -3359,7 +3358,7 @@ async function desbloquear(fecha) {
     await apiCall({ action: 'deleteBloq', fecha });
     const updated = await apiCall({ action: 'getBloq' });
     _cache.bloq = Array.isArray(updated) ? updated : _cache.bloq;
-  } catch(e) { alert('Error de conexión. Inténtalo de nuevo.'); return; }
+  } catch(e) { showToast('❌ Error de conexión. Inténtalo de nuevo.', 'err', 4000); return; }
   renderAdminTabContent(); renderCalendar();
 }
 
@@ -3369,7 +3368,7 @@ async function adminCancelRes(id) {
     await apiCall({ action: 'cancelReserva', id: String(id) });
     const updated = await apiCall({ action: 'getReservas' });
     _cache.reservas = Array.isArray(updated) ? updated.map(normalizeReserva) : _cache.reservas;
-  } catch(e) { alert('Error de conexión. Inténtalo de nuevo.'); return; }
+  } catch(e) { showToast('❌ Error de conexión. Inténtalo de nuevo.', 'err', 4000); return; }
   renderAdminContent(); renderCalendar();
 }
 
@@ -3685,9 +3684,11 @@ function generarInforme() {
     cena:   reservas.filter(r=>r.franja==='cena').length,
     dia:    reservas.filter(r=>r.franja==='dia_completo').length
   };
-  const conCuenta   = allE.filter(e => parseCD(e)?.totales?.total != null).length;
-  const totalCuenta = allE.reduce((s,e) => { const c=parseCD(e); return s+(c?.totales?.total||0); }, 0);
-  const mediaCuenta = conCuenta > 0 ? totalCuenta / conCuenta : 0;
+  // Totales: incluye completos (cuenta registrada) y parciales (solo fijos conocidos)
+  const conCuenta       = allE.filter(e => financials(e).total != null && financials(e).total > 0).length;
+  const conCuentaPlena  = allE.filter(e => parseCD(e)?.totales?.total != null).length;
+  const totalCuenta     = allE.reduce((s,e) => { const fn=financials(e); return s+(fn.total||0); }, 0);
+  const mediaCuenta     = conCuenta > 0 ? totalCuenta / conCuenta : 0;
 
   // ── Badges ────────────────────────────────────────────
   const fBadge = f => {
@@ -3861,13 +3862,16 @@ function generarInforme() {
   });
   const maxMes = Math.max(...porMes, 1);
 
-  // Facturación mensual (solo entradas con cuenta)
-  const factMes = Array(12).fill(0), factMesN = Array(12).fill(0);
+  // Facturación mensual (todos los totales conocidos: completos + parciales/fijos)
+  const factMes = Array(12).fill(0), factMesPart = Array(12).fill(0);
   allE.forEach(e => {
-    const cd = parseCD(e);
-    if (!cd?.totales?.total) return;
+    const fn = financials(e);
+    if (fn.total == null || fn.total === 0) return;
     const m = new Date((e._fecha||'2000-01-01')+'T12:00:00').getMonth();
-    if (m>=0&&m<12){ factMes[m] += cd.totales.total; factMesN[m]++; }
+    if (m>=0&&m<12) {
+      factMes[m] += fn.total;
+      if (fn.partial) factMesPart[m] += fn.total;
+    }
   });
   const maxFactMes = Math.max(...factMes, 1);
 
@@ -3878,7 +3882,7 @@ function generarInforme() {
     if (!socioMap[key]) socioMap[key] = { total:0, conf:0, comsls:0, fact:0 };
     socioMap[key].total++;
     if (e._type==='reserva'&&e.estado==='confirmada'){ socioMap[key].conf++; socioMap[key].comsls += Number(e.numeroComensales||e.comensalesEstimados||0); }
-    const cd = parseCD(e); if(cd?.totales?.total) socioMap[key].fact += cd.totales.total;
+    const fn = financials(e); if(fn.total) socioMap[key].fact += fn.total;
   });
   const ranking = Object.entries(socioMap).map(([name,d])=>({name,...d,avg:d.conf>0?(d.comsls/d.conf).toFixed(1):'–'})).sort((a,b)=>b.total-a.total);
   const rankFact = [...ranking].sort((a,b)=>b.fact-a.fact).filter(s=>s.fact>0);
@@ -3925,15 +3929,15 @@ function generarInforme() {
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
             <span style="font-size:9px;color:#2E7D32;font-weight:700;min-height:12px;">${factMes[i]>0?factMes[i].toFixed(0)+'€':''}</span>
             <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;">
-              <div style="${barH(factMes[i],maxFactMes)};width:100%;background:#2E7D32;border-radius:3px 3px 0 0;min-height:${factMes[i]>0?3:0}px;"></div>
+              <div style="${barH(factMes[i],maxFactMes)};width:100%;background:${factMesPart[i]===factMes[i]&&factMes[i]>0?'#81C784':'#2E7D32'};border-radius:3px 3px 0 0;min-height:${factMes[i]>0?3:0}px;" title="${factMesPart[i]>0?'Solo fijos: '+factMesPart[i].toFixed(0)+'€':'Cuenta completa'}"></div>
             </div>
             <span style="font-size:9px;color:#6B5B52;">${m}</span>
           </div>`).join('')}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
-          ${kpi('💰', totalCuenta.toFixed(0)+'€', 'Total facturado', '#2E7D32')}
-          ${kpi('📊', String(conCuenta), 'Cuentas registradas', '#6B1A1A')}
-          ${kpi('∅', mediaCuenta.toFixed(0)+'€', 'Media por cuenta', '#C8952A')}
+          ${kpi('≥', totalCuenta.toFixed(0)+'€', 'Total conocido (fijos+cuentas)', '#2E7D32')}
+          ${kpi('✅', String(conCuentaPlena)+' / '+String(conCuenta), 'Cuentas completas / con datos', '#6B1A1A')}
+          ${kpi('∅', mediaCuenta.toFixed(0)+'€', 'Media por entrada', '#C8952A')}
         </div>`)}
 
       ${card(`${secT('👤 Ranking de uso por socio')}
@@ -4032,7 +4036,23 @@ function generarInforme() {
         </div>
         <div style="display:flex;gap:16px;font-size:10px;color:#6B5B52;margin-top:8px;justify-content:center;">
           <span>■ <span style="color:#6B1A1A;font-weight:700;">Reservas</span></span>
-          <span>■ <span style="color:#E65100;font-weight:700;">Cocina (barra inferior)</span></span>
+          <span>■ <span style="color:#E65100;font-weight:700;">Con cocina</span></span>
+        </div>`)}
+
+      ${card(`${secT('💶 Facturación mensual — total conocido')}
+        <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;margin-bottom:8px;">
+          ${meses.map((m,i) => `
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span style="font-size:9px;font-weight:700;min-height:12px;color:${factMes[i]>0?(factMesPart[i]===factMes[i]?'#388E3C':'#2E7D32'):'#ccc'}">${factMes[i]>0?factMes[i].toFixed(0)+'€':''}</span>
+            <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;">
+              <div style="${barH(factMes[i],maxFactMes)};width:100%;background:${factMesPart[i]===factMes[i]&&factMes[i]>0?'#81C784':'#2E7D32'};border-radius:3px 3px 0 0;min-height:${factMes[i]>0?2:0}px;"></div>
+            </div>
+            <span style="font-size:9px;color:#6B5B52;">${m}</span>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:16px;font-size:10px;color:#6B5B52;justify-content:center;">
+          <span>■ <span style="color:#2E7D32;font-weight:700;">Cuenta completa</span></span>
+          <span>■ <span style="color:#81C784;font-weight:700;">Solo fijos (≥)</span></span>
         </div>`)}
     </div>
 
