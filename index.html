@@ -111,7 +111,7 @@
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 1px;
       background: none; border: none; cursor: pointer;
-      color: var(--text-muted); font-size: 9px; font-weight: 600;
+      color: var(--text-muted); font-size: 10px; font-weight: 600;
       padding: 6px 1px; transition: color 0.15s;
       -webkit-tap-highlight-color: transparent; position: relative;
     }
@@ -222,7 +222,7 @@
     input[type="password"], select, textarea {
       width: 100%; padding: 11px 12px;
       border: 1.5px solid var(--border); border-radius: 8px;
-      font-size: 15px; color: var(--text); background: #fff;
+      font-size: 16px; color: var(--text); background: #fff;
       -webkit-appearance: none; appearance: none;
     }
     select {
@@ -371,9 +371,9 @@
       padding: 3px; margin-bottom: 12px;
     }
     .tab-btn {
-      flex: 1; padding: 8px 3px; border: none; background: transparent;
-      border-radius: 8px; font-size: 11px; font-weight: 700; color: var(--text-muted);
-      cursor: pointer; transition: all 0.15s;
+      flex: 1; padding: 10px 4px; border: none; background: transparent;
+      border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s; min-height: 40px;
     }
     .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 1px 3px var(--shadow); }
 
@@ -601,9 +601,9 @@
     .calc-beb-counts { display:flex; gap:8px; }
     .calc-beb-unit { display:flex; flex-direction:column; align-items:center; gap:2px; }
     .calc-beb-label { font-size:9px; color:var(--text-muted); font-weight:700; white-space:nowrap; }
-    .calc-counter-sm { display:flex; align-items:center; gap:3px; }
-    .calc-counter-sm button { width:24px; height:24px; border-radius:50%; border:1.5px solid var(--primary); background:none; color:var(--primary); font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; }
-    .calc-counter-sm span { min-width:16px; text-align:center; font-size:13px; font-weight:700; }
+    .calc-counter-sm { display:flex; align-items:center; gap:4px; }
+    .calc-counter-sm button { width:32px; height:32px; border-radius:50%; border:1.5px solid var(--primary); background:none; color:var(--primary); font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; }
+    .calc-counter-sm span { min-width:20px; text-align:center; font-size:14px; font-weight:700; }
     .calc-beb-total { font-size:11px; font-weight:700; color:var(--primary); min-width:38px; text-align:right; }
     .calc-total-bar { background:var(--primary); color:#fff; border-radius:12px; padding:14px 16px; margin:8px 0 4px; }
     .calc-total-line { display:flex; justify-content:space-between; font-size:13px; padding:2px 0; opacity:0.9; }
@@ -697,7 +697,7 @@
   <div class="screen" id="screen-reserva">
     <div class="screen-header">
       <div class="screen-title">📅 Reservas</div>
-      <div class="screen-subtitle">Erreserba · Nueva / Ver</div>
+      <div class="screen-subtitle" id="ts-reservas"></div>
     </div>
 
     <div class="tab-bar">
@@ -845,7 +845,7 @@
   <div class="screen" id="screen-misreservas">
     <div class="screen-header">
       <div class="screen-title">📅 Reservas</div>
-      <div class="screen-subtitle">Erreserba · Nueva / Ver</div>
+      <div class="screen-subtitle" id="ts-reservas"></div>
     </div>
 
     <div class="tab-bar">
@@ -854,7 +854,7 @@
     </div>
 
     <div class="card" style="padding:10px 14px; margin-bottom:8px;">
-      <label style="font-size:12px; margin-bottom:4px;" id="lbl-ver-como">Ver reservas de:</label>
+      <label style="font-size:12px; margin-bottom:4px;" id="lbl-ver-como"></label>
       <select id="mr-socio" onchange="renderMisReservas()"></select>
     </div>
 
@@ -992,8 +992,8 @@
   <!-- ── CALCULADORA ── -->
   <div class="screen" id="screen-calc">
     <div class="screen-header">
-      <div class="screen-title">🧮 Calculadora</div>
-      <div class="screen-subtitle">Cuenta del txoko</div>
+      <div class="screen-title" id="calc-tt">🧮 Calculadora</div>
+      <div class="screen-subtitle" id="calc-ts">Cuenta del txoko</div>
     </div>
 
     <!-- Banner reserva (solo visible cuando se abre desde una reserva) -->
@@ -1003,9 +1003,9 @@
 
     <!-- Comensales y configuración -->
     <div class="card">
-      <div class="card-title">👥 Comensales y configuración</div>
+      <div class="card-title" id="calc-card-config">👥 Comensales y configuración</div>
       <div class="calc-row">
-        <span style="font-size:13px;">Nº comensales</span>
+        <span style="font-size:13px;" id="calc-lbl-comens">Nº comensales</span>
         <div class="calc-counter">
           <button onclick="calcAdj('comensales',-1)">−</button>
           <span id="calc-comensales">0</span>
@@ -1013,14 +1013,14 @@
         </div>
       </div>
       <div class="calc-row">
-        <span style="font-size:13px;">Reserva <span id="calc-lock-reserva" style="display:none;font-size:11px;">🔒</span></span>
+        <span style="font-size:13px;" id="calc-lbl-reserva-tog">Reserva <span id="calc-lock-reserva" style="display:none;font-size:11px;">🔒</span></span>
         <div class="calc-toggle">
-          <button id="ctog-sinres" class="calc-tog-btn active" onclick="calcSetReserva(false)">Sin reserva</button>
-          <button id="ctog-conres" class="calc-tog-btn"        onclick="calcSetReserva(true)">Con reserva</button>
+          <button id="ctog-sinres" class="calc-tog-btn active" onclick="calcSetReserva(false)"></button>
+          <button id="ctog-conres" class="calc-tog-btn"        onclick="calcSetReserva(true)"></button>
         </div>
       </div>
       <div class="calc-row" id="calc-mesas-row" style="display:none;">
-        <span style="font-size:13px;">Nº mesas <span id="calc-lock-mesas" style="display:none;font-size:11px;">🔒</span></span>
+        <span style="font-size:13px;" id="calc-lbl-mesas">Nº mesas <span id="calc-lock-mesas" style="display:none;font-size:11px;">🔒</span></span>
         <div class="calc-counter">
           <button id="calc-mesas-minus" onclick="calcAdj('mesas',-1)">−</button>
           <span id="calc-mesas">1</span>
@@ -1028,20 +1028,20 @@
         </div>
       </div>
       <div class="calc-row">
-        <span style="font-size:13px;">¿Usa cocina? <span id="calc-lock-cocina" style="display:none;font-size:11px;">🔒</span></span>
+        <span style="font-size:13px;" id="calc-lbl-cocina">¿Usa cocina? <span id="calc-lock-cocina" style="display:none;font-size:11px;">🔒</span></span>
         <div class="calc-toggle">
-          <button id="ctog-nococ"  class="calc-tog-btn active" onclick="calcSetCocina(false)">No</button>
-          <button id="ctog-cocina" class="calc-tog-btn"        onclick="calcSetCocina(true)">Sí</button>
+          <button id="ctog-nococ"  class="calc-tog-btn active" onclick="calcSetCocina(false)"></button>
+          <button id="ctog-cocina" class="calc-tog-btn"        onclick="calcSetCocina(true)"></button>
         </div>
       </div>
       <div class="calc-row" style="border-bottom:none;">
         <div>
-          <div style="font-size:13px;">🧹 ¿Limpieza externa?</div>
-          <div style="font-size:10px;color:var(--text-muted);">Sí → max(comens.×1,5€ ; 15€) · No → 0€</div>
+          <div style="font-size:13px;" id="calc-lbl-limp">🧹 ¿Limpieza externa?</div>
+          <div style="font-size:10px;color:var(--text-muted);" id="calc-lbl-limp-hint">Sí → max(comens.×1,5€ ; 15€) · No → 0€</div>
         </div>
         <div class="calc-toggle">
-          <button id="ctog-nolimp" class="calc-tog-btn active" onclick="calcSetLimp(false)">No</button>
-          <button id="ctog-limp"   class="calc-tog-btn"        onclick="calcSetLimp(true)">Sí</button>
+          <button id="ctog-nolimp" class="calc-tog-btn active" onclick="calcSetLimp(false)"></button>
+          <button id="ctog-limp"   class="calc-tog-btn"        onclick="calcSetLimp(true)"></button>
         </div>
       </div>
     </div>
@@ -1062,9 +1062,9 @@
 
     <!-- Extras -->
     <div class="card">
-      <div class="card-title">🫙 Extras</div>
+      <div class="card-title" id="calc-card-extras">🫙 Extras</div>
       <div class="calc-row">
-        <div><div style="font-size:13px;">Aceite extra</div><div style="font-size:10px;color:var(--text-muted);">6,00 € / unidad</div></div>
+        <div><div style="font-size:13px;" id="calc-lbl-aceite">Aceite extra</div><div style="font-size:10px;color:var(--text-muted);">6,00 € / unidad</div></div>
         <div class="calc-counter">
           <button onclick="calcAdj('aceite',-1)">−</button>
           <span id="calc-aceite">0</span>
@@ -1072,7 +1072,7 @@
         </div>
       </div>
       <div class="calc-row" style="border-bottom:none;">
-        <div><div style="font-size:13px;">Descorche</div><div style="font-size:10px;color:var(--text-muted);">1,00 € / botella</div></div>
+        <div><div style="font-size:13px;" id="calc-lbl-descorche">Descorche</div><div style="font-size:10px;color:var(--text-muted);">1,00 € / botella</div></div>
         <div class="calc-counter">
           <button onclick="calcAdj('descorche',-1)">−</button>
           <span id="calc-descorche">0</span>
@@ -1083,7 +1083,7 @@
 
     <!-- Bote -->
     <div class="card">
-      <div class="card-title">💰 Bote (opcional)</div>
+      <div class="card-title" id="calc-card-bote">💰 Bote (opcional)</div>
       <div style="display:flex;align-items:center;gap:10px;">
         <input type="number" id="calc-bote" min="0" step="0.5" placeholder="0,00"
           style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:16px;font-weight:700;"
@@ -1103,18 +1103,18 @@
 
     <!-- Botón confirmar (solo visible cuando viene de una reserva) -->
     <button id="calc-btn-confirmar" class="btn btn-primary" style="width:100%;display:none;" onclick="calcConfirmar()">
-      💾 Guardar cuenta
+      <span id="calc-btn-confirmar-txt">💾 Guardar cuenta</span>
     </button>
     <!-- Paso "¿Estás seguro?" -->
     <div id="calc-confirmar-seguro" style="display:none; background:var(--warning-bg,#FFF8E1); border:1.5px solid #F9A825; border-radius:10px; padding:14px; text-align:center;">
-      <div style="font-weight:700; margin-bottom:10px;">¿Estás seguro de que los datos son correctos?</div>
+      <div id="calc-confirmar-pregunta" style="font-weight:700; margin-bottom:10px;">¿Estás seguro de que los datos son correctos?</div>
       <div style="display:flex; gap:10px;">
-        <button class="btn btn-primary" style="flex:1;" onclick="calcGuardar()">✅ Sí, guardar</button>
-        <button class="btn btn-outline" style="flex:1;" onclick="calcCancelarConfirmar()">❌ No, revisar</button>
+        <button id="calc-btn-si" class="btn btn-primary" style="flex:1;" onclick="calcGuardar()">✅ Sí, guardar</button>
+        <button id="calc-btn-no" class="btn btn-outline" style="flex:1;" onclick="calcCancelarConfirmar()">❌ No, revisar</button>
       </div>
     </div>
 
-    <button class="btn btn-outline" style="width:100%;margin-bottom:80px;" onclick="calcReset()">🔄 Nueva cuenta</button>
+    <button id="calc-btn-nueva" class="btn btn-outline" style="width:100%;margin-bottom:80px;" onclick="calcReset()">🔄 Nueva cuenta</button>
   </div>
 
   <!-- ── ADMIN ── -->
@@ -1234,6 +1234,22 @@ const TR = {
     sinReservas: 'No hay reservas',
     sinReservasHint: 'Pulsa ➕ para crear una',
     libereSocio: 'Libre (disponible)',
+    tsReservas: 'Erreserba · Nueva / Ver',
+    lblVerComo: 'Ver reservas de:',
+    calcTitulo: '🧮 Calculadora', calcSub: 'Cuenta del txoko',
+    calcComens: 'Nº comensales', calcReserva: 'Reserva',
+    calcSinRes: 'Sin reserva',   calcConRes: 'Con reserva',
+    calcMesas: 'Nº mesas',       calcCocina: '¿Usa cocina?',
+    calcLimp: '¿Limpieza externa?',
+    calcLimpHint: 'Sí → max(comens.×1,5€ ; 15€) · No → 0 €',
+    calcFijos: '📊 Costes fijos', calcBebs: '🍸 Consumiciones',
+    calcExtras: '🫙 Extras',      calcAceite: 'Aceite extra',
+    calcDescorche: 'Descorche',   calcBote: '💰 Bote (opcional)',
+    calcGuardar: '💾 Guardar cuenta', calcNueva: '🔄 Nueva cuenta',
+    calcSiGuardar: '✅ Sí, guardar',  calcNoRevisar: '❌ No, revisar',
+    calcConfirmarPregunta: '¿Estás seguro de que los datos son correctos?',
+    calcSinConsumos: 'Sin consumiciones',
+    calcAportacion: 'Aportación voluntaria',
   },
   eu: {
     subtitle: 'Dietetiko Liburu Digitala',
@@ -1258,6 +1274,22 @@ const TR = {
     sinReservas: 'Ez dago erreserbarik',
     sinReservasHint: 'Sakatu ➕ erreserba egiteko',
     libereSocio: 'Libre (erabilgarri)',
+    tsReservas: 'Erreserba · Berria / Ikusi',
+    lblVerComo: 'Erreserben ikuspena:',
+    calcTitulo: '🧮 Kalkulagailua', calcSub: 'Txokoaren kontua',
+    calcComens: 'Lagun kopurua',    calcReserva: 'Erreserba',
+    calcSinRes: 'Erreserbarik gabe', calcConRes: 'Erreserba rekin',
+    calcMesas: 'Mahai kopurua',      calcCocina: '¿Sukaldea?',
+    calcLimp: '¿Kanpoko garbiketa?',
+    calcLimpHint: 'Bai → max(lagun×1,5€ ; 15€) · Ez → 0 €',
+    calcFijos: '📊 Kostu finkoak',  calcBebs: '🍸 Kontsumoak',
+    calcExtras: '🫙 Gehigarriak',   calcAceite: 'Olio gehigarria',
+    calcDescorche: 'Tapoi-irekiera', calcBote: '💰 Poltsa (aukerakoa)',
+    calcGuardar: '💾 Kontua gorde', calcNueva: '🔄 Kontu berria',
+    calcSiGuardar: '✅ Bai, gorde', calcNoRevisar: '❌ Ez, berrikusi',
+    calcConfirmarPregunta: 'Datuak zuzenak direla ziur zaude?',
+    calcSinConsumos: 'Kontsumaturik ez',
+    calcAportacion: 'Borondatezko ekarpena',
   }
 };
 
@@ -1273,6 +1305,7 @@ function toggleLang() {
   renderNormas();
   if (currentScreen === 'misreservas') renderMisReservas();
   if (currentScreen === 'reserva')     initReservaForm();
+  if (currentScreen === 'calc')        renderCalcTexts();
 }
 
 function applyTR() {
@@ -1286,11 +1319,44 @@ function applyTR() {
     'nl-mr':  'nlMr',  'nl-av': 'nlAv', 'nl-nor': 'nlNor', 'nl-adm': 'nlAdm',
     'l-libre':'libre', 'l-parcial':'parcial', 'l-ocupado':'ocupado', 'l-bloq':'bloqueado',
     'tab-activas':'verActivas', 'tab-historial':'verHist',
+    'ts-reservas': 'tsReservas', 'lbl-ver-como': 'lblVerComo',
   };
   Object.entries(ids).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) el.textContent = t(key);
   });
+  renderCalcTexts();
+}
+
+function renderCalcTexts() {
+  const st = (id, key) => { const el = document.getElementById(id); if (el) el.textContent = t(key); };
+  st('calc-tt',                'calcTitulo');
+  st('calc-ts',                'calcSub');
+  st('calc-card-config',       'calcComens'); // reutilizamos clave cercana
+  st('calc-lbl-comens',        'calcComens');
+  st('calc-lbl-reserva-tog',   'calcReserva');
+  st('ctog-sinres',            'calcSinRes');
+  st('ctog-conres',            'calcConRes');
+  st('calc-lbl-mesas',         'calcMesas');
+  st('calc-lbl-cocina',        'calcCocina');
+  st('ctog-nococ',             lang === 'eu' ? 'Ez' : 'No');
+  st('ctog-cocina',            lang === 'eu' ? 'Bai' : 'Sí');
+  st('calc-lbl-limp',          'calcLimp');
+  st('calc-lbl-limp-hint',     'calcLimpHint');
+  st('ctog-nolimp',            lang === 'eu' ? 'Ez' : 'No');
+  st('ctog-limp',              lang === 'eu' ? 'Bai' : 'Sí');
+  st('calc-card-extras',       'calcExtras');
+  st('calc-lbl-aceite',        'calcAceite');
+  st('calc-lbl-descorche',     'calcDescorche');
+  st('calc-card-bote',         'calcBote');
+  st('calc-btn-confirmar-txt', 'calcGuardar');
+  st('calc-confirmar-pregunta','calcConfirmarPregunta');
+  st('calc-btn-si',            'calcSiGuardar');
+  st('calc-btn-no',            'calcNoRevisar');
+  st('calc-btn-nueva',         'calcNueva');
+  // Card title costes fijos (texto con emoji, sin clave separada)
+  const cf = document.getElementById('calc-card-config');
+  if (cf) cf.textContent = `👥 ${lang === 'eu' ? 'Lagunaldea eta konfigurazioa' : 'Comensales y configuración'}`;
 }
 
 /* =========================================================
@@ -2767,7 +2833,7 @@ function renderReservaCard(r, isAdmin) {
   // Botones del footer (calculados fuera del template para evitar errores)
   const footerBtns = [];
   if (canCancel) footerBtns.push(`<button class="btn btn-danger btn-sm" onclick="${cancelFn}">${t('cancelarRes')}</button>`);
-  if (r.estado !== 'cancelada') footerBtns.push(`<button class="btn btn-outline btn-sm" onclick="abrirCalcDesdeReserva('${r.id}')">🧮 Cuenta</button>`);
+  if (r.estado !== 'cancelada') footerBtns.push(`<button class="btn btn-outline btn-sm" onclick="abrirCalcDesdeReserva('${r.id}')">🧮 ${eu ? 'Kontua' : 'Cuenta'}</button>`);
   const footer = footerBtns.length ? `<div class="reserva-footer">${footerBtns.join('')}</div>` : '';
 
   return `<div class="reserva-card ${r.estado === 'cancelada' ? 'cancelada' : ''}">
@@ -3552,6 +3618,11 @@ function generarInforme() {
   const conCocina   = conf.filter(r => r.usoCocina === 'si').length;
   const conLimp     = conf.filter(r => r.limpiezaExterna === 'si').length;
   const totalLimp   = conf.reduce((s,r) => s + (Number(r.costeLimpieza)||0), 0);
+  // Cuentas registradas
+  const parseCuenta = r => { try { return r.cuentaData ? JSON.parse(r.cuentaData) : null; } catch(e) { return null; } };
+  const conCuenta    = conf.filter(r => parseCuenta(r)?.totales?.total != null).length;
+  const totalCuenta  = conf.reduce((s,r) => { const c = parseCuenta(r); return s + (c?.totales?.total || 0); }, 0);
+  const mediaCuenta  = conCuenta > 0 ? totalCuenta / conCuenta : 0;
   const porFranja   = {
     comida: reservas.filter(r=>r.franja==='comida').length,
     cena:   reservas.filter(r=>r.franja==='cena').length,
@@ -3588,6 +3659,7 @@ function generarInforme() {
       <td style="text-align:center">${r.numeroComensales||r.comensalesEstimados||'–'}</td>
       <td style="text-align:center">${cBadge(r.usoCocina)}</td>
       <td style="text-align:center">${lBadge(r.limpiezaExterna, r.costeLimpieza)}</td>
+      <td style="text-align:center;font-weight:700;color:${parseCuenta(r)?.totales?.total != null ? '#2E7D32' : '#9E9E9E'}">${parseCuenta(r)?.totales?.total != null ? parseCuenta(r).totales.total.toFixed(2)+'€' : '–'}</td>
       <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#6B5B52;font-size:8px" title="${escapeHtml(r.observaciones||'')}">${escapeHtml(r.observaciones||'–')}</td>
       <td>${sBadge(r.estado)}</td>
     </tr>`).join('');
@@ -3666,6 +3738,7 @@ function generarInforme() {
     <div class="stat"><div class="stat-icon">🔥</div><div class="stat-val" style="color:#E65100">${conCocina}</div><div class="stat-lbl">Usaron cocina</div></div>
     <div class="stat"><div class="stat-icon">🧹</div><div class="stat-val" style="color:#00695C">${conLimp}</div><div class="stat-lbl">Limp. externa</div></div>
     <div class="stat"><div class="stat-icon">💶</div><div class="stat-val" style="color:#C8952A">${totalLimp.toFixed(0)}€</div><div class="stat-lbl">Coste limp.</div></div>
+    <div class="stat"><div class="stat-icon">💰</div><div class="stat-val" style="color:#2E7D32">${totalCuenta.toFixed(0)}€</div><div class="stat-lbl">Total facturado</div></div>
   </div>
   <div class="sub-bar">
     <div class="sub-item"><span class="sub-label">🍴 Comidas</span><span class="sub-val">${porFranja.comida}</span></div>
@@ -3687,6 +3760,7 @@ function generarInforme() {
       <th style="width:50px;text-align:center">Pers.</th>
       <th style="width:48px;text-align:center">Cocina</th>
       <th style="width:82px;text-align:center">Limp. externa</th>
+      <th style="width:75px;text-align:center">💰 Total</th>
       <th style="width:110px">Observaciones</th>
       <th style="width:90px">Estado</th>
     </tr></thead>
@@ -3860,9 +3934,50 @@ function generarInforme() {
     </div>
 
     <!-- Cocina por mes -->
-    <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
+    <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);margin-bottom:14px;">
       <div class="section-title" style="margin-bottom:10px;">🔥 Uso de cocina por mes</div>
       <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;">${cocinaRows}</div>
+    </div>
+
+    <!-- Cuentas registradas -->
+    <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
+      <div class="section-title" style="margin-bottom:12px;">💰 Cuentas registradas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Cuentas registradas</div>
+          <div style="font-size:22px;font-weight:900;color:#6B1A1A;">${conCuenta}</div>
+          <div style="font-size:8px;color:#9B8B82;">de ${conf.length} confirmadas</div>
+        </div>
+        <div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Total facturado</div>
+          <div style="font-size:22px;font-weight:900;color:#2E7D32;">${totalCuenta.toFixed(2)}€</div>
+          <div style="font-size:8px;color:#9B8B82;">suma de todas las cuentas</div>
+        </div>
+        <div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Media por cuenta</div>
+          <div style="font-size:22px;font-weight:900;color:#C8952A;">${mediaCuenta.toFixed(2)}€</div>
+          <div style="font-size:8px;color:#9B8B82;">por jornada registrada</div>
+        </div>
+      </div>
+      ${conCuenta > 0 ? `
+      <div style="font-size:8px;color:#6B5B52;margin-bottom:6px;">Detalle por reserva con cuenta registrada:</div>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        ${conf.filter(r => parseCuenta(r)?.totales?.total != null)
+          .sort((a,b) => (parseCuenta(b).totales.total) - (parseCuenta(a).totales.total))
+          .slice(0,10)
+          .map(r => {
+            const ct = parseCuenta(r).totales.total;
+            const maxT = Math.max(...conf.filter(rx=>parseCuenta(rx)?.totales?.total!=null).map(rx=>parseCuenta(rx).totales.total));
+            return `<div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:7px;color:#6B5B52;width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${fmtDate(r.fechaReservada)}</span>
+              <span style="font-size:7px;color:#4A3728;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(r.socioResponsable||r.socioNombre||'')}</span>
+              <div style="width:120px;background:#F0E8DC;border-radius:3px;height:10px;flex-shrink:0;">
+                <div style="width:${Math.round(ct/maxT*100)}%;background:#2E7D32;height:100%;border-radius:3px;"></div>
+              </div>
+              <span style="font-size:8px;font-weight:700;color:#2E7D32;width:52px;text-align:right;flex-shrink:0;">${ct.toFixed(2)}€</span>
+            </div>`;
+          }).join('')}
+      </div>` : `<div style="color:#9E9E9E;font-style:italic;font-size:9px;text-align:center;padding:10px;">Aún no hay cuentas registradas en ninguna reserva.</div>`}
     </div>
 
     <div class="footer" style="margin-top:12px;">
@@ -4005,7 +4120,7 @@ function calcAdj(field, delta) {
     const minimo = calcState._reservaComensales || 0;
     const nuevo  = calcState.comensales + delta;
     if (delta < 0 && nuevo < minimo) {
-      showToast(`⚠️ En la reserva ya figuraban ${minimo} personas`, 'warn', 3500);
+      showToast(`⚠️ ${lang==='eu' ? `Erreserbako lagun kopurua zen: ${minimo}` : `En la reserva ya figuraban ${minimo} personas`}`, 'warn', 3500);
       return;
     }
     calcState.comensales = Math.max(0, nuevo);
@@ -4014,7 +4129,7 @@ function calcAdj(field, delta) {
     const minMesas = calcState._reservaMesas || 1;
     const nuevoM   = calcState.mesas + delta;
     if (delta < 0 && nuevoM < minMesas) {
-      showToast(`⚠️ En la reserva ya figuraban ${minMesas} mesa${minMesas > 1 ? 's' : ''}`, 'warn', 3500);
+      showToast(`⚠️ ${lang==='eu' ? `Erreserbako mahai kopurua zen: ${minMesas}` : `En la reserva ya figuraban ${minMesas} mesa${minMesas > 1 ? 's' : ''}`}`, 'warn', 3500);
       return;
     }
     calcState.mesas = Math.max(1, nuevoM);
@@ -4043,7 +4158,7 @@ function calcSetLimp(val) {
 
 function calcSetCocina(val) {
   if (!val && calcState._reservaCocina) {
-    showToast('⚠️ En la reserva ya figuraba uso de cocina: Sí', 'warn', 3500);
+    showToast(`⚠️ ${lang==='eu' ? 'Erreserbako sukaldea erabiltzekoa zen: Bai' : 'En la reserva ya figuraba uso de cocina: Sí'}`, 'warn', 3500);
     return;
   }
   calcState.cocina = val;
@@ -4162,7 +4277,7 @@ function abrirCalcDesdeReserva(id) {
       || ((r.socioResponsable || '').match(/N[oº°]\s*(\d+)/i) || [])[1]
       || '0';
     if (parseInt(rawNum) !== parseInt(sess.socioId)) {
-      showToast('⚠️ Solo puedes añadir la cuenta a tus propias reservas', 'warn', 3500);
+      showToast(`⚠️ ${lang==='eu' ? 'Zure erreserben kontua bakarrik sar dezakezu' : 'Solo puedes añadir la cuenta a tus propias reservas'}`, 'warn', 3500);
       return;
     }
   }
@@ -4214,12 +4329,56 @@ function calcCancelarConfirmar() {
   document.getElementById('calc-btn-confirmar').style.display  = '';
   document.getElementById('calc-confirmar-seguro').style.display = 'none';
 }
-function calcGuardar() {
+async function calcGuardar() {
   document.getElementById('calc-confirmar-seguro').style.display = 'none';
   const btnConf = document.getElementById('calc-btn-confirmar');
   if (btnConf) btnConf.style.display = 'none';
-  // PASO 2 (próximo): guardar en Sheet via apiCall
-  showToast('✅ Cuenta guardada · Abriendo PDF…', 'ok', 3000);
+
+  const c       = calcState;
+  const boteVal = parseFloat(document.getElementById('calc-bote')?.value || 0) || 0;
+
+  // Calcular totales
+  const reservaVal  = c.conReserva ? c.mesas * 5.0 : c.comensales * 1.0;
+  const cocinaVal   = c.cocina ? c.comensales * 0.5 : 0;
+  const limpVal     = c.limpExt ? Math.max(15.0, c.comensales * 1.5) : 0;
+  const fijosTotal  = reservaVal + cocinaVal + limpVal;
+  let   bebTotal    = 0;
+  CALC_PRODS.forEach(p => {
+    bebTotal += p.txup !== undefined
+      ? (c.beb[`${p.id}_t`]||0)*p.txup + (c.beb[`${p.id}_c`]||0)*p.copa
+      : (c.beb[`${p.id}_u`]||0)*p.unit;
+  });
+  const extrasTotal = c.aceite * 6.0 + c.descorche * 1.0;
+  const total       = fijosTotal + bebTotal + extrasTotal + boteVal;
+
+  const payload = {
+    reservaId:   c._fromReserva || '',
+    fechaCuenta: new Date().toISOString().substring(0, 10),
+    socioId:     getSession()?.socioId || '',
+    comensales:  c.comensales,
+    mesas:       c.mesas,
+    conReserva:  c.conReserva,
+    cocina:      c.cocina,
+    limpExt:     c.limpExt,
+    aceite:      c.aceite,
+    descorche:   c.descorche,
+    bote:        boteVal,
+    bebidas:     c.beb,
+    totales:     { fijos: fijosTotal, bebidas: bebTotal, extras: extrasTotal, bote: boteVal, total }
+  };
+
+  // Guardar en Sheet si viene de una reserva
+  if (c._fromReserva) {
+    try {
+      await apiCall({ action: 'saveCuenta', data: payload });
+      showToast(`✅ ${lang==='eu' ? 'Kontua gordeta · PDF irekitzen…' : 'Cuenta guardada · Abriendo PDF…'}`, 'ok', 3000);
+    } catch(err) {
+      showToast(`⚠️ ${lang==='eu' ? 'Errorea gordetzean: ' : 'Error guardando: '}${err.message}`, 'warn', 4000);
+    }
+  } else {
+    showToast(`✅ ${lang==='eu' ? 'PDF irekitzen…' : 'Abriendo PDF…'}`, 'ok', 2000);
+  }
+
   setTimeout(() => generarCuentaPDF(), 400);
 }
 
