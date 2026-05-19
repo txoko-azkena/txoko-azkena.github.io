@@ -3760,7 +3760,7 @@ function generarInforme() {
     tbody tr:nth-child(even) td{ background:#FDFAF5; }
     tbody tr:nth-child(odd)  td{ background:#fff; }
     tbody tr.row-canc td{ opacity:0.4; }
-    td{ padding:5px 6px; border-bottom:1px solid #F0E8DC; vertical-align:middle; font-size:9px; }
+    td{ padding:6px 7px; border-bottom:1px solid #F0E8DC; vertical-align:middle; font-size:11px; }
     .badge{ padding:2px 7px; border-radius:12px; font-size:8px; font-weight:700; display:inline-block; white-space:nowrap; }
     .badge-comida   { background:#FFF3E0; color:#E65100; }
     .badge-cena     { background:#E3F2FD; color:#1565C0; }
@@ -3841,212 +3841,199 @@ function generarInforme() {
   </div>
   </body></html>`;
 
-  // ── DATOS GRÁFICOS ──
-  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  // ── DATOS PARA GRÁFICOS ──────────────────────────────
+  const meses    = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const barH     = (val, max, h=70) => `height:${Math.max(Math.round(val/max*h),2)}px`;
+  const barW     = (val, max)       => `width:${Math.max(Math.round(val/max*100),1)}%`;
+  const segBar   = (vals, colors, labels) => {
+    const tot = vals.reduce((s,v)=>s+v,0)||1;
+    return vals.map((v,i) => `<div style="flex:${v||0.01};background:${colors[i]};height:100%;${i===0?'border-radius:6px 0 0 6px;':''}${i===vals.length-1?'border-radius:0 6px 6px 0;':''}" title="${labels[i]}: ${v} (${Math.round(v/tot*100)}%)"></div>`).join('');
+  };
+  const card     = (content) => `<div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:14px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">${content}</div>`;
+  const secT     = (t) => `<div class="section-title" style="margin-bottom:12px;">${t}</div>`;
+  const kpi      = (icon,val,lbl,color='#6B1A1A') => `<div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#6B5B52;margin-bottom:3px;">${icon} ${lbl}</div><div style="font-size:22px;font-weight:900;color:${color};">${val}</div></div>`;
+
+  // Reservas por mes + cocina por mes
   const porMes = Array(12).fill(0), porMesCocina = Array(12).fill(0);
   reservas.forEach(r => {
-    if (r.fechaReservada) {
-      const m = new Date(r.fechaReservada + 'T12:00:00').getMonth();
-      if (m >= 0 && m < 12) {
-        porMes[m]++;
-        if (r.usoCocina === 'si') porMesCocina[m]++;
-      }
-    }
+    const m = new Date((r.fechaReservada||'2000-01-01')+'T12:00:00').getMonth();
+    if (m>=0&&m<12){ porMes[m]++; if(r.usoCocina==='si') porMesCocina[m]++; }
   });
   const maxMes = Math.max(...porMes, 1);
 
-  const socioMap = {};
-  reservas.forEach(r => {
-    const key = r.socioResponsable || r.socioNombre || '–';
-    if (!socioMap[key]) socioMap[key] = { total:0, conf:0, comsls:0 };
-    socioMap[key].total++;
-    if (r.estado === 'confirmada') { socioMap[key].conf++; socioMap[key].comsls += Number(r.numeroComensales||r.comensalesEstimados||0); }
+  // Facturación mensual (solo entradas con cuenta)
+  const factMes = Array(12).fill(0), factMesN = Array(12).fill(0);
+  allE.forEach(e => {
+    const cd = parseCD(e);
+    if (!cd?.totales?.total) return;
+    const m = new Date((e._fecha||'2000-01-01')+'T12:00:00').getMonth();
+    if (m>=0&&m<12){ factMes[m] += cd.totales.total; factMesN[m]++; }
   });
-  const ranking = Object.entries(socioMap)
-    .map(([name,d]) => ({ name, ...d, avg: d.conf > 0 ? (d.comsls/d.conf).toFixed(1) : '–' }))
-    .sort((a,b) => b.total - a.total);
-  const maxR = ranking.length > 0 ? ranking[0].total : 1;
+  const maxFactMes = Math.max(...factMes, 1);
 
-  const pctLimp  = conf.length > 0 ? Math.round(conLimp/conf.length*100) : 0;
-  const pctCocin = conf.length > 0 ? Math.round(conCocina/conf.length*100) : 0;
-  const totalFranja = porFranja.comida + porFranja.cena + porFranja.dia || 1;
+  // Ranking uso por socio
+  const socioMap = {};
+  allE.forEach(e => {
+    const key = e._socio || '–';
+    if (!socioMap[key]) socioMap[key] = { total:0, conf:0, comsls:0, fact:0 };
+    socioMap[key].total++;
+    if (e._type==='reserva'&&e.estado==='confirmada'){ socioMap[key].conf++; socioMap[key].comsls += Number(e.numeroComensales||e.comensalesEstimados||0); }
+    const cd = parseCD(e); if(cd?.totales?.total) socioMap[key].fact += cd.totales.total;
+  });
+  const ranking = Object.entries(socioMap).map(([name,d])=>({name,...d,avg:d.conf>0?(d.comsls/d.conf).toFixed(1):'–'})).sort((a,b)=>b.total-a.total);
+  const rankFact = [...ranking].sort((a,b)=>b.fact-a.fact).filter(s=>s.fact>0);
+  const maxR = ranking.length>0 ? ranking[0].total : 1;
+  const maxFact = rankFact.length>0 ? rankFact[0].fact : 1;
+
+  // Desglose económico (fijos conocidos + cuentas completas)
+  let totR=0,totC=0,totL=0,totB=0,totEx=0,totBo=0;
+  allE.forEach(e => {
+    const fn = financials(e);
+    totR += fn.reserva||0; totC += fn.cocina||0; totL += fn.limpieza||0;
+    if (fn.known){ totB += fn.consumiciones||0; totEx += fn.extras||0; totBo += fn.bote||0; }
+  });
+  const totEco = totR+totC+totL+totB+totEx+totBo || 1;
+  const ecoItems = [
+    ['💰 Reserva',totR,'#6B1A1A'],['🔥 Cocina',totC,'#E65100'],['🧹 Limpieza',totL,'#00695C'],
+    ['🍸 Consum.',totB,'#1565C0'],['🫙 Extras',totEx,'#880E4F'],['💰 Bote',totBo,'#C8952A']
+  ].filter(([,v])=>v>0);
+
+  // Aux
+  const pctLimp  = conf.length>0 ? Math.round(conLimp/conf.length*100) : 0;
+  const pctCocin = conf.length>0 ? Math.round(conCocina/conf.length*100) : 0;
+  const totalFranja = porFranja.comida+porFranja.cena+porFranja.dia||1;
   const pBaja = conf.filter(r=>r.planta==='baja').length;
   const pSup  = conf.filter(r=>r.planta==='superior').length;
-  const maxPlanta = Math.max(pBaja, pSup, 1);
-
-  const barH = (val, max, h=60) => `height:${Math.max(Math.round(val/max*h),2)}px`;
-  const barW = (val, max) => `width:${Math.max(Math.round(val/max*100),1)}%`;
-
-  const mesRows = meses.map((m,i) => `
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
-      <span style="font-size:7px;color:#6B1A1A;font-weight:700;min-height:10px;">${porMes[i]||''}</span>
-      <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:60px;gap:1px;">
-        <div style="${barH(porMes[i],maxMes)};width:100%;background:#6B1A1A;border-radius:3px 3px 0 0;min-height:${porMes[i]?2:0}px;"></div>
-      </div>
-      <span style="font-size:7px;color:#6B5B52;">${m}</span>
-    </div>`).join('');
-
-  const cocinaRows = meses.map((m,i) => `
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
-      <span style="font-size:7px;color:#E65100;font-weight:700;min-height:10px;">${porMesCocina[i]||''}</span>
-      <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:60px;">
-        <div style="${barH(porMesCocina[i],maxMes)};width:100%;background:#E65100;border-radius:3px 3px 0 0;min-height:${porMesCocina[i]?2:0}px;"></div>
-      </div>
-      <span style="font-size:7px;color:#6B5B52;">${m}</span>
-    </div>`).join('');
-
-  const rankRows = ranking.slice(0,20).map(s => `
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
-      <span style="width:130px;font-size:8px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2C1810;" title="${s.name}">${s.name}</span>
-      <div style="flex:1;background:#F0E8DC;border-radius:4px;height:13px;position:relative;">
-        <div style="${barW(s.conf,maxR)};background:#6B1A1A;height:100%;border-radius:4px;"></div>
-        ${s.total > s.conf ? `<div style="${barW(s.total,maxR)};background:#C62828;height:100%;border-radius:4px;position:absolute;top:0;left:0;opacity:0.25;"></div>` : ''}
-      </div>
-      <span style="width:14px;font-size:8px;font-weight:700;color:#6B1A1A;text-align:center;">${s.total}</span>
-      <span style="width:28px;font-size:7px;color:#6B5B52;text-align:center;">${s.avg} p.</span>
-    </div>`).join('');
-
-  const segBar = (vals, colors, labels) => {
-    const total = vals.reduce((s,v) => s+v, 0) || 1;
-    return vals.map((v,i) => `<div style="flex:${v};background:${colors[i]};height:100%;${i===0?'border-radius:6px 0 0 6px;':''}${i===vals.length-1?'border-radius:0 6px 6px 0;':''}" title="${labels[i]}: ${v} (${Math.round(v/total*100)}%)"></div>`).join('');
-  };
+  const maxPlanta = Math.max(pBaja,pSup,1);
 
   const chartsHtml = `
   <div style="page-break-before:always;">
-    <div class="hdr" style="margin-bottom:14px;">
+    <div class="hdr" style="margin-bottom:16px;">
       <div class="hdr-l" style="display:flex;align-items:center;gap:12px;">
-        <img src="${LOGO_SRC}"
-             style="width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);object-fit:cover;"
-             onerror="this.style.display='none'" alt="Logo">
-        <div><h1>Txoko Azkena · Estadísticas y Gráficos</h1><h2>Análisis de uso del txoko</h2></div>
+        <img src="${LOGO_SRC}" style="width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);object-fit:cover;" onerror="this.style.display='none'" alt="Logo">
+        <div><h1>Txoko Azkena · Estadísticas y Gráficos</h1><h2>Análisis de uso y gestión económica</h2></div>
       </div>
       <div class="hdr-r">CIF: G95368627 · Basauri · <strong>${now}</strong></div>
     </div>
 
+    <!-- FILA 1: Facturación mensual + Ranking uso -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
 
-      <!-- Ranking socios -->
-      <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
-        <div class="section-title" style="margin-bottom:10px;">👤 Ranking de uso por socio</div>
-        <div style="display:flex;gap:14px;font-size:7px;color:#6B5B52;margin-bottom:8px;">
-          <span>🟥 Total reservas &nbsp; <span style="opacity:0.4">░</span> Canceladas incluidas</span>
-          <span style="margin-left:auto">Pers. = media comensales</span>
-        </div>
-        ${rankRows || '<div style="color:#9E9E9E;font-style:italic;font-size:9px;">Sin datos</div>'}
-      </div>
-
-      <!-- Actividad por mes -->
-      <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
-        <div class="section-title" style="margin-bottom:10px;">📅 Reservas por mes</div>
-        <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;">${mesRows}</div>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-
-      <!-- Franja horaria -->
-      <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
-        <div class="section-title" style="margin-bottom:12px;">⏰ Distribución por franja</div>
-        <div style="display:flex;height:18px;border-radius:6px;overflow:hidden;margin-bottom:10px;">
-          ${segBar([porFranja.comida,porFranja.cena,porFranja.dia],['#E65100','#1565C0','#880E4F'],['Comida','Cena','Día completo'])}
-        </div>
-        <div style="display:flex;flex-direction:column;gap:5px;">
-          ${[['🍴','Comida',porFranja.comida,'#E65100'],['🌙','Cena',porFranja.cena,'#1565C0'],['☀️','Día completo',porFranja.dia,'#880E4F']].map(([ic,lb,v,c]) => `
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:10px;">${ic}</span>
-            <span style="flex:1;font-size:8px;">${lb}</span>
-            <span style="font-size:10px;font-weight:900;color:${c};">${v}</span>
-            <span style="font-size:8px;color:#9E9E9E;">${Math.round(v/totalFranja*100)}%</span>
+      ${card(`${secT('💰 Facturación mensual (cuentas registradas)')}
+        <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;margin-bottom:6px;">
+          ${meses.map((m,i) => `
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span style="font-size:9px;color:#2E7D32;font-weight:700;min-height:12px;">${factMes[i]>0?factMes[i].toFixed(0)+'€':''}</span>
+            <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;">
+              <div style="${barH(factMes[i],maxFactMes)};width:100%;background:#2E7D32;border-radius:3px 3px 0 0;min-height:${factMes[i]>0?3:0}px;"></div>
+            </div>
+            <span style="font-size:9px;color:#6B5B52;">${m}</span>
           </div>`).join('')}
         </div>
-      </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
+          ${kpi('💰', totalCuenta.toFixed(0)+'€', 'Total facturado', '#2E7D32')}
+          ${kpi('📊', String(conCuenta), 'Cuentas registradas', '#6B1A1A')}
+          ${kpi('∅', mediaCuenta.toFixed(0)+'€', 'Media por cuenta', '#C8952A')}
+        </div>`)}
 
-      <!-- Planta -->
-      <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
-        <div class="section-title" style="margin-bottom:12px;">🏠 Uso por planta</div>
-        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px;"><span>🏠 Planta baja</span><span style="font-weight:900;color:#4527A0;">${pBaja}</span></div>
-            <div style="background:#F0E8DC;border-radius:4px;height:16px;"><div style="${barW(pBaja,maxPlanta)};background:#4527A0;height:100%;border-radius:4px;"></div></div>
+      ${card(`${secT('👤 Ranking de uso por socio')}
+        <div style="font-size:10px;color:#6B5B52;margin-bottom:8px;">Barras: ■ confirmadas · ░ canceladas incluidas · Nº = total · Pers. = media comensales</div>
+        ${ranking.slice(0,15).map(s => `
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+          <span style="width:140px;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2C1810;" title="${s.name}">${s.name}</span>
+          <div style="flex:1;background:#F0E8DC;border-radius:4px;height:14px;position:relative;">
+            <div style="${barW(s.conf,maxR)};background:#6B1A1A;height:100%;border-radius:4px;"></div>
+            ${s.total>s.conf?`<div style="${barW(s.total,maxR)};background:#C62828;height:100%;border-radius:4px;position:absolute;top:0;left:0;opacity:0.2;"></div>`:''}
           </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px;"><span>🏠 Planta superior</span><span style="font-weight:900;color:#283593;">${pSup}</span></div>
-            <div style="background:#F0E8DC;border-radius:4px;height:16px;"><div style="${barW(pSup,maxPlanta)};background:#283593;height:100%;border-radius:4px;"></div></div>
-          </div>
-        </div>
-        <div style="margin-top:14px;text-align:center;">
-          <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Reparto confirmadas</div>
-          <div style="display:flex;height:14px;border-radius:6px;overflow:hidden;">
-            ${segBar([pBaja,pSup],['#4527A0','#283593'],['Baja','Superior'])}
-          </div>
-        </div>
-      </div>
-
-      <!-- Limpieza + Cocina -->
-      <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
-        <div class="section-title" style="margin-bottom:12px;">🧹 Cocina y Limpieza</div>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px;">
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px;"><span>🔥 Usaron cocina</span><span style="font-weight:900;color:#E65100;">${conCocina} (${pctCocin}%)</span></div>
-            <div style="background:#F0E8DC;border-radius:4px;height:16px;"><div style="width:${pctCocin}%;background:#E65100;height:100%;border-radius:4px;"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px;"><span>🧹 Limp. externa</span><span style="font-weight:900;color:#00695C;">${conLimp} (${pctLimp}%)</span></div>
-            <div style="background:#F0E8DC;border-radius:4px;height:16px;"><div style="width:${pctLimp}%;background:#00695C;height:100%;border-radius:4px;"></div></div>
-          </div>
-          <div style="background:#F5EDD6;border-radius:8px;padding:8px;text-align:center;margin-top:4px;">
-            <div style="font-size:8px;color:#6B5B52;margin-bottom:2px;">💶 Coste total limpieza</div>
-            <div style="font-size:20px;font-weight:900;color:#C8952A;">${totalLimp.toFixed(2)}€</div>
-          </div>
-        </div>
-      </div>
+          <span style="width:18px;font-size:10px;font-weight:700;color:#6B1A1A;text-align:center;">${s.total}</span>
+          <span style="width:34px;font-size:9px;color:#6B5B52;text-align:right;">${s.avg} p.</span>
+        </div>`).join('')||'<div style="color:#9E9E9E;font-style:italic;">Sin datos</div>'}`)}
     </div>
 
-    <!-- Cocina por mes -->
-    <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);margin-bottom:14px;">
-      <div class="section-title" style="margin-bottom:10px;">🔥 Uso de cocina por mes</div>
-      <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;">${cocinaRows}</div>
+    <!-- FILA 2: Desglose económico + Franja + Planta -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+
+      ${card(`${secT('📊 Desglose económico')}
+        <div style="display:flex;height:20px;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+          ${segBar(ecoItems.map(([,v])=>v),ecoItems.map(([,,c])=>c),ecoItems.map(([l])=>l))}
+        </div>
+        ${ecoItems.map(([lbl,val,col]) => `
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+          <span style="font-size:11px;flex:1;">${lbl}</span>
+          <div style="width:80px;background:#F0E8DC;border-radius:3px;height:12px;">
+            <div style="${barW(val,totEco)};background:${col};height:100%;border-radius:3px;"></div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:${col};width:60px;text-align:right;">${val.toFixed(2)}€</span>
+          <span style="font-size:10px;color:#9E9E9E;width:30px;text-align:right;">${Math.round(val/totEco*100)}%</span>
+        </div>`).join('')||'<div style="color:#9E9E9E;font-style:italic;font-size:10px;">Sin cuentas aún</div>'}`)}
+
+      ${card(`${secT('⏰ Distribución por franja')}
+        <div style="display:flex;height:20px;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+          ${segBar([porFranja.comida,porFranja.cena,porFranja.dia],['#E65100','#1565C0','#880E4F'],['Comida','Cena','Día completo'])}
+        </div>
+        ${[['🍴','Comida',porFranja.comida,'#E65100'],['🌙','Cena',porFranja.cena,'#1565C0'],['☀️','Día completo',porFranja.dia,'#880E4F']].map(([ic,lb,v,c])=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">${ic}</span>
+          <span style="flex:1;font-size:11px;">${lb}</span>
+          <span style="font-size:14px;font-weight:900;color:${c};">${v}</span>
+          <span style="font-size:10px;color:#9E9E9E;width:32px;text-align:right;">${Math.round(v/totalFranja*100)}%</span>
+        </div>`).join('')}`)}
+
+      ${card(`${secT('🏠 Uso y cocina por planta')}
+        ${[['Planta baja',pBaja,'#4527A0'],['Planta superior',pSup,'#283593']].map(([lb,v,c])=>`
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span>🏠 ${lb}</span><span style="font-weight:900;color:${c};">${v}</span></div>
+          <div style="background:#F0E8DC;border-radius:4px;height:16px;"><div style="${barW(v,maxPlanta)};background:${c};height:100%;border-radius:4px;"></div></div>
+        </div>`).join('')}
+        <div style="margin-top:10px;">
+          <div style="font-size:10px;color:#6B5B52;margin-bottom:4px;text-align:center;">Reparto planta baja / superior</div>
+          <div style="display:flex;height:16px;border-radius:6px;overflow:hidden;">${segBar([pBaja,pSup],['#4527A0','#283593'],['Baja','Superior'])}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:14px;">
+          <div style="background:#FFF3E0;border-radius:6px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#E65100;margin-bottom:2px;">🔥 Cocina</div>
+            <div style="font-size:18px;font-weight:900;color:#E65100;">${conCocina}</div>
+            <div style="font-size:9px;color:#9E9E9E;">${pctCocin}% de reservas</div>
+          </div>
+          <div style="background:#E0F2F1;border-radius:6px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#00695C;margin-bottom:2px;">🧹 Limp. ext.</div>
+            <div style="font-size:18px;font-weight:900;color:#00695C;">${conLimp}</div>
+            <div style="font-size:9px;color:#9E9E9E;">${pctLimp}% de reservas</div>
+          </div>
+        </div>`)}
     </div>
 
-    <!-- Cuentas registradas -->
-    <div style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">
-      <div class="section-title" style="margin-bottom:12px;">💰 Facturación — cuentas guardadas en la app</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
-        <div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Cuentas registradas</div>
-          <div style="font-size:22px;font-weight:900;color:#6B1A1A;">${conCuenta}</div>
-          <div style="font-size:8px;color:#9B8B82;">de ${conf.length} confirmadas</div>
+    <!-- FILA 3: Ranking facturación + Actividad mensual -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+
+      ${card(`${secT('💰 Ranking socios por facturación')}
+        ${rankFact.length>0 ? rankFact.slice(0,12).map(s=>`
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+          <span style="width:140px;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2C1810;" title="${s.name}">${s.name}</span>
+          <div style="flex:1;background:#F0E8DC;border-radius:4px;height:14px;">
+            <div style="${barW(s.fact,maxFact)};background:#2E7D32;height:100%;border-radius:4px;"></div>
+          </div>
+          <span style="font-size:10px;font-weight:700;color:#2E7D32;width:60px;text-align:right;">${s.fact.toFixed(0)}€</span>
+          <span style="font-size:9px;color:#9E9E9E;width:28px;text-align:right;">${s.total}x</span>
+        </div>`).join('')
+        : '<div style="color:#9E9E9E;font-style:italic;font-size:11px;padding:10px;text-align:center;">Sin cuentas registradas aún</div>'}`)}
+
+      ${card(`${secT('📅 Actividad mensual — reservas y cocina')}
+        <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;">
+          ${meses.map((m,i) => `
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span style="font-size:9px;color:#6B1A1A;font-weight:700;min-height:12px;">${porMes[i]||''}</span>
+            <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;gap:1px;">
+              <div style="${barH(porMes[i],maxMes)};width:100%;background:#6B1A1A;border-radius:3px 3px 0 0;min-height:${porMes[i]?2:0}px;"></div>
+            </div>
+            <div style="width:100%;height:6px;background:${porMesCocina[i]>0?'#E65100':'transparent'};border-radius:0 0 3px 3px;opacity:0.7;" title="Cocina: ${porMesCocina[i]}"></div>
+            <span style="font-size:9px;color:#6B5B52;">${m}</span>
+          </div>`).join('')}
         </div>
-        <div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Total facturado</div>
-          <div style="font-size:22px;font-weight:900;color:#2E7D32;">${totalCuenta.toFixed(2)}€</div>
-          <div style="font-size:8px;color:#9B8B82;">suma de todas las cuentas</div>
-        </div>
-        <div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:8px;color:#6B5B52;margin-bottom:4px;">Media por cuenta</div>
-          <div style="font-size:22px;font-weight:900;color:#C8952A;">${mediaCuenta.toFixed(2)}€</div>
-          <div style="font-size:8px;color:#9B8B82;">por jornada registrada</div>
-        </div>
-      </div>
-      ${conCuenta > 0 ? `
-      <div style="font-size:8px;color:#6B5B52;margin-bottom:6px;">Detalle por reserva con cuenta registrada:</div>
-      <div style="display:flex;flex-direction:column;gap:3px;">
-        ${allE.filter(e => parseCD(e)?.totales?.total != null)
-          .sort((a,b) => (parseCD(b).totales.total) - (parseCD(a).totales.total))
-          .slice(0,10)
-          .map(r => {
-            const ct = parseCD(r).totales.total;
-            const maxT = Math.max(...allE.filter(ex=>parseCD(ex)?.totales?.total!=null).map(ex=>parseCD(ex).totales.total));
-            return `<div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:7px;color:#6B5B52;width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${fmtDate(r.fechaReservada)}</span>
-              <span style="font-size:7px;color:#4A3728;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(r.socioResponsable||r.socioNombre||'')}</span>
-              <div style="width:120px;background:#F0E8DC;border-radius:3px;height:10px;flex-shrink:0;">
-                <div style="width:${Math.round(ct/maxT*100)}%;background:#2E7D32;height:100%;border-radius:3px;"></div>
-              </div>
-              <span style="font-size:8px;font-weight:700;color:#2E7D32;width:52px;text-align:right;flex-shrink:0;">${ct.toFixed(2)}€</span>
-            </div>`;
-          }).join('')}
-      </div>` : `<div style="color:#9E9E9E;font-style:italic;font-size:9px;text-align:center;padding:10px;">Aún no hay cuentas registradas en ninguna reserva.</div>`}
+        <div style="display:flex;gap:16px;font-size:10px;color:#6B5B52;margin-top:8px;justify-content:center;">
+          <span>■ <span style="color:#6B1A1A;font-weight:700;">Reservas</span></span>
+          <span>■ <span style="color:#E65100;font-weight:700;">Cocina (barra inferior)</span></span>
+        </div>`)}
     </div>
 
     <div class="footer" style="margin-top:12px;">
