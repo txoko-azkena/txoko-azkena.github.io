@@ -1578,18 +1578,24 @@ function _hideSpinner() {
   if (_loadingCount === 0) document.getElementById('api-loading')?.remove();
 }
 
-async function apiCall(params) {
+async function apiCall(params, timeoutMs = 15000) {
   _showSpinner();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const url = new URL(API_URL);
     Object.entries(params).forEach(([k, v]) =>
       url.searchParams.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v))
     );
-    const res  = await fetch(url.toString());
+    const res  = await fetch(url.toString(), { signal: controller.signal });
     const data = await res.json();
     if (data && data.error) throw new Error(data.error);
     return data;
+  } catch(e) {
+    if (e.name === 'AbortError') throw new Error('El servidor no respondió a tiempo. Inténtalo de nuevo.');
+    throw e;
   } finally {
+    clearTimeout(timer);
     _hideSpinner();
   }
 }
@@ -1797,13 +1803,13 @@ async function loadAllData() {
   showLoading(true);
   try {
     const [reservas, socios, bloq, avisos, cfg, votaciones, incidencias, cuentasLibres] = await Promise.all([
-      apiCall({ action: 'getReservas' }),
-      apiCall({ action: 'getSocios' }),
-      apiCall({ action: 'getBloq' }),
-      apiCall({ action: 'getAvisos' }),
-      apiCall({ action: 'getConfig' }),
-      apiCall({ action: 'getVotaciones' }),
-      apiCall({ action: 'getIncidencias' }),
+      apiCall({ action: 'getReservas' }).catch(() => []),
+      apiCall({ action: 'getSocios' }).catch(() => null),
+      apiCall({ action: 'getBloq' }).catch(() => []),
+      apiCall({ action: 'getAvisos' }).catch(() => []),
+      apiCall({ action: 'getConfig' }).catch(() => null),
+      apiCall({ action: 'getVotaciones' }).catch(() => []),
+      apiCall({ action: 'getIncidencias' }).catch(() => []),
       apiCall({ action: 'getCuentasLibres' }).catch(() => [])
     ]);
     _cache.reservas      = Array.isArray(reservas)      ? reservas.map(normalizeReserva)      : [];
