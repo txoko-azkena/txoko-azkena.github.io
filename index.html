@@ -438,6 +438,7 @@
     .aviso-card .av-msg    { font-size: 13px; color: var(--text); line-height: 1.6; }
     .aviso-card .av-fecha  { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
     .aviso-card .av-fijado { position: absolute; top: 10px; right: 12px; font-size: 14px; }
+    .av-foto { display:block; max-width:100%; max-height:160px; border-radius:8px; margin-top:8px; cursor:pointer; object-fit:cover; }
     .aviso-banner {
       background: #FFEBEE; border: 1.5px solid #C62828; border-radius: 10px;
       padding: 10px 14px; margin-bottom: 10px; font-size: 13px;
@@ -1600,6 +1601,46 @@ async function apiCall(params, timeoutMs = 15000) {
   }
 }
 
+/* Comprime una imagen en el propio navegador (redimensiona + JPEG) antes de subirla.
+   Devuelve un data URL "data:image/jpeg;base64,...." */
+function comprimirImagen(file, maxDim = 1000, calidad = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('No se pudo leer la imagen.'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('El archivo elegido no es una imagen válida.'));
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else       { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', calidad));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* Comprime y sube una foto al backend (que la guarda en Drive). Devuelve la URL pública. */
+async function subirFoto(file) {
+  const dataUrl = await comprimirImagen(file);
+  const base64  = dataUrl.split(',')[1];
+  const res = await fetch(API_URL + '?action=uploadFoto', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // evita el preflight CORS que Apps Script no soporta
+    body: JSON.stringify({ base64, filename: 'foto_' + Date.now() + '.jpg' })
+  });
+  const data = await res.json();
+  if (data && data.error) throw new Error(data.error);
+  return data.url;
+}
+
 function showToast(msg, type = 'ok', ms = 2800) {
   document.querySelectorAll('.toast').forEach(t => t.remove());
   const t = document.createElement('div');
@@ -2167,6 +2208,7 @@ function renderAvisos() {
       <div class="av-tipo">${tipoLabel[a.tipo] || a.tipo}</div>
       <div class="av-titulo">${a.titulo}</div>
       <div class="av-msg">${escapeHtml(a.mensaje).replace(/\n/g, '<br>')}</div>
+      ${a.fotoUrl ? `<img src="${a.fotoUrl}" class="av-foto" onclick="window.open('${a.fotoUrl}','_blank')" loading="lazy" alt="Foto del aviso">` : ''}
       <div class="av-fecha">${fmtDate(a.fecha)}</div>
     </div>`).join('');
 }
@@ -2320,6 +2362,10 @@ function renderIncidencias() {
             <option value="urgente">🔴 Urgente — impide el uso del local</option>
           </select>
         </div>
+        <div class="form-group">
+          <label>Foto (opcional)</label>
+          <input type="file" id="inc-foto" accept="image/*">
+        </div>
         <button type="submit" class="btn btn-primary">🔧 Reportar incidencia</button>
       </form>
     </div>
@@ -2332,6 +2378,7 @@ function renderIncidencias() {
         </div>
         <div class="incid-meta">${fmtDate(i.fecha)} · ${escapeHtml(i.socioNombre)} ${i.urgencia==='urgente'?'· 🔴 <strong>Urgente</strong>':''}</div>
         <div class="incid-desc">${escapeHtml(i.descripcion)}</div>
+        ${i.fotoUrl ? `<img src="${i.fotoUrl}" class="av-foto" onclick="window.open('${i.fotoUrl}','_blank')" loading="lazy" alt="Foto de la incidencia">` : ''}
         ${i.notasAdmin ? `<div class="incid-notas">💬 Junta: ${escapeHtml(i.notasAdmin)}</div>` : ''}
         ${i.estado==='resuelta'&&i.fechaResolucion ? `<div style="font-size:10px;color:var(--success);margin-top:4px;">✅ Resuelta el ${fmtDate(i.fechaResolucion)}</div>` : ''}
       </div>`).join('')}
@@ -2351,16 +2398,21 @@ async function submitIncidencia(e) {
     ubicacion:   document.getElementById('inc-ubi').value,
     descripcion: document.getElementById('inc-desc').value.trim(),
     urgencia:    document.getElementById('inc-urg').value,
-    estado: 'abierta', fechaResolucion: '', notasAdmin: '', avisoId
+    estado: 'abierta', fechaResolucion: '', notasAdmin: '', avisoId, fotoUrl: ''
   };
   try {
+    const fotoFile = document.getElementById('inc-foto')?.files[0];
+    if (fotoFile) {
+      showToast('📤 Subiendo foto...', 'ok', 6000);
+      inc.fotoUrl = await subirFoto(fotoFile);
+    }
     await apiCall({ action: 'addIncidencia', data: inc });
     const aviso = {
       id: avisoId, fecha: inc.fecha,
       tipo: inc.urgencia === 'urgente' ? 'urgente' : 'info',
       titulo: `🔧 Incidencia en ${inc.ubicacion}`,
       mensaje: inc.descripcion + '\n— ' + socio.nombre,
-      fijado: inc.urgencia === 'urgente', visible: true
+      fijado: inc.urgencia === 'urgente', visible: true, fotoUrl: inc.fotoUrl
     };
     await apiCall({ action: 'addAviso', data: aviso });
     const [updInc, updAv] = await Promise.all([
@@ -3139,6 +3191,10 @@ function renderAdminTabContent() {
             <label>Mensaje</label>
             <textarea id="av-msg" rows="3" placeholder="Texto del aviso..." required></textarea>
           </div>
+          <div class="form-group">
+            <label>Foto (opcional)</label>
+            <input type="file" id="av-foto" accept="image/*">
+          </div>
           <div class="check-group" style="margin-bottom:12px;">
             <input type="checkbox" id="av-fijado">
             <label for="av-fijado">📌 Fijar arriba (aviso importante)</label>
@@ -3155,6 +3211,7 @@ function renderAdminTabContent() {
               <div class="av-tipo">${tipoLabel[a.tipo]||''} ${a.tipo} ${a.fijado?'· 📌':''}</div>
               <div class="av-titulo">${a.titulo}</div>
               <div class="av-msg">${a.mensaje}</div>
+              ${a.fotoUrl ? `<img src="${a.fotoUrl}" class="av-foto" onclick="window.open('${a.fotoUrl}','_blank')" loading="lazy" alt="Foto del aviso">` : ''}
               <div class="av-fecha">${fmtDate(a.fecha)}</div>
             </div>
           </div>
@@ -3446,9 +3503,15 @@ async function submitAviso(e) {
     titulo:  document.getElementById('av-titulo').value.trim(),
     mensaje: document.getElementById('av-msg').value.trim(),
     fijado:  document.getElementById('av-fijado').checked,
-    visible: true
+    visible: true,
+    fotoUrl: ''
   };
   try {
+    const fotoFile = document.getElementById('av-foto')?.files[0];
+    if (fotoFile) {
+      showToast('📤 Subiendo foto...', 'ok', 6000);
+      aviso.fotoUrl = await subirFoto(fotoFile);
+    }
     await apiCall({ action: 'addAviso', data: aviso });
     const updated = await apiCall({ action: 'getAvisos' });
     _cache.avisos = Array.isArray(updated) ? updated.map(normalizeAviso) : _cache.avisos;
