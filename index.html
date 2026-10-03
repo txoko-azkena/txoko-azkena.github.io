@@ -3285,6 +3285,7 @@ function renderAdminTabContent() {
         </div>
         <div class="incid-meta">${fmtDate(i.fecha)} · ${escapeHtml(i.socioNombre)}</div>
         <div class="incid-desc">${escapeHtml(i.descripcion)}</div>
+        ${i.fotoUrl ? `<img src="${i.fotoUrl}" class="av-foto" onclick="window.open('${i.fotoUrl}','_blank')" loading="lazy" alt="Foto de la incidencia">` : ''}
         ${i.notasAdmin?`<div class="incid-notas">💬 ${escapeHtml(i.notasAdmin)}</div>`:''}
         <div class="reserva-footer" style="gap:6px;">
           ${i.estado!=='resuelta'?`
