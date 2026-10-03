@@ -609,6 +609,125 @@
     .calc-total-bar { background:var(--primary); color:#fff; border-radius:12px; padding:14px 16px; margin:8px 0 4px; }
     .calc-total-line { display:flex; justify-content:space-between; font-size:13px; padding:2px 0; opacity:0.9; }
     .calc-total-main { display:flex; justify-content:space-between; font-size:20px; font-weight:800; padding-top:10px; margin-top:8px; border-top:1px solid rgba(255,255,255,0.4); }
+
+    /* =====================================================
+       TABLÓN DE ANUNCIOS - AZKENA TXOKO
+    ===================================================== */
+
+    .tb-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .tb-chip {
+      font-size: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 16px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .tb-chip.active {
+      background: #6B1818;
+      color: #fff;
+      border-color: #6B1818;
+    }
+
+    .tb-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .tb-cat {
+      font-size: 11px;
+      background: #F3E9E9;
+      color: #6B1818;
+      border-radius: 10px;
+      padding: 2px 8px;
+      display: inline-block;
+    }
+
+    .tb-titulo {
+      font-weight: bold;
+      font-size: 15px;
+      margin: 6px 0 2px;
+    }
+
+    .tb-texto {
+      font-size: 13px;
+      white-space: pre-wrap;
+      margin: 4px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .tb-meta {
+      font-size: 11px;
+      color: #777;
+    }
+
+    .tb-foto {
+      display: block;
+      max-width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .tb-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .tb-btn-borrar {
+      font-size: 12px;
+      border: 1px solid #C62828;
+      color: #C62828;
+      background: #fff;
+      border-radius: 8px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .tb-codigo {
+      font-family: monospace;
+      font-size: 32px;
+      letter-spacing: 8px;
+      text-align: center;
+      font-weight: bold;
+      background: #F3E9E9;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 12px 0;
+      user-select: all;
+      -webkit-user-select: all;
+    }
+
+    @media (max-width: 420px) {
+      .tb-codigo {
+        font-size: 26px;
+        letter-spacing: 5px;
+      }
+    }
+
+    .admin-tab-bar {
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .admin-tab-bar .tab-btn {
+      flex: 0 0 auto;
+      min-width: 76px;
+    }
   </style>
 </head>
 <body>
@@ -877,10 +996,12 @@
       <button class="tab-btn active" id="ctab-avisos" onclick="comunidadTab('avisos')" style="font-size:10px;">📢 Avisos</button>
       <button class="tab-btn"        id="ctab-votos"  onclick="comunidadTab('votos')"  style="font-size:10px;">🗳️ Votaciones</button>
       <button class="tab-btn"        id="ctab-incid"  onclick="comunidadTab('incid')"  style="font-size:10px;">🔧 Incidencias</button>
+      <button class="tab-btn"        id="ctab-tablon" onclick="comunidadTab('tablon')" style="font-size:10px;">📌 Tablón</button>
     </div>
     <div id="com-avisos"><div id="avisos-list"></div></div>
     <div id="com-votos"  class="hidden"></div>
     <div id="com-incid"  class="hidden"></div>
+    <div id="com-tablon" class="hidden"></div>
   </div>
 
   <!-- ── NORMAS ── -->
@@ -1160,12 +1281,13 @@
 
       <div id="admin-stats"></div>
 
-      <div class="tab-bar">
+      <div class="tab-bar admin-tab-bar">
         <button class="tab-btn active" id="at-reservas"   onclick="adminTab('reservas')"   style="font-size:9.5px;">📋 Reservas</button>
         <button class="tab-btn"        id="at-bloquear"   onclick="adminTab('bloquear')"   style="font-size:9.5px;">🚫 Días</button>
         <button class="tab-btn"        id="at-avisos-admin" onclick="adminTab('avisos-admin')" style="font-size:9.5px;">📢 Avisos</button>
         <button class="tab-btn"        id="at-votos-admin"  onclick="adminTab('votos-admin')"  style="font-size:9.5px;">🗳️ Votos</button>
         <button class="tab-btn"        id="at-incid-admin"  onclick="adminTab('incid-admin')"  style="font-size:9.5px;">🔧 Incid.</button>
+        <button class="tab-btn"        id="at-tablon-admin" onclick="adminTab('tablon-admin')" style="font-size:9.5px;">📌 Tablón</button>
         <button class="tab-btn"        id="at-socios"     onclick="adminTab('socios')"     style="font-size:9.5px;">👥 Socios</button>
         <button class="tab-btn"        id="at-informe"    onclick="adminTab('informe')"    style="font-size:9.5px;">📄 Informe</button>
       </div>
@@ -1302,11 +1424,14 @@ function toggleLang() {
   lang = lang === 'es' ? 'eu' : 'es';
   document.getElementById('lang-toggle').textContent = lang === 'es' ? 'EU' : 'ES';
   applyTR();
+  document.getElementById('ctab-tablon').textContent = tbt('tab');
+  document.getElementById('at-tablon-admin').textContent = tbt('tab');
   renderCalendar();
   renderNormas();
   if (currentScreen === 'misreservas') renderMisReservas();
   if (currentScreen === 'reserva')     initReservaForm();
   if (currentScreen === 'calc')        { renderCalcTexts(); calcMostrarBotonGuardar(); }
+  if (currentScreen === 'avisos' && _comunidadTab === 'tablon') renderTablon();
 }
 
 function applyTR() {
@@ -1534,7 +1659,7 @@ async function guardarNuevaPassword() {
 }
 
 // Caché en memoria — se carga desde Google Sheets al iniciar
-let _cache = { reservas: [], socios: SOCIOS_DEMO, bloq: [], avisos: [], votaciones: [], incidencias: [] };
+let _cache = { reservas: [], socios: SOCIOS_DEMO, bloq: [], avisos: [], votaciones: [], incidencias: [], anuncios: [] };
 
 function dbGet(key, def) {
   try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : def; }
@@ -1699,6 +1824,17 @@ function normalizeAviso(a) {
 function getAvisos()      { return _cache.avisos; }
 function getVotaciones()  { return _cache.votaciones; }
 function getIncidencias() { return _cache.incidencias; }
+function getAnuncios()    { return _cache.anuncios; }
+
+function normalizeAnuncio(a) {
+  return { ...a,
+    id: String(a.id || ''), fecha: toDateStr(a.fecha) || String(a.fecha || ''),
+    socioId: String(a.socioId || ''), socioNombre: String(a.socioNombre || ''),
+    categoria: String(a.categoria || 'otros'), titulo: String(a.titulo || ''),
+    texto: String(a.texto || ''), fotoUrl: String(a.fotoUrl || ''),
+    fechaCaducidad: toDateStr(a.fechaCaducidad) || String(a.fechaCaducidad || ''),
+  };
+}
 
 function normalizeVotacion(v) {
   return { ...v,
@@ -1748,14 +1884,102 @@ async function autoExpireVotes() {
 }
 
 let _comunidadTab = 'avisos';
+function tbt(k) { return (TABLON_TX[lang] || TABLON_TX.es)[k]; }
+
+const TABLON_TX = {
+  es: {
+    tab: '📌 Tablón',
+    titulo: 'Tablón de anuncios',
+    sub: 'Eventos, ventas y avisos entre socios',
+    nuevo: 'Publicar un anuncio',
+    publicando_como: 'Publicando como',
+    categoria: 'Categoría',
+    cat_evento: '🎉 Evento',
+    cat_venta: '🏷️ Vendo / Regalo',
+    cat_busco: '🔎 Busco',
+    cat_otros: '📌 Otros',
+    titulo_lbl: 'Título (opcional)',
+    titulo_ph: 'Ej: Concurso de paellas',
+    texto_lbl: 'Texto (opcional)',
+    texto_ph: 'Escribe tu anuncio…',
+    foto_lbl: 'Foto (opcional)',
+    caduca_lbl: 'Caduca el día',
+    caduca_help: 'Máximo 1 año. Ese día el anuncio desaparece solo.',
+    publicar: 'Publicar anuncio',
+    vacio_err: 'Escribe un título o un texto, o añade una foto.',
+    fecha_err: 'Elige el día de caducidad.',
+    subiendo: '📤 Subiendo foto…',
+    publicado_ok: '✅ Anuncio publicado',
+    codigo_titulo: 'Tu código para borrar este anuncio',
+    codigo_aviso: 'Apúntalo ahora: no se vuelve a mostrar. Lo necesitarás para borrar el anuncio.',
+    codigo_ok: 'Entendido',
+    filtro_todos: 'Todos',
+    caduca_el: 'Caduca el',
+    publicado_por: 'Publicado por',
+    borrar: '🗑️ Borrar',
+    borrar_titulo: 'Borrar anuncio',
+    borrar_pide: 'Introduce el código de 4 caracteres que te dimos al publicarlo.',
+    volver: 'Volver',
+    confirmar_borrar: 'Borrar',
+    borrado_ok: '✅ Anuncio borrado',
+    sin_anuncios: 'No hay anuncios',
+    sin_anuncios_sub: 'Sé el primero en publicar algo.',
+    admin_borrar: '🗑️ Borrar (directiva)',
+    admin_confirm: '¿Borrar este anuncio definitivamente?',
+    error_generico: '❌ Error. Inténtalo de nuevo.'
+  },
+  eu: {
+    tab: '📌 Iragarki-taula',
+    titulo: 'Iragarki-taula',
+    sub: 'Bazkideen arteko ekitaldiak, salmentak eta oharrak',
+    nuevo: 'Iragarki bat argitaratu',
+    publicando_como: 'Honela argitaratzen',
+    categoria: 'Kategoria',
+    cat_evento: '🎉 Ekitaldia',
+    cat_venta: '🏷️ Salgai / Oparitzeko',
+    cat_busco: '🔎 Bila',
+    cat_otros: '📌 Bestelakoak',
+    titulo_lbl: 'Izenburua (aukerakoa)',
+    titulo_ph: 'Adib.: Paella-txapelketa',
+    texto_lbl: 'Testua (aukerakoa)',
+    texto_ph: 'Idatzi zure iragarkia…',
+    foto_lbl: 'Argazkia (aukerakoa)',
+    caduca_lbl: 'Iraungitze-eguna',
+    caduca_help: 'Gehienez urtebete. Egun horretan iragarkia berez desagertuko da.',
+    publicar: 'Iragarkia argitaratu',
+    vacio_err: 'Idatzi izenburu edo testu bat, edo gehitu argazki bat.',
+    fecha_err: 'Aukeratu iraungitze-eguna.',
+    subiendo: '📤 Argazkia igotzen…',
+    publicado_ok: '✅ Iragarkia argitaratuta',
+    codigo_titulo: 'Iragarki hau ezabatzeko zure kodea',
+    codigo_aviso: 'Gorde orain: ez da berriro erakutsiko. Iragarkia ezabatzeko beharko duzu.',
+    codigo_ok: 'Ulertuta',
+    filtro_todos: 'Guztiak',
+    caduca_el: 'Iraungitze-data',
+    publicado_por: 'Nork argitaratua',
+    borrar: '🗑️ Ezabatu',
+    borrar_titulo: 'Iragarkia ezabatu',
+    borrar_pide: 'Sartu argitaratzean eman genizun 4 karaktereko kodea.',
+    volver: 'Itzuli',
+    confirmar_borrar: 'Ezabatu',
+    borrado_ok: '✅ Iragarkia ezabatuta',
+    sin_anuncios: 'Ez dago iragarkirik',
+    sin_anuncios_sub: 'Izan lehena zerbait argitaratzen.',
+    admin_borrar: '🗑️ Ezabatu (zuzendaritza)',
+    admin_confirm: 'Iragarki hau behin betiko ezabatu?',
+    error_generico: '❌ Errorea. Saiatu berriro.'
+  }
+};
+
 function comunidadTab(tab) {
   _comunidadTab = tab;
-  ['avisos','votos','incid'].forEach(t => {
+  ['avisos','votos','incid','tablon'].forEach(t => {
     document.getElementById('com-'+t)?.classList.toggle('hidden', t !== tab);
     document.getElementById('ctab-'+t)?.classList.toggle('active', t === tab);
   });
   if (tab === 'votos') renderVotaciones();
   if (tab === 'incid') renderIncidencias();
+  if (tab === 'tablon') renderTablon();
 }
 
 function _avisosSeenKey() {
@@ -1843,7 +2067,7 @@ function showLoading(show) {
 async function loadAllData() {
   showLoading(true);
   try {
-    const [reservas, socios, bloq, avisos, cfg, votaciones, incidencias, cuentasLibres] = await Promise.all([
+    const [reservas, socios, bloq, avisos, cfg, votaciones, incidencias, cuentasLibres, anuncios] = await Promise.all([
       apiCall({ action: 'getReservas' }).catch(() => []),
       apiCall({ action: 'getSocios' }).catch(() => null),
       apiCall({ action: 'getBloq' }).catch(() => []),
@@ -1851,7 +2075,8 @@ async function loadAllData() {
       apiCall({ action: 'getConfig' }).catch(() => null),
       apiCall({ action: 'getVotaciones' }).catch(() => []),
       apiCall({ action: 'getIncidencias' }).catch(() => []),
-      apiCall({ action: 'getCuentasLibres' }).catch(() => [])
+      apiCall({ action: 'getCuentasLibres' }).catch(() => []),
+      apiCall({ action: 'getAnuncios' }).catch(() => [])
     ]);
     _cache.reservas      = Array.isArray(reservas)      ? reservas.map(normalizeReserva)      : [];
     _cache.socios        = Array.isArray(socios)        ? socios.map(normalizeSocio)          : SOCIOS_DEMO;
@@ -1860,6 +2085,7 @@ async function loadAllData() {
     _cache.votaciones    = Array.isArray(votaciones)    ? votaciones.map(normalizeVotacion)   : [];
     _cache.incidencias   = Array.isArray(incidencias)   ? incidencias.map(normalizeIncidencia): [];
     _cache.cuentasLibres = Array.isArray(cuentasLibres) ? cuentasLibres                       : [];
+    _cache.anuncios      = Array.isArray(anuncios)      ? anuncios.map(normalizeAnuncio)       : [];
     if (cfg && cfg.pin) saveCfg({ ...getCfg(), pin: String(cfg.pin) });
     checkAvisosBadge();
     autoExpireVotes(); // fire-and-forget, no bloquea el login
@@ -2425,6 +2651,238 @@ async function submitIncidencia(e) {
     showToast('✅ Incidencia reportada y aviso enviado a la junta.', 'ok');
     renderIncidencias();
   } catch(err) { showToast('❌ Error: ' + err.message, 'err'); }
+}
+
+/* =========================================================
+   TABLÓN DE ANUNCIOS
+========================================================= */
+const TB_CATEGORIAS = ['evento','venta','busco','otros'];
+let _tbFiltro = 'todos';
+
+function tablonCategoriaLabel(categoria) {
+  return tbt('cat_' + (TB_CATEGORIAS.includes(categoria) ? categoria : 'otros'));
+}
+
+function renderTablon() {
+  const cont = document.getElementById('com-tablon');
+  if (!cont) return;
+  document.getElementById('ctab-tablon').textContent = tbt('tab');
+
+  const session = getSession();
+  const maxCad = new Date();
+  maxCad.setDate(maxCad.getDate() + 365);
+  const socioHtml = session
+    ? `<div class="notice info" style="margin-bottom:10px;font-size:12px;">👤 ${escapeHtml(tbt('publicando_como'))} <strong>${escapeHtml(session.socioNombre)}</strong></div>`
+    : `<div class="form-group">
+         <label>${escapeHtml(tbt('publicando_como'))}</label>
+         <select id="tb-socio" required>
+           <option value="">-- ${escapeHtml(tbt('publicando_como'))} --</option>
+           ${getSociosActivos().map(s => `<option value="${escapeHtml(s.id)}">${escapeHtml(padId(s.id))} – ${escapeHtml(s.nombre)}</option>`).join('')}
+         </select>
+       </div>`;
+
+  cont.innerHTML = `
+    <div style="margin:0 2px 10px;">
+      <div class="card-title" style="margin-bottom:2px;">${escapeHtml(tbt('titulo'))}</div>
+      <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(tbt('sub'))}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">${escapeHtml(tbt('nuevo'))}</div>
+      <form onsubmit="submitAnuncio(event)">
+        ${socioHtml}
+        <div class="form-group">
+          <label>${escapeHtml(tbt('categoria'))}</label>
+          <select id="tb-categoria">
+            ${TB_CATEGORIAS.map(c => `<option value="${c}">${escapeHtml(tablonCategoriaLabel(c))}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>${escapeHtml(tbt('titulo_lbl'))}</label>
+          <input type="text" id="tb-titulo" maxlength="80" placeholder="${escapeHtml(tbt('titulo_ph'))}">
+        </div>
+        <div class="form-group">
+          <label>${escapeHtml(tbt('texto_lbl'))}</label>
+          <textarea id="tb-texto" rows="3" maxlength="500" placeholder="${escapeHtml(tbt('texto_ph'))}"></textarea>
+        </div>
+        <div class="form-group">
+          <label>${escapeHtml(tbt('foto_lbl'))}</label>
+          <input type="file" id="tb-foto" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>${escapeHtml(tbt('caduca_lbl'))}</label>
+          <input type="date" id="tb-cad" required min="${todayStr()}" max="${dStr(maxCad)}">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${escapeHtml(tbt('caduca_help'))}</div>
+        </div>
+        <button type="submit" class="btn btn-primary">${escapeHtml(tbt('publicar'))}</button>
+      </form>
+    </div>
+    <div class="tb-chips" id="tb-chips">
+      ${[['todos', tbt('filtro_todos')], ...TB_CATEGORIAS.map(c => [c, tablonCategoriaLabel(c)])].map(([c, label]) => `
+        <button type="button" class="tb-chip ${_tbFiltro === c ? 'active' : ''}" data-categoria="${c}" onclick="setTablonFiltro('${c}')">${escapeHtml(label)}</button>`).join('')}
+    </div>
+    <div id="tb-lista"></div>`;
+
+  renderTablonLista();
+}
+
+function setTablonFiltro(categoria) {
+  _tbFiltro = categoria === 'todos' || TB_CATEGORIAS.includes(categoria) ? categoria : 'todos';
+  document.querySelectorAll('#tb-chips .tb-chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.categoria === _tbFiltro);
+  });
+  renderTablonLista();
+}
+
+function renderTablonLista() {
+  const cont = document.getElementById('tb-lista');
+  if (!cont) return;
+  const anuncios = getAnuncios()
+    .filter(a => _tbFiltro === 'todos' || a.categoria === _tbFiltro)
+    .slice()
+    .sort((a,b) => String(b.id).localeCompare(String(a.id), undefined, { numeric:true }));
+  cont.innerHTML = anuncios.length
+    ? anuncios.map(a => renderAnuncioCard(a)).join('')
+    : `<div class="empty-state"><div class="ei">📌</div><div class="et">${escapeHtml(tbt('sin_anuncios'))}</div><div class="eh">${escapeHtml(tbt('sin_anuncios_sub'))}</div></div>`;
+}
+
+function renderAnuncioCard(a, admin = false) {
+  const fotoUrl = String(a.fotoUrl || '');
+  const fotoHtml = fotoUrl.startsWith('https://')
+    ? `<img src="${escapeHtml(fotoUrl)}" class="tb-foto" onclick="window.open(this.src,'_blank')" loading="lazy" alt="${escapeHtml(tbt('foto_lbl'))}">`
+    : '';
+  const boton = admin
+    ? `<button class="tb-btn-borrar" data-id="${escapeHtml(a.id)}" onclick="borrarAnuncioAdmin(this.dataset.id)">${escapeHtml(tbt('admin_borrar'))}</button>`
+    : `<button class="tb-btn-borrar" data-id="${escapeHtml(a.id)}" onclick="mostrarModalBorrarAnuncio(this.dataset.id)">${escapeHtml(tbt('borrar'))}</button>`;
+  return `
+    <div class="tb-card">
+      <div class="tb-cat">${escapeHtml(tablonCategoriaLabel(a.categoria))}</div>
+      ${a.titulo ? `<div class="tb-titulo">${escapeHtml(a.titulo)}</div>` : ''}
+      ${a.texto ? `<div class="tb-texto">${escapeHtml(a.texto)}</div>` : ''}
+      ${fotoHtml}
+      <div class="tb-footer">
+        <div class="tb-meta">${escapeHtml(tbt('publicado_por'))} ${escapeHtml(a.socioNombre)} · ${escapeHtml(fmtDate(a.fecha))} · ${escapeHtml(tbt('caduca_el'))} ${escapeHtml(fmtDate(a.fechaCaducidad))}</div>
+        ${boton}
+      </div>
+    </div>`;
+}
+
+async function recargarAnuncios() {
+  const updated = await apiCall({ action: 'getAnuncios' });
+  _cache.anuncios = Array.isArray(updated) ? updated.map(normalizeAnuncio) : [];
+}
+
+async function submitAnuncio(e) {
+  e.preventDefault();
+  const session = getSession();
+  const socioId = session?.socioId || document.getElementById('tb-socio')?.value;
+  const socio = session
+    ? { id: session.socioId, nombre: session.socioNombre }
+    : getSociosActivos().find(s => String(s.id) === String(socioId));
+  const titulo = document.getElementById('tb-titulo').value.trim();
+  const texto = document.getElementById('tb-texto').value.trim();
+  const fotoFile = document.getElementById('tb-foto')?.files[0];
+  const fechaCaducidad = document.getElementById('tb-cad').value;
+  if (!socio) {
+    document.getElementById('tb-socio')?.reportValidity();
+    return;
+  }
+  if (!titulo && !texto && !fotoFile) {
+    showToast('❌ ' + tbt('vacio_err'), 'err');
+    return;
+  }
+  if (!fechaCaducidad) {
+    showToast('❌ ' + tbt('fecha_err'), 'err');
+    return;
+  }
+
+  try {
+    let fotoUrl = '';
+    if (fotoFile) {
+      showToast(tbt('subiendo'), 'ok', 6000);
+      fotoUrl = await subirFoto(fotoFile);
+    }
+    const result = await apiCall({ action: 'addAnuncio', data: {
+      socioId: socio.id,
+      socioNombre: socio.nombre,
+      categoria: document.getElementById('tb-categoria').value,
+      titulo,
+      texto,
+      fotoUrl,
+      fechaCaducidad
+    }});
+    mostrarModalCodigoAnuncio(result.codigo);
+    await recargarAnuncios();
+    renderTablon();
+    showToast(tbt('publicado_ok'), 'ok');
+  } catch(err) {
+    showToast('❌ ' + err.message, 'err');
+  }
+}
+
+function mostrarModalCodigoAnuncio(codigo) {
+  document.getElementById('tb-codigo-modal')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'tb-codigo-modal';
+  overlay.className = 'cancel-modal-overlay';
+  overlay.innerHTML = `
+    <div class="cancel-modal">
+      <div class="cm-icon">🔑</div>
+      <div class="cm-title">${escapeHtml(tbt('codigo_titulo'))}</div>
+      <div class="tb-codigo">${escapeHtml(codigo)}</div>
+      <div class="cm-hint">${escapeHtml(tbt('codigo_aviso'))}</div>
+      <button class="btn btn-primary" onclick="document.getElementById('tb-codigo-modal').remove()">${escapeHtml(tbt('codigo_ok'))}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function mostrarModalBorrarAnuncio(id) {
+  document.getElementById('tb-borrar-modal')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'tb-borrar-modal';
+  overlay.className = 'cancel-modal-overlay';
+  overlay.dataset.anuncioId = id;
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="cancel-modal">
+      <div class="cm-icon">🔑</div>
+      <div class="cm-title">${escapeHtml(tbt('borrar_titulo'))}</div>
+      <div class="cm-hint">${escapeHtml(tbt('borrar_pide'))}</div>
+      <input id="tb-borrar-codigo" type="text" maxlength="4"
+        placeholder="A7K2" autocomplete="off" autocorrect="off" spellcheck="false"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter') confirmarBorradoAnuncio()">
+      <div class="cm-error" id="tb-borrar-error"></div>
+      <div class="cm-btns">
+        <button class="btn btn-outline" onclick="document.getElementById('tb-borrar-modal').remove()" style="flex:1;">${escapeHtml(tbt('volver'))}</button>
+        <button class="btn btn-danger" onclick="confirmarBorradoAnuncio()" style="flex:1;">${escapeHtml(tbt('confirmar_borrar'))}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => document.getElementById('tb-borrar-codigo')?.focus(), 80);
+}
+
+async function confirmarBorradoAnuncio() {
+  const modal = document.getElementById('tb-borrar-modal');
+  const input = document.getElementById('tb-borrar-codigo');
+  const errEl = document.getElementById('tb-borrar-error');
+  if (!modal || !input) return;
+  const id = modal.dataset.anuncioId;
+  try {
+    await apiCall({ action: 'deleteAnuncio', id, codigo: input.value.trim().toUpperCase() });
+  } catch(err) {
+    if (errEl) errEl.textContent = err.message;
+    return;
+  }
+  modal.remove();
+  try {
+    await recargarAnuncios();
+    renderTablonLista();
+    showToast(tbt('borrado_ok'), 'ok');
+  } catch(err) {
+    _cache.anuncios = getAnuncios().filter(a => String(a.id) !== String(id));
+    renderTablonLista();
+    showToast('❌ ' + err.message, 'err');
+  }
 }
 
 /* =========================================================
@@ -3093,7 +3551,7 @@ let adminCurrentTab = 'reservas';
 
 function adminTab(tab) {
   adminCurrentTab = tab;
-  ['reservas','bloquear','avisos-admin','votos-admin','incid-admin','socios','informe'].forEach(t => {
+  ['reservas','bloquear','avisos-admin','votos-admin','incid-admin','tablon-admin','socios','informe'].forEach(t => {
     document.getElementById('at-' + t).classList.toggle('active', t === tab);
   });
   renderAdminTabContent();
@@ -3301,6 +3759,13 @@ function renderAdminTabContent() {
       </div>`).join('')
     : `<div class="empty-state"><div class="ei">🔧</div><div class="et">Sin incidencias</div></div>`;
 
+  } else if (adminCurrentTab === 'tablon-admin') {
+    const anuncios = getAnuncios().slice()
+      .sort((a,b) => String(b.id).localeCompare(String(a.id), undefined, { numeric:true }));
+    cont.innerHTML = anuncios.length
+      ? anuncios.map(a => renderAnuncioCard(a, true)).join('')
+      : `<div class="empty-state"><div class="ei">📌</div><div class="et">${escapeHtml(tbt('sin_anuncios'))}</div><div class="eh">${escapeHtml(tbt('sin_anuncios_sub'))}</div></div>`;
+
   } else if (adminCurrentTab === 'informe') {
     cont.innerHTML = `
       <div class="card" style="text-align:center; padding:30px 20px;">
@@ -3452,6 +3917,18 @@ async function adminResetPass(socioId) {
     await apiCall({ action: 'resetPassword', socioId });
     showToast(`✅ Contraseña de Nº ${socioId} reseteada.`, 'ok');
   } catch(e) { showToast('❌ Error: ' + e.message, 'err'); }
+}
+
+async function borrarAnuncioAdmin(id) {
+  if (!confirm(tbt('admin_confirm'))) return;
+  try {
+    await apiCall({ action: 'deleteAnuncioAdmin', id });
+    await recargarAnuncios();
+    showToast(tbt('borrado_ok'), 'ok');
+    renderAdminTabContent();
+  } catch(err) {
+    showToast('❌ ' + err.message, 'err');
+  }
 }
 
 async function addSocioAdmin(e) {
