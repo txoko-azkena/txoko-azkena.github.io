@@ -3240,6 +3240,17 @@ async function submitReserva(e) {
     if (bloq) addError(`${eu ? 'Egun hau blokeatuta dago' : 'Día bloqueado'}: ${bloq.motivo}`, 'f-fecha');
   }
 
+  // Mismo socio, misma fecha, franja y planta: ya tiene esa reserva (evita dobles por pulsar dos veces)
+  if (socioId && fecha && franja && planta) {
+    const plantaCmp = franja === 'dia_completo' ? 'ambas' : planta;
+    const yaTiene = getReservas().some(r =>
+      r.estado !== 'cancelada' && padId(r.socioId) === padId(socioId) &&
+      r.fechaReservada === fecha && r.franja === franja && r.planta === plantaCmp);
+    if (yaTiene) addError(eu
+      ? 'Bazkide honek badauka erreserba bat data, txanda eta solairu horretarako. Begiratu "Erreserbak" atalean.'
+      : 'Este socio ya tiene una reserva para esa fecha, franja y planta. Míralo en "Ver Reservas".', 'f-franja');
+  }
+
   // Comprobar disponibilidad y capacidad de mesas según planta y franja
   if (fecha && franja) {
     const existing = getReservas().filter(r => r.fechaReservada === fecha && r.estado !== 'cancelada');
@@ -3362,6 +3373,11 @@ async function submitReserva(e) {
   try {
     const result = await apiCall({ action: 'addReserva', data: reserva });
     if (!result.ok) throw new Error(result.error || 'Error al guardar');
+    // Si el servidor detecta que ya existía esta reserva (reintento tras un aviso de error), usa la existente
+    if (result.duplicado) {
+      if (result.id) reserva.id = String(result.id);
+      if (result.codigoCancelacion) reserva.codigoCancelacion = String(result.codigoCancelacion);
+    }
     const updated = await apiCall({ action: 'getReservas' });
     _cache.reservas = Array.isArray(updated) ? updated.map(normalizeReserva) : _cache.reservas;
   } catch(err) {
