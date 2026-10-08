@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6B1A1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Azkena v2.2</title>
+  <title>Azkena v2.3</title>
   <!-- Abre ya la conexión con Google (los dos saltos de cada llamada) mientras se carga la página -->
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -998,6 +998,518 @@
       }
     }
 
+    /* Informes */
+    .inf-form-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .inf-form-titulo {
+      color: var(--primary);
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .inf-form-ayuda {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .inf-form-subtitulo {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 16px 0 8px;
+    }
+    .inf-periodos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .inf-periodo-btn {
+      min-height: 44px;
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      padding: 8px 13px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .inf-periodo-btn.active,
+    .inf-periodo-btn[aria-pressed="true"] {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+    .inf-fechas {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .inf-fechas[hidden] { display: none; }
+    .inf-fechas label {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .inf-fechas input {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 4px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+    }
+    .inf-selecciones {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 8px;
+    }
+    .inf-check {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 9px 11px;
+      background: #fff;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .inf-check input {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      accent-color: var(--primary);
+    }
+    .inf-check-total {
+      border: 2px solid var(--accent);
+      background: var(--bg);
+      color: var(--primary);
+    }
+    .inf-check-opcion {
+      margin-top: 14px;
+      max-width: 380px;
+    }
+    .inf-generar-btn {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 18px;
+      background: var(--primary);
+      color: #fff;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    #informe-vista {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      overflow: auto;
+      background: #DDD5CA;
+      color: #2C1810;
+    }
+    .inf-barra {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      background: #4A0F0F;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+    }
+    .inf-barra-titulo {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .inf-barra button {
+      flex-shrink: 0;
+      min-height: 44px;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .inf-orientacion {
+      flex-shrink: 0;
+      display: flex;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .inf-orientacion button {
+      border: 0;
+      border-radius: 0;
+    }
+    .inf-orientacion button.active {
+      background: var(--accent);
+      color: #2C1810;
+    }
+    .inf-imprimir { background: var(--accent) !important; color: #2C1810 !important; }
+    .inf-hoja {
+      width: calc(100% - 32px);
+      margin: 18px auto;
+      padding: 30px;
+      background: #fff;
+      border: 1px solid #D2C5B6;
+      border-radius: 4px;
+      box-shadow: 0 5px 24px rgba(44,24,16,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.42;
+    }
+    .inf-hoja.inf-v { max-width: 794px; }
+    .inf-hoja.inf-h { max-width: 1123px; }
+    .inf-cabecera {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg,#4A0F0F,#6B1A1A);
+      color: #fff;
+    }
+    .inf-marca { display: flex; align-items: center; gap: 13px; min-width: 0; }
+    .inf-logo {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      border: 2px solid rgba(255,255,255,0.45);
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .inf-marca h1 { margin: 0; font-size: 22px; line-height: 1.1; }
+    .inf-marca-sub { margin-top: 3px; opacity: 0.86; }
+    .inf-libro {
+      display: inline-block;
+      margin-top: 7px;
+      border-radius: 15px;
+      padding: 3px 10px;
+      background: var(--accent);
+      color: #2C1810;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .inf-cabecera-datos { max-width: 43%; text-align: right; }
+    .inf-cabecera-datos strong { display: block; font-size: 16px; }
+    .inf-cabecera-datos span { display: block; margin-top: 3px; }
+    .inf-cabecera-legal { margin-top: 9px !important; opacity: 0.88; font-size: 13px; }
+    .inf-seccion { margin: 22px 0; }
+    .inf-seccion-titulo {
+      margin: 0 0 12px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 6px;
+      color: var(--primary);
+      font-size: 17px;
+      font-weight: 900;
+    }
+    .inf-vacio {
+      border: 1px dashed var(--border);
+      border-radius: 9px;
+      padding: 22px;
+      color: var(--text-muted);
+      text-align: center;
+      font-style: italic;
+    }
+    .inf-tabla-wrap { max-width: 100%; overflow-x: auto; }
+    .inf-tabla { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .inf-tabla th {
+      padding: 8px 6px;
+      background: var(--primary);
+      color: #fff;
+      text-align: left;
+      vertical-align: bottom;
+      white-space: nowrap;
+    }
+    .inf-tabla td {
+      border-bottom: 1px solid #F0E8DC;
+      padding: 7px 6px;
+      vertical-align: middle;
+    }
+    .inf-tabla tbody tr:nth-child(even) td { background: #FDFAF5; }
+    .inf-tabla .inf-num { text-align: right; white-space: nowrap; }
+    .inf-tabla .inf-centro { text-align: center; }
+    .inf-tabla tr.inf-cancelada td { opacity: 0.52; text-decoration-color: #C62828; }
+    .inf-tabla td.inf-estimado { background: #FFF3E0 !important; color: #E65100; font-weight: 800; }
+    .inf-tabla tfoot td { border-top: 2px solid var(--primary); background: var(--bg); font-weight: 900; }
+    .inf-estado {
+      display: inline-block;
+      border-radius: 12px;
+      padding: 2px 7px;
+      background: #E8F5E9;
+      color: #2E7D32;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .inf-estado-cancelada { background: #FFEBEE; color: #C62828; }
+    .inf-estado-estimado { background: #FFF3E0; color: #E65100; }
+    .inf-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+    .inf-kpi,
+    .inf-tarjeta {
+      min-width: 0;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(44,24,16,0.07);
+    }
+    .inf-kpi { padding: 11px; text-align: center; }
+    .inf-kpi-valor { color: var(--primary); font-size: 21px; font-weight: 900; }
+    .inf-kpi-etiqueta { margin-top: 3px; color: var(--text-muted); font-size: 13px; }
+    .inf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin: 12px 0;
+    }
+    .inf-tarjeta { padding: 13px; }
+    .inf-tarjeta h3 { margin: 0 0 10px; color: var(--primary); font-size: 15px; }
+    .inf-barras-v {
+      min-height: 154px;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      gap: 6px;
+      padding-top: 18px;
+    }
+    .inf-barra-v-item {
+      min-width: 0;
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      text-align: center;
+    }
+    .inf-barra-v-valor { min-height: 19px; color: var(--text-muted); font-size: 13px; font-weight: 800; white-space: nowrap; }
+    .inf-barra-v-area { width: 100%; height: 92px; display: flex; align-items: flex-end; justify-content: center; gap: 2px; }
+    .inf-barra-v {
+      width: 42%;
+      height: var(--inf-pct);
+      border-radius: 4px 4px 0 0;
+      background: var(--primary);
+    }
+    .inf-barra-v.inf-con-valor { min-height: 2px; }
+    .inf-barra-v.inf-secundaria { background: #E08A35; }
+    .inf-barra-v.inf-verde { background: #2E7D32; }
+    .inf-barra-v.inf-verde-claro { background: #81C784; }
+    .inf-barra-v-label { margin-top: 5px; color: var(--text-muted); font-size: 13px; }
+    .inf-barra-h-fila { margin: 9px 0; }
+    .inf-barra-h-cab { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .inf-barra-h-pista { height: 15px; overflow: hidden; border-radius: 7px; background: #F0E8DC; }
+    .inf-barra-h { width: var(--inf-pct); height: 100%; min-width: 0; border-radius: 7px; background: var(--primary); }
+    .inf-barra-h.inf-con-valor { min-width: 2px; }
+    .inf-segmentada { display: flex; min-height: 20px; overflow: hidden; border-radius: 7px; background: #F0E8DC; }
+    .inf-segmento { min-width: 0; flex-grow: var(--inf-flex); }
+    .inf-concepto-fila,
+    .inf-dato-fila { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+    .inf-concepto-color { width: 11px; height: 11px; flex: 0 0 11px; border-radius: 2px; }
+    .inf-concepto-nombre { flex: 1; }
+    .inf-concepto-importe { font-weight: 800; }
+    .inf-concepto-pct { width: 42px; color: var(--text-muted); text-align: right; }
+    .inf-leyenda { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 8px; color: var(--text-muted); }
+    .inf-leyenda-marca { display: inline-block; width: 11px; height: 11px; margin-right: 4px; border-radius: 2px; vertical-align: -1px; }
+    .inf-aviso {
+      margin-top: 12px;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: var(--bg);
+    }
+    .inf-nota { margin-top: 15px; color: var(--text-muted); font-style: italic; }
+    .inf-pie {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 22px;
+      border-top: 1.5px solid var(--border);
+      padding-top: 8px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .inf-sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+    @media screen {
+      body.informe-abierto { overflow: hidden; }
+      .inf-barras-v { overflow-x: auto; overflow-y: hidden; }
+      .inf-barra-v-item { min-width: 34px; }
+    }
+    @media screen and (max-width: 759px) {
+      .inf-form-card { padding: 14px; }
+      .inf-fechas { grid-template-columns: 1fr; }
+      .inf-selecciones { grid-template-columns: 1fr; }
+      .inf-hoja,
+      .inf-hoja.inf-v,
+      .inf-hoja.inf-h { width: 100%; max-width: none; margin: 0; border: 0; border-radius: 0; padding: 14px; box-shadow: none; }
+      .inf-cabecera { display: block; padding: 13px; }
+      .inf-logo { width: 52px; height: 52px; flex-basis: 52px; }
+      .inf-marca h1 { font-size: 19px; }
+      .inf-cabecera-datos { max-width: none; margin-top: 12px; text-align: left; }
+      .inf-grid { grid-template-columns: 1fr; }
+      .inf-pie { display: block; }
+      .inf-pie span { display: block; margin-top: 4px; }
+    }
+    @media screen and (max-width: 699px) {
+      .inf-barra { flex-wrap: wrap; padding: 7px 8px; }
+      .inf-barra-titulo { order: -1; flex: 1 1 calc(100% - 100px); }
+      .inf-barra-cerrar { order: -1; }
+      .inf-orientacion,
+      .inf-imprimir { flex: 0 0 auto; }
+    }
+    @media screen and (max-width: 480px) {
+      .inf-barra { gap: 8px; }
+      .inf-barra button { padding: 8px 6px; font-size: 11px; }
+    }
+    @media screen and (max-width: 899px) {
+      .inf-listado .inf-tabla,
+      .inf-listado .inf-tabla tbody,
+      .inf-listado .inf-tabla tfoot,
+      .inf-listado .inf-tabla tr,
+      .inf-listado .inf-tabla td { display: block; width: 100%; }
+      .inf-listado .inf-tabla thead { display: none; }
+      .inf-listado .inf-tabla tr {
+        margin-bottom: 11px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 7px;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(44,24,16,0.06);
+      }
+      .inf-listado .inf-tabla td,
+      .inf-listado .inf-tabla .inf-num,
+      .inf-listado .inf-tabla .inf-centro {
+        min-height: 31px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid #F0E8DC;
+        padding: 5px;
+        text-align: right;
+        white-space: normal;
+      }
+      .inf-listado .inf-tabla td:last-child { border-bottom: 0; }
+      .inf-listado .inf-tabla td::before {
+        content: attr(data-label) ":";
+        color: var(--text-muted);
+        font-weight: 800;
+        text-align: left;
+      }
+      .inf-listado .inf-tabla td[colspan] { display: block; text-align: center; }
+      .inf-listado .inf-tabla td[colspan]::before { display: none; }
+      .inf-listado .inf-tabla tfoot tr { background: var(--bg); }
+    }
+    /* tablet apaisada / portátil pequeño: tabla compacta para que las 13 columnas quepan sin desplazar de lado */
+    @media screen and (min-width: 900px) and (max-width: 1139px) {
+      .inf-listado .inf-tabla { font-size: 11px; }
+      .inf-listado .inf-tabla th,
+      .inf-listado .inf-tabla td { padding: 5px 3px; }
+    }
+    @media screen and (min-width: 560px) and (max-width: 899px) {
+      .inf-listado .inf-tabla tbody {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .inf-listado .inf-tabla tbody tr { margin-bottom: 0; }
+    }
+    @media print {
+      @page { margin: 12mm; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+      html,
+      body,
+      body.informe-abierto { overflow: visible !important; background: #fff !important; }
+      /* el <body> de la app es una columna de 480px centrada (diseño móvil): en papel el informe usa todo el A4 */
+      body.informe-abierto { max-width: none !important; width: auto !important; margin: 0 !important; padding: 0 !important; min-height: 0 !important; }
+      body.informe-abierto > *:not(#informe-vista) { display: none !important; }
+      #informe-vista { position: static; inset: auto; overflow: visible; background: #fff; }
+      .inf-barra { display: none !important; }
+      .inf-hoja,
+      .inf-hoja.inf-v,
+      .inf-hoja.inf-h {
+        width: calc(100% - 3px); /* holgura: si no, Chrome recorta el borde de 1px de las tarjetas que tocan el margen derecho */
+        max-width: none;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        box-shadow: none;
+        font-size: 9pt;
+      }
+      .inf-tabla { display: table; font-size: 9pt; }
+      .inf-tabla thead { display: table-header-group; }
+      .inf-tabla tbody { display: table-row-group; }
+      .inf-tabla tfoot { display: table-row-group; break-inside: avoid; page-break-inside: avoid; }
+      .inf-tabla tr { display: table-row; }
+      .inf-tabla th,
+      .inf-tabla td { display: table-cell; padding: 5px 4px; }
+      .inf-tabla td::before { display: none !important; content: none !important; }
+      .inf-tabla-wrap { overflow: visible; }
+      .inf-grid { width: 100%; max-width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .inf-grid > * { min-width: 0; }
+      .inf-barras-v { max-width: 100%; overflow: visible; }
+      .inf-barra-v-item { min-width: 0; }
+      .inf-barra-v-label { min-height: 2.4em; } /* las columnas sin etiqueta (periodos largos) no quedan más bajas que las demás */
+      .inf-barra-v-label[data-inf-papel] { font-size: 0; }
+      .inf-barra-v-label[data-inf-papel]::after { content: attr(data-inf-papel); font-size: 9pt; }
+      thead { display: table-header-group; }
+      tr,
+      .inf-tarjeta,
+      .inf-kpi { break-inside: avoid; page-break-inside: avoid; }
+      .inf-seccion-titulo { break-after: avoid; page-break-after: avoid; }
+      .inf-cabecera { break-inside: avoid; page-break-inside: avoid; }
+      .inf-seccion { break-before: auto; page-break-before: auto; }
+      .inf-nota,
+      .inf-pie { break-before: avoid; page-break-before: avoid; }
+      .inf-pie { break-inside: avoid; page-break-inside: avoid; }
+    }
+
     .admin-tab-bar {
       overflow-x: auto;
       scrollbar-width: thin;
@@ -1047,7 +1559,7 @@
     <img class="logo-img" src="data:image/webp;base64,UklGRmgMAABXRUJQVlA4IFwMAADQNACdASqAAIAAPmEqkEYkIqGhKJtLuIAMCWcA1XG6+2Rw3Pfou26l3FbzvkJPlnsU/xnhX+LfJv2H8kf67y9ug/Mr+K/Yz7z+YvsJ/iPBX1JeoR+K/zX/F/1P9weArAB+c/1P/Nf3X9yP676Rf9n6G+IB/If6L/pPza5pLyz/Se4F/K/6x/vfvD+mH+f/6n+R/y37fe2j83/v//L/xX5PfYN/K/6j/sv73/eP/V/mfnV9iH7jey7+yX//YrrNvYnVkx4CKYLC8rrmDh3yA8iPc7ybn8LdEWt9FEb55rhE1i47SYPPYThtj8sIdBTU0ScmvzaNE2PSl8ejNlnEWFX7rnYUqDTWg8tVA3VFQT9Ncc1CCH4wHj8GN36qRA5cQ6ChzPq3eD6bWT65Es1VzJnE9f1XlZNqeq8xNkTZzsdBjHTtPe78R3xA5JXiAT7DEDnAI2VraChnIdTvdViXPqXhXxGS41d9UzcN4ZLOfmhBqwya5JL2xZnZtl+z8bal0roExegxmBdfc5giNhFood/zcdVuf1OXTVgVcFA0cFNu/sPZRQmfFbJq3F6/vzMkwAD+7O3/5WfwfbeY8FczPTD/pCeuK6xxrt93Pfqm0fGzWson8jwBajUBgi/6uPYWu7/0nTdfROecqqvg9wBp4dRvPxXMKFp+DHekmErgp77p9qV/JRBaoRt7luMOB1/XfD4WaWZEVOQplOjs/pX6PYh2LFcjrya3Vp7kKzHHfV/6hnh5i/MfsmH0QW5opaqiD640f3xYkXV8SjsQRmhLgDfEWIrBDOvwff4AArXZlfQR5tZ+FmSUtWMO92dbaupGp7mWkipCPDzVVRlpf7eYcnskXUpNKEwgSqJnUKUnBhksvg2QwzbJUlEkhND4OKYVjpTEetMCa4SCrIcx/rUuPpnyXyPVGdczeoKQdqBT7NYCaSZcKPARGu1f57GI3bKOyb2xWfylcMUzzkwBfOw9UP/aBP9qon8TRGDd/h8dtUFRF0qFEBIEts/KNU7Nd6Eb+pw5LbwoNOPkIOHa24AhwMMl7ZG95YddsGl+sCO/n3GXftrwLQWNptdPA+ns8AYFdgELf/kesGnvZozxSP6mwxu1AN9fC1Yo2TX8kQF1Xbshva3aEzjMg8dYQZ8l1PJMjX3U9fxKd60Ncr7gYpYZGT2CiwfjKtHHSdxYnyHfHZkKFDbzOO9cEgRTqHYpIdZbvSSfmSA9izMsjlhdj4mmNm1ioWde6Kw4QCouXuXM1us1HqBFv9E7rhGgC+O98+DO+8D3RSJknesvtXDD8QNxDYL4d7E/wqx0HHFWiptQDUEb66q1RKaXwtW2NLz/TrslHTJl6zTPqK0TnAI5CYzTVcBd4KzyoWfIyQsxoWgEjh4MTHixANmFYcOX5jmWVquphiyoPhG37lQSOUTydDr6xG2B2BzgEvxXKHh8kwDWQdXZYZcpC+y9DD0LJttJVan7ckpw2uK8jQF9o3pqi6+Gb/y2GLhDMrNmDhvD9Wg6MNLnAhAL3NOPB7KGX2NSWSJGdRx6Q/zUpT7sFa2UcaecLAartVmNvt9yGmvYk95y8QumlxWeM/O7gPQfuNP6gWp6sX2DoXRPJLxfl4sJAqCfcm/g2Naa9E6qmD8dPTcyT8XaXD6z21aaEfJ+pViiN/1HkEc6vreWwTdLo329JcjlJiVGvCNGa2I9RdDgrpV7pBhl+jXiJDC4DCpw+9c6f9HawcbHTU5XR0hKsdK/p1qbxTrCOsscmWczIF4ENibAtJ/P17H51B7xGjTyW7BwATIuMMIgcO3jwXFFa+bQ+0Htbzj9rK+Besoz2Ry0j8NlCe2B2y3836s4otM1sEl0n6KV8L3fSq8vo/jFMZ/nniezjasn2H+ug839y8f5gfc24CpCIPWBITu+mv/NFdvUxxN87MLvTiFDNntNKJk6TH7aMF7BzfWeglSbFLDA/T7hW+6+7S0j/Oha4A8TRGa1wpT4RP5Aoz1sT6O2044PZ8FabGlf8//HnegyJEIEFfFW1yC+x/hbAlXAywxN4wLKLqb4X4Tx3L+VSp+fvagzmrSu33O02Yy7BSxjqv2OhYIdXds/1f2VrpngSgfAfvhDUix8saKQTDt8rGu2+32u8ahOHG58yTxX2snhIUnTMN/eZum48NsbLpidpxGAh9G1NGYJvueElGzC5qKu64tRd2d+adiD0NDl/efDRFt9Q9/tEpb7ixqnDKLZekNmklchZuQfnKTxPV1uf13A7Y1UWoB3NYu4euxjrK++A3+Qe3waUN0NTuqPiOOEIFwmYOSlbBaTdj5R8vTbjU4dUr3b3CIfde2Z1GpdIidy6O7CM0U7tnDMOY6F607Fknd2A2SMnVS4llkl91BNcRPSQGr+dFaghNf4NYrtk+ATQE+z4o9X222TFRT48QzhnNMQD8VIEJhImwn3sfbx2T04e/1ArgNkkwH51uZaiNjLzkHcmMSKUzVgj86MzwT2H8Mgm/0z9fihexJ+5v71jctDZ/f5NM0CGdEjlI+BGwIr2bJ69XiVreVLXnXxNaeGJZCs2yqNp2zFbBdp4BeR6gmti/qERJdJrMGCJO9fyaxUGRqqJD6ANMuVetIYrrKek997ayHCA/4eRU2ah2LwkwK+DOhS4cdCu9RgFBm55sNPNyYLFUN9rFC0f1Ve06/Ep2foDIrpMltfSjuzg9HRl4iASiqKmNek6Py5uC5P4nuLDBVJM5ck19xCiF/hLoAXB8UjHcHSrUN6CKirpGYK051vp3u+zpX2rriSbUXp/QAgIPa2mLyat9Ov1IKMfR8VAk7D2OFUkzO521sQRoxPwjQLNbqpA7spqh7W+tZ5OfTbguZcPKU1j9Vd+RFcZrVqJdDPkvWc4uyuvgND0UY51JgsnVRnk+aqWmq69aoGiy6GV23ClO77+pUoSRseAG90kn16zPZNDQtmzX86a5dyvEIvHgNEmZt3ANIEqxjyxrtg+gjEeCSOr38wn+7iZvTIEpboACKc6vpteVOtf4VKGG52+7lTXY7hcr4y105Q2HhsiNv0HS1zyvXrKz54wVvN//VmKJk8qOKmWf8FWW8pb9nEscgUORbR6fckBUuBauL24Ld/brIhoiXDdzptXami7h0oJB3JX4a8WVTWGPqBbTP1ShqNtlMRxbOVt2GxgtveraepA/HQDTf3HSzzDadb+7bLY142tTSyEEnXBSvYYwGN3x05SQZyMyfKQRQy37mu9gwjSrJqlsanANCB+1DV37qruhyUtjPH9DsiBVlSFSAy65jT3cuVlxeIYKtP5qBLHV0Ksa+uDcfScV4Ht5OdtDVr39YP727S2pLJ/huA4nOForr8sUCgyf2zfuijF2ffsYSDTf8rBf8R+o0jAGsl9WpPVmcRJhsKtgVCCO9nGfLfg6ut11gR4TB8Q4WjcPd5laNN1ShD6b2b2ZLf/o3X+ACirh8+zkPs1eAh+wCeU77ciEL1V62wD7liPyebsrgSifSF54tKS+gVy4k++fLXAScCcnwTBYgfA00D1YU3Y2Mh3yFDb7CgvjCB1F7PBzxI4myyXjh9+wNAXvbb0TYOE5GmfG6cOqb4NDDLkVCIEo5MoNcFwpzNRQKwf79hDKb9kRTELQEyMSa4oLF85f7kzz5nVIxsULPGk/eMBYEoJbYVf8abY/VOZuSGeAEsMyoU9XIns+X2MS0DH+6ocX9y+NnUlRNafEopG845T2KeVhIgXIWPEgR6gb2+73MBuLk3eenrtaNn/5/PCn85jNn3wUntnIR6jTcWtGdsJ+nci+X6bGpF/fgIEFlNh2LzMVePsvY0LPbl2KpFX0y9WhCcq6l7Sm/pQf2bERONIGBOH54eI93cuDZ3vZ2UCuGaQg5SyJFK6+8v3Db4kpZeTDRtZtQLe0eYTl4oJ3UCcomN0Y/yemNzTMgvo3Ctpu+UFc+7jXyUixctNKJ86G/N2hHH1XLjJPLpuaX75GDXIEy2mUFmnPuxAA80AgfjvFSyElE727SSxnPbgsPWU40j+nbOn/uiaGM9eUzpNJGD7W/Br9oSMQXIsBFimRQhOtGcr/QVnfAngQO/TFwQh1W/hgE0Wzto0Udh2keczizfyOQdke1gSo3eS1LZzH2BAyd8u3HstVadw+40K/vNzj3bABJJr/t22NOR9VnWjXIHSixspoCDrdpJw1Af/KA+D7ZQgYRcDQExZLezVFlXJsbJ+RQ+okAAAAAAAA==" alt="Txoko Azkena" onerror="this.style.display='none'">
     <div class="logo-txt">
       <span class="title">Txoko Azkena</span>
-      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.2</span></span>
+      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.3</span></span>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -1732,7 +2244,7 @@ function toggleLang() {
 }
 
 // Subir este número con CADA actualización que se suba a GitHub (así se ve si el móvil tiene la versión nueva)
-const APP_VERSION = '2.2';
+const APP_VERSION = '2.3';
 
 function applyTR() {
   const sub = document.getElementById('h-subtitle');
@@ -5648,17 +6160,8 @@ function renderAdminTabContent() {
       : `<div class="empty-state"><div class="ei">📌</div><div class="et">${escapeHtml(tbt('sin_anuncios'))}</div><div class="eh">${escapeHtml(tbt('sin_anuncios_sub'))}</div></div>`;
 
   } else if (adminCurrentTab === 'informe') {
-    cont.innerHTML = `
-      <div class="card" style="text-align:center; padding:30px 20px;">
-        <div style="font-size:48px; margin-bottom:12px;">📋</div>
-        <div style="font-size:17px; font-weight:800; color:var(--primary); margin-bottom:6px;">Generar Informe PDF</div>
-        <div style="font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.6;">
-          Genera un listado completo de todas las reservas registradas,<br>listo para imprimir o guardar como PDF.
-        </div>
-        <button class="btn btn-primary" onclick="informeConDatos()" style="max-width:260px; margin:0 auto;">
-          📄 Generar y abrir informe
-        </button>
-      </div>`;
+    cont.innerHTML = '<div id="informe-formulario"></div>';
+    informeRenderForm();
 
   } else if (adminCurrentTab === 'socios') {
     const socios = getSocios().slice().sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric:true}));
@@ -6160,482 +6663,1115 @@ async function actualizarIncidencia(id) {
   } catch(e) { showToast('❌ Error: ' + e.message, 'err'); }
 }
 
-/* =========================================================
-   INFORME PDF
-========================================================= */
-function generarInforme() {
-  const now        = new Date().toLocaleDateString('es-ES', { year:'numeric', month:'long', day:'numeric' });
-  const reservas   = getReservas().slice().sort((a,b) => a.fechaReservada.localeCompare(b.fechaReservada));
-  const cuentasL   = getCuentasLibres().slice().sort((a,b) => String(a.fecha||'').localeCompare(String(b.fecha||'')));
+/* >>> INFORME (inicio) */
+/*
+ * Capa de datos del informe, independiente de la pantalla y del estado de la app.
+ * informeConstantes centraliza las tarifas; informePeriodo y los formateadores
+ * construyen periodos y textos; informeEntradas normaliza reservas y cuentas
+ * libres; informeFinanzas separa importes cobrados de estimaciones; y
+ * informeFiltrar/informeCalcular preparan el listado y los resúmenes de uso y
+ * financieros.
+ *
+ * Las fechas se comparan como texto YYYY-MM-DD porque en ese formato el orden
+ * alfabético coincide con el cronológico y no intervienen husos horarios. Date
+ * solo se usa, a mediodía, para obtener el día de la semana.
+ *
+ * «Total con cuenta» suma únicamente cuentas guardadas: los fijos de reservas
+ * sin cuenta son estimaciones, no importes cobrados, y se muestran aparte para
+ * no inflar la facturación real.
+ */
+const informeConstantes = {
+  TARIFA_MESA: 5.0,
+  TARIFA_COMENSAL_SIN_RESERVA: 1.0,
+  TARIFA_COCINA_COMENSAL: 0.5,
+  TARIFA_LIMPIEZA_COMENSAL: 1.5,
+  LIMPIEZA_MINIMA: 15
+};
 
-  // ── Helper: parsear cuentaData ────────────────────────
-  const parseCD = obj => { try { return obj?.cuentaData ? JSON.parse(obj.cuentaData) : null; } catch(e) { return null; } };
+function informeNumero(valor) {
+  try { return Number(valor) || 0; }
+  catch(e) { return 0; }
+}
 
-  // ── Extraer financials de una entrada ─────────────────
-  const financials = entry => {
-    const cd = parseCD(entry);
-    if (cd?.totales) {
-      return {
-        reserva:       cd.conReserva ? (cd.mesas||0)*5.0 : (cd.comensales||0)*1.0,
-        cocina:        cd.cocina    ? (cd.comensales||0)*0.5 : 0,
-        limpieza:      cd.limpExt   ? Math.max((cd.comensales||0)*1.5, 15) : 0,
-        consumiciones: cd.totales.bebidas ?? 0,
-        extras:        cd.totales.extras  ?? 0,
-        bote:          cd.totales.bote    ?? 0,
-        total:         cd.totales.total   ?? 0,
-        known: true
-      };
+function informeTexto(valor) {
+  try { return valor === null || valor === undefined ? '' : String(valor); }
+  catch(e) { return ''; }
+}
+
+function informePad2(valor) {
+  return String(valor).padStart(2, '0');
+}
+
+function informeEsBisiesto(anio) {
+  return anio % 4 === 0 && (anio % 100 !== 0 || anio % 400 === 0);
+}
+
+function informeDiasMes(anio, mes) {
+  const dias = [31, informeEsBisiesto(anio) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return dias[mes - 1] || 31;
+}
+
+function informeFechaYmd(anio, mes, dia) {
+  return String(anio).padStart(4, '0') + '-' + informePad2(mes) + '-' + informePad2(dia);
+}
+
+function informePartesFecha(fecha) {
+  const texto = informeTexto(fecha);
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(texto);
+  if (!m) return null;
+  return { anio: informeNumero(m[1]), mes: informeNumero(m[2]), dia: informeNumero(m[3]) };
+}
+
+function informePeriodo(modo, hoy, desde, hasta, primeraFecha) {
+  const modoTexto = informeTexto(modo);
+  const hoyTexto = informeTexto(hoy);
+  const partesHoy = informePartesFecha(hoyTexto);
+  let fechaDesde = '';
+  let fechaHasta = '';
+  let tipoEtiqueta = 'rango';
+
+  if (modoTexto === 'personalizado') {
+    fechaDesde = informeTexto(desde);
+    fechaHasta = informeTexto(hasta);
+    if (!fechaDesde || !fechaHasta) {
+      return { ok:false, error:'Indica las dos fechas.', desde:fechaDesde, hasta:fechaHasta, etiqueta:'' };
     }
-    // Sin cuenta — fijos conocidos desde la reserva, consumiciones desconocidas
-    if (entry._type === 'reserva') {
-      const com = entry.numeroComensales || entry.comensalesEstimados || 0;
-      const reserva  = (entry.numeroMesas||0) * 5.0;
-      const cocina   = entry.usoCocina === 'si' ? com * 0.5 : 0;
-      const limpieza = entry.limpiezaExterna === 'si' ? Math.max(com*1.5, 15) : 0;
-      return {
-        reserva, cocina, limpieza,
-        consumiciones: null, extras: null, bote: null,
-        total: reserva + cocina + limpieza,  // total parcial (solo fijos)
-        known: false, partial: true
-      };
+    if (fechaDesde > fechaHasta) {
+      return { ok:false, error:'La fecha «desde» no puede ser posterior a «hasta».', desde:fechaDesde, hasta:fechaHasta, etiqueta:'' };
     }
-    return { reserva:0, cocina:0, limpieza:0, consumiciones:0, extras:0, bote:0, total:0, known:false, partial:false };
-  };
+  } else if (modoTexto === 'todo') {
+    fechaDesde = informeTexto(primeraFecha) || hoyTexto;
+    fechaHasta = hoyTexto;
+  } else {
+    if (!partesHoy) {
+      return { ok:false, error:'La fecha de hoy no es válida.', desde:'', hasta:'', etiqueta:'' };
+    }
+    let anio = partesHoy.anio;
+    let mes = partesHoy.mes;
+    if (modoTexto === 'mes_pasado') {
+      mes--;
+      if (mes === 0) { mes = 12; anio--; }
+      tipoEtiqueta = 'mes';
+      fechaDesde = informeFechaYmd(anio, mes, 1);
+      fechaHasta = informeFechaYmd(anio, mes, informeDiasMes(anio, mes));
+    } else if (modoTexto === 'mes') {
+      tipoEtiqueta = 'mes';
+      fechaDesde = informeFechaYmd(anio, mes, 1);
+      fechaHasta = informeFechaYmd(anio, mes, informeDiasMes(anio, mes));
+    } else if (modoTexto === 'anio' || modoTexto === 'anio_pasado') {
+      if (modoTexto === 'anio_pasado') anio--;
+      tipoEtiqueta = 'anio';
+      fechaDesde = informeFechaYmd(anio, 1, 1);
+      fechaHasta = informeFechaYmd(anio, 12, 31);
+    } else {
+      return { ok:false, error:'El periodo indicado no es válido.', desde:'', hasta:'', etiqueta:'' };
+    }
+  }
 
-  // ── Celda financiera con color ────────────────────────
-  const fCell = (val) => {
-    if (val === null || val === undefined)
-      return `<td style="text-align:right;color:#C0B090;font-size:13px">–</td>`;
-    if (val === 0)
-      return `<td style="text-align:right;background:#FFEBEE;color:#C62828;font-size:13px;font-weight:700;padding:4px 7px;">0€</td>`;
-    return `<td style="text-align:right;background:#E8F5E9;color:#2E7D32;font-size:13px;font-weight:700;padding:4px 7px;">${val.toFixed(2)}€</td>`;
-  };
+  let etiqueta = 'Del ' + informeFmtFecha(fechaDesde) + ' al ' + informeFmtFecha(fechaHasta);
+  if (tipoEtiqueta === 'mes') {
+    const partesMes = informePartesFecha(fechaDesde);
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    etiqueta = meses[partesMes.mes - 1] + ' ' + partesMes.anio + ' (del ' + informeFmtFecha(fechaDesde) + ' al ' + informeFmtFecha(fechaHasta) + ')';
+  } else if (tipoEtiqueta === 'anio') {
+    const partesAnio = informePartesFecha(fechaDesde);
+    etiqueta = 'Año ' + partesAnio.anio + ' (del ' + informeFmtFecha(fechaDesde) + ' al ' + informeFmtFecha(fechaHasta) + ')';
+  }
+  return { ok:true, error:'', desde:fechaDesde, hasta:fechaHasta, etiqueta:etiqueta };
+}
 
-  // ── Unificar entradas ─────────────────────────────────
-  const normSocio = r => {
-    // Si ya tiene formato "Nº XX – ..." lo usa; si no, lo construye
-    const raw = r.socioResponsable || r.socioNombre || '';
-    if (raw.startsWith('Nº ')) return raw;
-    const num = r.socioNumero || r.socioId ? padId(String(r.socioNumero || r.socioId || '')) : '';
-    return num && raw ? `Nº ${num} – ${raw}` : raw || '–';
-  };
-  const resE = reservas.map(r => ({ ...r, _type:'reserva', _fecha:r.fechaReservada, _socio:normSocio(r) }));
-  const libE = cuentasL.map(c => {
-    const cd    = parseCD(c)||{};
-    const raw   = c.fecha || cd.fechaCuenta || '';
-    const fecha = toDateStr(raw) || (typeof raw === 'string' ? raw.substring(0,10) : '');
-    // Normalizar al mismo formato que las reservas: "Nº XX – Nombre"
-    const num   = c.socioId ? padId(String(c.socioId)) : (cd.socioId ? padId(String(cd.socioId)) : '');
-    const nom   = c.socioNombre || cd.socioNombre || '';
-    const socio = num && nom ? `Nº ${num} – ${nom}` : (nom || num || '–');
-    return { ...c, _type:'libre', _fecha:fecha, _socio:socio };
+function informeParseCuenta(cuentaData) {
+  if (!cuentaData || typeof cuentaData !== 'string') return null;
+  try { return JSON.parse(cuentaData); }
+  catch(e) { return null; }
+}
+
+function informeNormSocioReserva(reserva) {
+  const r = reserva || {};
+  const raw = informeTexto(r.socioResponsable || r.socioNombre || '');
+  if (raw.indexOf('Nº ') === 0) return raw;
+  const valorNumero = r.socioNumero || r.socioId || '';
+  const numero = valorNumero ? padId(informeTexto(valorNumero)) : '';
+  return numero && raw ? 'Nº ' + numero + ' – ' + raw : (raw || '–');
+}
+
+function informeNormSocioLibre(cuenta, cd) {
+  const c = cuenta || {};
+  const datos = cd || {};
+  const valorNumero = c.socioId || datos.socioId || '';
+  const numero = valorNumero ? padId(informeTexto(valorNumero)) : '';
+  const nombre = informeTexto(c.socioNombre || datos.socioNombre || '');
+  return numero && nombre ? 'Nº ' + numero + ' – ' + nombre : (nombre || numero || '–');
+}
+
+function informeFechaCuentaLibre(cuenta, cd) {
+  const c = cuenta || {};
+  const datos = cd || {};
+  const raw = c.fecha || datos.fechaCuenta || '';
+  if (typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.substring(0, 10);
+  if (!raw) return '';
+  const normalizada = toDateStr(raw);
+  return informeTexto(normalizada);
+}
+
+function informeOrdenarEntradas(entradas) {
+  return (Array.isArray(entradas) ? entradas.slice() : []).sort(function(a, b) {
+    const fechaA = informeTexto(a && a.fecha);
+    const fechaB = informeTexto(b && b.fecha);
+    if (fechaA < fechaB) return -1;
+    if (fechaA > fechaB) return 1;
+    const idA = informeTexto(a && a.id);
+    const idB = informeTexto(b && b.id);
+    return idA < idB ? -1 : (idA > idB ? 1 : 0);
   });
-  const allE = [...resE, ...libE].sort((a,b) => a._fecha.localeCompare(b._fecha));
+}
 
-  // ── Estadísticas ──────────────────────────────────────
-  const conf        = resE.filter(r => r.estado === 'confirmada');
-  const canc        = resE.filter(r => r.estado === 'cancelada');
-  const totalMesas  = conf.reduce((s,r) => s + (r.numeroMesas||0), 0);
-  const totalComsls = conf.reduce((s,r) => s + (r.numeroComensales||r.comensalesEstimados||0), 0);
-  const conCocina   = conf.filter(r => r.usoCocina === 'si').length;
-  const conLimp     = conf.filter(r => r.limpiezaExterna === 'si').length;
-  const totalLimp   = conf.reduce((s,r) => s + (Number(r.costeLimpieza)||0), 0);
-  const porFranja   = {
-    comida: reservas.filter(r=>r.franja==='comida').length,
-    cena:   reservas.filter(r=>r.franja==='cena').length,
-    dia:    reservas.filter(r=>r.franja==='dia_completo').length
+function informeEntradas(reservas, cuentasLibres) {
+  const entradas = [];
+  const listaReservas = Array.isArray(reservas) ? reservas : [];
+  const listaLibres = Array.isArray(cuentasLibres) ? cuentasLibres : [];
+
+  listaReservas.forEach(function(reserva) {
+    const r = reserva || {};
+    const cd = informeParseCuenta(r.cuentaData);
+    const entrada = {
+      tipo: 'reserva',
+      fecha: informeTexto(r.fechaReservada),
+      socio: informeNormSocioReserva(r),
+      id: informeTexto(r.id),
+      estado: informeTexto(r.estado || 'confirmada'),
+      comensales: informeNumero(r.numeroComensales) || informeNumero(r.comensalesEstimados),
+      mesas: informeNumero(r.numeroMesas),
+      franja: informeTexto(r.franja),
+      planta: informeTexto(r.planta),
+      usoCocina: informeTexto(r.usoCocina || 'no'),
+      hornoElectrico: informeTexto(r.hornoElectrico || 'no'),
+      hornoGas: informeTexto(r.hornoGas || 'no'),
+      planchaGas: informeTexto(r.planchaGas || 'no'),
+      fuegos: informeNumero(r.numeroFuegos),
+      limpiezaExterna: informeTexto(r.limpiezaExterna || 'no'),
+      costeLimpieza: informeNumero(r.costeLimpieza),
+      cd: cd,
+      fin: null,
+      raw: r
+    };
+    entrada.fin = informeFinanzas(entrada);
+    entradas.push(entrada);
+  });
+
+  listaLibres.forEach(function(cuenta) {
+    const c = cuenta || {};
+    const cd = informeParseCuenta(c.cuentaData);
+    const datos = cd || {};
+    const entrada = {
+      tipo: 'libre',
+      fecha: informeFechaCuentaLibre(c, cd),
+      socio: informeNormSocioLibre(c, cd),
+      id: informeTexto(c.id),
+      estado: 'confirmada',
+      comensales: informeNumero(datos.comensales),
+      mesas: informeNumero(datos.mesas),
+      franja: '',
+      planta: '',
+      usoCocina: datos.cocina ? 'si' : 'no',
+      hornoElectrico: 'no',
+      hornoGas: 'no',
+      planchaGas: 'no',
+      fuegos: 0,
+      limpiezaExterna: datos.limpExt ? 'si' : 'no',
+      costeLimpieza: 0,
+      cd: cd,
+      fin: null,
+      raw: c
+    };
+    entrada.fin = informeFinanzas(entrada);
+    entradas.push(entrada);
+  });
+
+  return informeOrdenarEntradas(entradas);
+}
+
+function informeFinanzas(entrada) {
+  const e = entrada || {};
+  const cd = e.cd;
+  if (cd && cd.totales) {
+    return {
+      reserva: cd.conReserva ? informeNumero(cd.mesas) * informeConstantes.TARIFA_MESA : informeNumero(cd.comensales) * informeConstantes.TARIFA_COMENSAL_SIN_RESERVA,
+      cocina: cd.cocina ? informeNumero(cd.comensales) * informeConstantes.TARIFA_COCINA_COMENSAL : 0,
+      limpieza: cd.limpExt ? Math.max(informeNumero(cd.comensales) * informeConstantes.TARIFA_LIMPIEZA_COMENSAL, informeConstantes.LIMPIEZA_MINIMA) : 0,
+      consumiciones: cd.totales.bebidas ?? 0,
+      extras: cd.totales.extras ?? 0,
+      bote: cd.totales.bote ?? 0,
+      total: cd.totales.total ?? 0,
+      conCuenta: true,
+      parcial: false
+    };
+  }
+  if (e.tipo === 'reserva') {
+    const comensales = informeNumero(e.comensales);
+    const reserva = informeNumero(e.mesas) * informeConstantes.TARIFA_MESA;
+    const cocina = e.usoCocina === 'si' ? comensales * informeConstantes.TARIFA_COCINA_COMENSAL : 0;
+    const limpieza = e.limpiezaExterna === 'si'
+      ? Math.max(comensales * informeConstantes.TARIFA_LIMPIEZA_COMENSAL, informeConstantes.LIMPIEZA_MINIMA)
+      : 0;
+    return {
+      reserva: reserva,
+      cocina: cocina,
+      limpieza: limpieza,
+      consumiciones: null,
+      extras: null,
+      bote: null,
+      total: reserva + cocina + limpieza,
+      conCuenta: false,
+      parcial: true
+    };
+  }
+  return { reserva:0, cocina:0, limpieza:0, consumiciones:0, extras:0, bote:0, total:0, conCuenta:false, parcial:false };
+}
+
+function informeFiltrar(entradas, periodo, opciones) {
+  const lista = Array.isArray(entradas) ? entradas : [];
+  const p = periodo || {};
+  const incluirCanceladas = !!(opciones && opciones.canceladas);
+  if (!p.desde || !p.hasta || p.ok === false) return [];
+  return informeOrdenarEntradas(lista.filter(function(entrada) {
+    const e = entrada || {};
+    const fecha = informeTexto(e.fecha);
+    if (!fecha || fecha < p.desde || fecha > p.hasta) return false;
+    if (!incluirCanceladas && e.tipo === 'reserva' && e.estado === 'cancelada') return false;
+    return true;
+  }));
+}
+
+function informeMesesEntre(desde, hasta) {
+  const inicio = /^(\d{4})-(\d{2})/.exec(informeTexto(desde));
+  const fin = /^(\d{4})-(\d{2})/.exec(informeTexto(hasta));
+  if (!inicio || !fin) return [];
+  let anio = informeNumero(inicio[1]);
+  let mes = informeNumero(inicio[2]);
+  const anioFin = informeNumero(fin[1]);
+  const mesFin = informeNumero(fin[2]);
+  if (mes < 1 || mes > 12 || mesFin < 1 || mesFin > 12 || anio * 12 + mes > anioFin * 12 + mesFin) return [];
+  const meses = [];
+  while (anio < anioFin || (anio === anioFin && mes <= mesFin)) {
+    meses.push(String(anio).padStart(4, '0') + '-' + informePad2(mes));
+    mes++;
+    if (mes === 13) { mes = 1; anio++; }
+  }
+  return meses;
+}
+
+function informeFinDe(entrada) {
+  if (entrada && entrada.fin) return entrada.fin;
+  return informeFinanzas(entrada);
+}
+
+function informeEsCancelada(entrada) {
+  return !!entrada && entrada.tipo === 'reserva' && entrada.estado === 'cancelada';
+}
+
+function informeCalcular(entradas, periodo, hoy, bloqueos, opciones) {
+  const lista = informeOrdenarEntradas(entradas);
+  const p = periodo || {};
+  const hoyTexto = informeTexto(hoy);
+  const incluirCanceladas = !!(opciones && opciones.canceladas);
+  const reservas = lista.filter(function(e) { return e && e.tipo === 'reserva'; });
+  const confirmadas = reservas.filter(function(e) { return e.estado === 'confirmada'; });
+  const canceladas = reservas.filter(function(e) { return e.estado === 'cancelada'; });
+  const meses = informeMesesEntre(p.desde, p.hasta);
+
+  const porFranja = { comida:0, cena:0, dia_completo:0 };
+  const porPlanta = { baja:0, superior:0 };
+  const porDiaSemana = [0,0,0,0,0,0,0];
+  const usoPorMes = meses.map(function(mes) { return { mes:mes, n:0, conCocina:0 }; });
+  let mesas = 0;
+  let comensales = 0;
+  let usoCocina = 0;
+  let hornoElectrico = 0;
+  let hornoGas = 0;
+  let planchaGas = 0;
+  let fuegos = 0;
+  let limpiezaExterna = 0;
+
+  confirmadas.forEach(function(entrada) {
+    mesas += informeNumero(entrada.mesas);
+    comensales += informeNumero(entrada.comensales);
+    if (entrada.usoCocina === 'si') usoCocina++;
+    if (entrada.hornoElectrico === 'si') hornoElectrico++;
+    if (entrada.hornoGas === 'si') hornoGas++;
+    if (entrada.planchaGas === 'si') planchaGas++;
+    fuegos += informeNumero(entrada.fuegos);
+    if (entrada.limpiezaExterna === 'si') limpiezaExterna++;
+    if (entrada.franja === 'comida' || entrada.franja === 'cena' || entrada.franja === 'dia_completo') porFranja[entrada.franja]++;
+    if (entrada.planta === 'baja' || entrada.planta === 'superior') porPlanta[entrada.planta]++;
+
+    const fecha = informeTexto(entrada.fecha);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      const dia = new Date(fecha + 'T12:00:00').getDay();
+      if (dia >= 0 && dia <= 6) porDiaSemana[(dia + 6) % 7]++;
+    }
+    const claveMes = fecha.substring(0, 7);
+    for (let i = 0; i < usoPorMes.length; i++) {
+      if (usoPorMes[i].mes === claveMes) {
+        usoPorMes[i].n++;
+        if (entrada.usoCocina === 'si') usoPorMes[i].conCocina++;
+        break;
+      }
+    }
+  });
+
+  const totalReservas = confirmadas.length + canceladas.length;
+  const listaBloqueos = Array.isArray(bloqueos) ? bloqueos : [];
+  const diasBloqueados = listaBloqueos.filter(function(bloqueo) {
+    const fecha = informeTexto(bloqueo && bloqueo.fecha);
+    return !!fecha && !!p.desde && !!p.hasta && fecha >= p.desde && fecha <= p.hasta;
+  }).length;
+  const uso = {
+    confirmadas: confirmadas.length,
+    canceladas: canceladas.length,
+    pctCancelacion: totalReservas ? Math.round(canceladas.length * 100 / totalReservas) : 0,
+    mesas: mesas,
+    comensales: comensales,
+    mediaComensales: confirmadas.length ? Math.round(comensales * 10 / confirmadas.length) / 10 : 0,
+    usoCocina: usoCocina,
+    pctCocina: confirmadas.length ? Math.round(usoCocina * 100 / confirmadas.length) : 0,
+    hornoElectrico: hornoElectrico,
+    hornoGas: hornoGas,
+    planchaGas: planchaGas,
+    fuegos: fuegos,
+    limpiezaExterna: limpiezaExterna,
+    pctLimpieza: confirmadas.length ? Math.round(limpiezaExterna * 100 / confirmadas.length) : 0,
+    porFranja: porFranja,
+    porPlanta: porPlanta,
+    porDiaSemana: porDiaSemana,
+    porMes: usoPorMes,
+    diasBloqueados: diasBloqueados
   };
-  // Totales: incluye completos (cuenta registrada) y parciales (solo fijos conocidos)
-  const conCuenta       = allE.filter(e => financials(e).total != null && financials(e).total > 0).length;
-  const conCuentaPlena  = allE.filter(e => parseCD(e)?.totales?.total != null).length;
-  const totalCuenta     = allE.reduce((s,e) => { const fn=financials(e); return s+(fn.total||0); }, 0);
-  const mediaCuenta     = conCuenta > 0 ? totalCuenta / conCuenta : 0;
 
-  // ── Badges ────────────────────────────────────────────
-  const fBadge = f => {
-    if (f==='comida')       return `<span class="badge badge-comida">🍴 Comida</span>`;
-    if (f==='cena')         return `<span class="badge badge-cena">🌙 Cena</span>`;
-    if (f==='dia_completo') return `<span class="badge badge-dia">☀️ Día completo</span>`;
-    return '';
+  const cuentas = lista.filter(function(entrada) {
+    return !informeEsCancelada(entrada) && informeFinDe(entrada).conCuenta;
+  });
+  const porConcepto = { reserva:0, cocina:0, limpieza:0, consumiciones:0, extras:0, bote:0 };
+  const finPorMes = meses.map(function(mes) { return { mes:mes, conCuenta:0, estimadoSinCuenta:0 }; });
+  let totalConCuenta = 0;
+  let comensalesConCuenta = 0;
+
+  cuentas.forEach(function(entrada) {
+    const valores = informeFinDe(entrada);
+    totalConCuenta += informeNumero(valores.total);
+    comensalesConCuenta += informeNumero(entrada.comensales);
+    porConcepto.reserva += informeNumero(valores.reserva);
+    porConcepto.cocina += informeNumero(valores.cocina);
+    porConcepto.limpieza += informeNumero(valores.limpieza);
+    porConcepto.consumiciones += informeNumero(valores.consumiciones);
+    porConcepto.extras += informeNumero(valores.extras);
+    porConcepto.bote += informeNumero(valores.bote);
+    const claveMes = informeTexto(entrada.fecha).substring(0, 7);
+    for (let i = 0; i < finPorMes.length; i++) {
+      if (finPorMes[i].mes === claveMes) {
+        finPorMes[i].conCuenta += informeNumero(valores.total);
+        break;
+      }
+    }
+  });
+
+  const reservasSinCuenta = confirmadas.filter(function(entrada) {
+    return !informeFinDe(entrada).conCuenta;
+  });
+  reservasSinCuenta.forEach(function(entrada) {
+    const claveMes = informeTexto(entrada.fecha).substring(0, 7);
+    for (let i = 0; i < finPorMes.length; i++) {
+      if (finPorMes[i].mes === claveMes) {
+        finPorMes[i].estimadoSinCuenta += informeNumero(informeFinDe(entrada).total);
+        break;
+      }
+    }
+  });
+
+  const sinCuenta = reservasSinCuenta.filter(function(entrada) {
+    const fecha = informeTexto(entrada.fecha);
+    return !!fecha && !!hoyTexto && fecha < hoyTexto;
+  }).map(function(entrada) {
+    return {
+      fecha: informeTexto(entrada.fecha),
+      socio: informeTexto(entrada.socio) || '–',
+      comensales: informeNumero(entrada.comensales),
+      estimado: informeNumero(informeFinDe(entrada).total)
+    };
+  }).sort(function(a, b) {
+    if (a.fecha < b.fecha) return -1;
+    if (a.fecha > b.fecha) return 1;
+    return a.socio < b.socio ? -1 : (a.socio > b.socio ? 1 : 0);
+  });
+  const nSinCuentaFuturas = reservasSinCuenta.filter(function(entrada) {
+    const fecha = informeTexto(entrada.fecha);
+    return !!fecha && !!hoyTexto && fecha >= hoyTexto;
+  }).length;
+  const estimadoSinCuenta = sinCuenta.reduce(function(suma, entrada) { return suma + entrada.estimado; }, 0);
+
+  let serviciosLimpieza = 0;
+  lista.forEach(function(entrada) {
+    if (informeEsCancelada(entrada)) return;
+    const valores = informeFinDe(entrada);
+    if ((valores.conCuenta || (entrada.tipo === 'reserva' && entrada.estado === 'confirmada')) && informeNumero(valores.limpieza) > 0) {
+      serviciosLimpieza++;
+    }
+  });
+
+  const rankingSocios = [];
+  cuentas.forEach(function(entrada) {
+    const socio = informeTexto(entrada.socio) || '–';
+    let fila = null;
+    for (let i = 0; i < rankingSocios.length; i++) {
+      if (rankingSocios[i].socio === socio) { fila = rankingSocios[i]; break; }
+    }
+    if (!fila) {
+      fila = { socio:socio, total:0, n:0 };
+      rankingSocios.push(fila);
+    }
+    fila.total += informeNumero(informeFinDe(entrada).total);
+    fila.n++;
+  });
+  rankingSocios.sort(function(a, b) {
+    if (b.total !== a.total) return b.total - a.total;
+    return a.socio < b.socio ? -1 : (a.socio > b.socio ? 1 : 0);
+  });
+
+  const fin = {
+    nCuentas: cuentas.length,
+    totalConCuenta: totalConCuenta,
+    mediaPorCuenta: cuentas.length ? totalConCuenta / cuentas.length : 0,
+    mediaPorComensal: comensalesConCuenta ? totalConCuenta / comensalesConCuenta : 0,
+    porConcepto: porConcepto,
+    porMes: finPorMes,
+    sinCuenta: sinCuenta,
+    nSinCuentaFuturas: nSinCuentaFuturas,
+    estimadoSinCuenta: estimadoSinCuenta,
+    limpieza: { servicios:serviciosLimpieza, importe:porConcepto.limpieza },
+    rankingSocios: rankingSocios.slice(0, 10)
   };
-  const sBadge = s => s==='confirmada'
-    ? `<span class="badge badge-ok">✓</span>`
-    : `<span class="badge badge-canc">✗</span>`;
-  const tipoBadge = t => t==='libre'
-    ? `<span style="background:#E8EAF6;color:#283593;border-radius:4px;padding:1px 5px;font-size:7px;font-weight:700">🧾 Libre</span>`
-    : `<span style="background:#FFF3E0;color:#E65100;border-radius:4px;padding:1px 5px;font-size:7px;font-weight:700">📅 Reserva</span>`;
 
-  // ── Filas tabla ───────────────────────────────────────
-  const rows = allE.map((e, i) => {
-    const fn  = financials(e);
-    const cd  = parseCD(e);
-    const com = e._type==='reserva' ? (e.numeroComensales||e.comensalesEstimados||'–') : (cd?.comensales||'–');
-    const totalCell = fn.total != null
-      ? fn.partial
-        ? `<td style="text-align:right;font-weight:800;font-size:13px;color:#E65100;background:#FFF3E0;padding:4px 7px;" title="Solo fijos — sin consumiciones">≥${fn.total.toFixed(2)}€</td>`
-        : `<td style="text-align:right;font-weight:800;font-size:13px;color:#1B5E20;background:#C8E6C9;padding:4px 7px;">${fn.total.toFixed(2)}€</td>`
-      : `<td style="text-align:right;color:#9E9E9E;font-size:13px">–</td>`;
-    return `
-    <tr class="${e._type==='reserva'&&e.estado==='cancelada'?'row-canc':''}">
-      <td style="color:#9E9E9E;text-align:center;font-size:7.5px">${i+1}</td>
-      <td style="white-space:nowrap;font-size:13px">${fmtDate(e._fecha)}</td>
-      <td>${tipoBadge(e._type)}${e._type==='reserva'?'<br>'+fBadge(e.franja):''}</td>
-      <td style="width:180px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px" title="${escapeHtml(e._socio)}">${escapeHtml(e._socio||'–')}</td>
-      <td style="text-align:center;font-size:13px;font-weight:600">${com}</td>
-      ${fCell(fn.reserva)}
-      ${fCell(fn.cocina)}
-      ${fCell(fn.limpieza)}
-      ${fCell(fn.consumiciones)}
-      ${fCell(fn.extras)}
-      ${fCell(fn.bote)}
-      ${totalCell}
-      <td style="text-align:center">${e._type==='reserva'?sBadge(e.estado):'<span class="badge badge-ok">✓</span>'}</td>
-    </tr>`;
+  const listado = lista.filter(function(entrada) {
+    return incluirCanceladas || !informeEsCancelada(entrada);
+  });
+  return { periodo:p, hoy:hoyTexto, uso:uso, fin:fin, listado:listado };
+}
+
+function informeFmtFecha(fecha) {
+  const texto = informeTexto(fecha);
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(texto);
+  return m ? m[3] + '/' + m[2] + '/' + m[1] : (texto || '–');
+}
+
+function informeFmtEuros(valor) {
+  if (valor === null || valor === undefined) return '–';
+  try {
+    return Number(valor).toLocaleString('es-ES', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' €';
+  } catch(e) {
+    return '–';
+  }
+}
+
+function informeMesLabel(mes) {
+  const texto = informeTexto(mes);
+  const m = /^(\d{4})-(\d{2})$/.exec(texto);
+  if (!m) return texto || '–';
+  const nombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const nombre = nombres[informeNumero(m[2]) - 1];
+  return nombre ? nombre + ' ' + m[1] : texto;
+}
+/* <<< INFORME (fin) */
+
+/* >>> INFORME PANTALLA (inicio) */
+function informeMesCorto(mes) {
+  const texto = mes === null || mes === undefined ? '' : String(mes).trim();
+  const m = /^(\d{4})-(\d{2})$/.exec(texto);
+  if (!m) return texto || '–';
+  const nombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const nombre = nombres[Number(m[2]) - 1];
+  return nombre ? nombre + ' ' + m[1].slice(-2) : texto;
+}
+
+function informeFmtNum(valor, decimales) {
+  if (valor === null || valor === undefined || valor === '') return '–';
+  const numero = Number(valor);
+  if (!isFinite(numero)) return '–';
+  const maxDecimales = Math.max(0, Math.min(20, Math.floor(Number(decimales) || 0)));
+  try {
+    return numero.toLocaleString('es-ES', { minimumFractionDigits:0, maximumFractionDigits:maxDecimales });
+  } catch(e) {
+    return String(Math.round(numero * Math.pow(10, maxDecimales)) / Math.pow(10, maxDecimales)).replace('.', ',');
+  }
+}
+
+const INFORME_SECCIONES = [
+  { id:'listado', icono:'📋', titulo:'Listado de registros', apaisado:true,  render:informeRenderListado },
+  { id:'uso',     icono:'📅', titulo:'Uso del local',        apaisado:false, render:informeRenderUso },
+  { id:'fin',     icono:'💶', titulo:'Financiero',           apaisado:false, render:informeRenderFin }
+];
+
+const INFORME_PERIODOS = [
+  { id:'todo',         titulo:'Desde el inicio hasta hoy' },
+  { id:'mes',          titulo:'Este mes' },
+  { id:'mes_pasado',   titulo:'Mes pasado' },
+  { id:'anio',         titulo:'Este año' },
+  { id:'anio_pasado',  titulo:'Año pasado' },
+  { id:'personalizado',titulo:'Personalizado' }
+];
+
+function informeEstadoInicial() {
+  return {
+    modo:'todo',
+    desde:'',
+    hasta:'',
+    secciones:{ listado:true, uso:true, fin:true },
+    total:true,
+    canceladas:false
+  };
+}
+
+function informeEstadoCopia(estado) {
+  const base = estado || informeEstadoInicial();
+  return {
+    modo:base.modo || 'todo',
+    desde:base.desde || '',
+    hasta:base.hasta || '',
+    secciones:Object.assign({}, base.secciones || {}),
+    total:!!base.total,
+    canceladas:!!base.canceladas
+  };
+}
+
+function informeAlternarSeccion(estado, id, marcado) {
+  const nuevo = informeEstadoCopia(estado);
+  const existe = INFORME_SECCIONES.some(function(seccion) { return seccion.id === id; });
+  if (!existe) return nuevo;
+  nuevo.secciones[id] = !!marcado;
+  nuevo.total = INFORME_SECCIONES.every(function(seccion) { return !!nuevo.secciones[seccion.id]; });
+  return nuevo;
+}
+
+function informeAlternarTotal(estado, marcado) {
+  const nuevo = informeEstadoCopia(estado);
+  const valor = !!marcado;
+  INFORME_SECCIONES.forEach(function(seccion) { nuevo.secciones[seccion.id] = valor; });
+  nuevo.total = valor;
+  return nuevo;
+}
+
+function informeIdsMarcados(estado) {
+  const secciones = estado && estado.secciones ? estado.secciones : {};
+  return INFORME_SECCIONES.filter(function(seccion) {
+    return !!secciones[seccion.id];
+  }).map(function(seccion) {
+    return seccion.id;
+  });
+}
+
+function informeOrientacionAuto(ids) {
+  const elegidas = Array.isArray(ids) ? ids : [];
+  return INFORME_SECCIONES.some(function(seccion) {
+    return seccion.apaisado && elegidas.indexOf(seccion.id) !== -1;
+  }) ? 'h' : 'v';
+}
+
+function informeTituloInforme(estado) {
+  const ids = informeIdsMarcados(estado);
+  if (ids.length === INFORME_SECCIONES.length) return 'Informe completo';
+  const titulos = INFORME_SECCIONES.filter(function(seccion) {
+    return ids.indexOf(seccion.id) !== -1;
+  }).map(function(seccion) {
+    return seccion.titulo;
+  });
+  return titulos.join(' · ') || 'Informe';
+}
+
+function informeEsc(valor) {
+  return escapeHtml(valor === null || valor === undefined ? '' : String(valor));
+}
+
+function informePct(valor, total) {
+  const numero = Number(valor) || 0;
+  const base = Number(total) || 0;
+  if (numero <= 0 || base <= 0) return 0;
+  return Math.max(0, Math.min(100, Math.round(numero * 1000 / base) / 10));
+}
+
+function informeSociosOcultos(datos) {
+  const listado = datos && Array.isArray(datos.listado) ? datos.listado : [];
+  const socios = [];
+  listado.forEach(function(entrada) {
+    const socio = entrada && entrada.socio ? String(entrada.socio) : '';
+    if (socio && socios.indexOf(socio) === -1) socios.push(socio);
+  });
+  return socios.length
+    ? '<span class="inf-sr-only">Socios incluidos: ' + socios.map(informeEsc).join(', ') + '</span>'
+    : '';
+}
+
+function informeFranjaLabel(franja) {
+  if (franja === 'comida') return 'Comida';
+  if (franja === 'cena') return 'Cena';
+  if (franja === 'dia_completo') return 'Día completo';
+  return 'Sin franja';
+}
+
+function informeTipoListado(entrada) {
+  if (entrada && entrada.tipo === 'libre') return 'Cuenta libre';
+  return 'Reserva · ' + informeFranjaLabel(entrada && entrada.franja);
+}
+
+function informeEstadoListado(entrada) {
+  if (entrada && entrada.tipo === 'reserva' && entrada.estado === 'cancelada') {
+    return { texto:'Cancelada', clase:' inf-estado-cancelada' };
+  }
+  const fin = entrada && entrada.fin ? entrada.fin : {};
+  if (fin.conCuenta) return { texto:'Cuenta guardada', clase:'' };
+  if (fin.parcial) return { texto:'Fijos estimados', clase:' inf-estado-estimado' };
+  return { texto:'Sin cuenta', clase:' inf-estado-estimado' };
+}
+
+function informeCeldaImporte(entrada, clave, etiqueta) {
+  const fin = entrada && entrada.fin ? entrada.fin : {};
+  const valor = fin[clave];
+  const estimado = !!fin.parcial && (clave === 'reserva' || clave === 'cocina' || clave === 'limpieza' || clave === 'total');
+  const texto = valor === null || valor === undefined ? '–' : (estimado ? '≥' : '') + informeFmtEuros(valor);
+  return '<td data-label="' + informeEsc(etiqueta) + '" class="inf-num' + (estimado ? ' inf-estimado' : '') + '">' + informeEsc(texto) + '</td>';
+}
+
+function informeRenderListado(datos) {
+  const listado = datos && Array.isArray(datos.listado) ? datos.listado : [];
+  const titulo = '<h2 class="inf-seccion-titulo">📋 Listado de registros</h2>';
+  const socios = informeSociosOcultos(datos);
+  if (!listado.length) {
+    return '<section class="inf-seccion inf-listado">' + titulo + socios + '<div class="inf-vacio">No hay registros en este periodo</div></section>';
+  }
+
+  const totales = { reserva:0, cocina:0, limpieza:0, consumiciones:0, extras:0, bote:0, total:0 };
+  const filas = listado.map(function(entrada, indice) {
+    const e = entrada || {};
+    const fin = e.fin || {};
+    if (fin.conCuenta) {
+      Object.keys(totales).forEach(function(clave) { totales[clave] += Number(fin[clave]) || 0; });
+    }
+    const estado = informeEstadoListado(e);
+    return '<tr class="' + (e.tipo === 'reserva' && e.estado === 'cancelada' ? 'inf-cancelada' : '') + '">' +
+      '<td data-label="Nº" class="inf-centro">' + informeEsc(indice + 1) + '</td>' +
+      '<td data-label="Fecha">' + informeEsc(informeFmtFecha(e.fecha)) + '</td>' +
+      '<td data-label="Tipo">' + informeEsc(informeTipoListado(e)) + '</td>' +
+      '<td data-label="Socio">' + informeEsc(e.socio || '–') + '</td>' +
+      '<td data-label="Comensales" class="inf-centro">' + informeEsc(e.comensales || 0) + '</td>' +
+      informeCeldaImporte(e, 'reserva', 'Reserva') +
+      informeCeldaImporte(e, 'cocina', 'Cocina') +
+      informeCeldaImporte(e, 'limpieza', 'Limpieza') +
+      informeCeldaImporte(e, 'consumiciones', 'Consumiciones') +
+      informeCeldaImporte(e, 'extras', 'Extras') +
+      informeCeldaImporte(e, 'bote', 'Bote') +
+      informeCeldaImporte(e, 'total', 'TOTAL') +
+      '<td data-label="Estado" class="inf-centro"><span class="inf-estado' + estado.clase + '">' + informeEsc(estado.texto) + '</span></td>' +
+      '</tr>';
   }).join('');
 
-  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
-  <title>Uso del Txoko – Txoko Azkena</title>
-  <style>
-    @page { size: A4 landscape; margin: 14mm 16mm; }
-    @page :first { margin-top: 10mm; }
-    *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; color-adjust:exact !important; }
-    body{ font-family:Arial,sans-serif; font-size:10px; color:#2C1810; background:#fff; }
-    .no-break { break-inside:avoid; page-break-inside:avoid; }
-    tbody tr  { break-inside:avoid; page-break-inside:avoid; }
-    .grid-row { break-inside:avoid; page-break-inside:avoid; }
-    .noprint{ background:linear-gradient(135deg,#4A0F0F,#6B1A1A); color:#fff; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-radius:8px; }
-    .noprint button{ background:#C8952A; border:none; color:#fff; padding:9px 22px; border-radius:6px; font-size:13px; font-weight:700; cursor:pointer; }
-    .hdr{ background:linear-gradient(135deg,#4A0F0F,#6B1A1A); color:#fff; padding:12px 16px; border-radius:10px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
-    .hdr-l h1{ font-size:21px; font-weight:900; letter-spacing:0.5px; }
-    .hdr-l h2{ font-size:11px; opacity:0.8; margin-top:3px; }
-    .hdr-r{ text-align:right; font-size:9px; opacity:0.9; line-height:1.9; }
-    .hdr-badge{ background:#C8952A; padding:3px 12px; border-radius:20px; font-size:9px; font-weight:700; margin-top:5px; display:inline-block; }
-    .stats{ display:flex; gap:8px; margin-bottom:10px; }
-    .stat{ flex:1; background:#fff; border:1.5px solid #E0D5C8; border-radius:10px; padding:8px 6px; text-align:center; box-shadow:0 2px 6px rgba(44,24,16,0.08); }
-    .stat-icon{ font-size:16px; margin-bottom:2px; }
-    .stat-val{ font-size:20px; font-weight:900; }
-    .stat-lbl{ font-size:8px; color:#6B5B52; margin-top:2px; text-transform:uppercase; letter-spacing:0.4px; }
-    .sub-bar{ display:flex; gap:8px; margin-bottom:12px; }
-    .sub-item{ flex:1; background:#F5EDD6; border-radius:8px; padding:7px 10px; display:flex; align-items:center; justify-content:space-between; }
-    .sub-label{ font-size:9px; color:#6B5B52; font-weight:600; }
-    .sub-val{ font-size:13px; font-weight:900; color:#6B1A1A; }
-    .section-title{ font-size:10px; font-weight:800; color:#6B1A1A; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px; padding-bottom:4px; border-bottom:2px solid #6B1A1A; }
-    table{ width:100%; border-collapse:collapse; }
-    thead th{ background:#6B1A1A; color:#fff; padding:10px 8px; text-align:left; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; vertical-align:bottom; }
-    thead th:first-child{ border-radius:6px 0 0 0; } thead th:last-child{ border-radius:0 6px 0 0; }
-    tbody tr:nth-child(even) td{ background:#FDFAF5; }
-    tbody tr:nth-child(odd)  td{ background:#fff; }
-    tbody tr.row-canc td{ opacity:0.4; }
-    td{ padding:6px 7px; border-bottom:1px solid #F0E8DC; vertical-align:middle; font-size:11px; }
-    .badge{ padding:2px 7px; border-radius:12px; font-size:8px; font-weight:700; display:inline-block; white-space:nowrap; }
-    .badge-comida   { background:#FFF3E0; color:#E65100; }
-    .badge-cena     { background:#E3F2FD; color:#1565C0; }
-    .badge-dia      { background:#FCE4EC; color:#880E4F; }
-    .badge-ok       { background:#E8F5E9; color:#2E7D32; }
-    .badge-canc     { background:#FFEBEE; color:#C62828; }
-    .badge-planta-b { background:#EDE7F6; color:#4527A0; }
-    .badge-planta-s { background:#E8EAF6; color:#283593; }
-    .badge-cocina-si{ background:#E8F5E9; color:#2E7D32; }
-    .badge-limp-si  { background:#E0F2F1; color:#00695C; }
-    .badge-limp-no  { background:#F5F5F5; color:#9E9E9E; }
-    .footer{ margin-top:10px; border-top:1.5px solid #E0D5C8; padding-top:7px; display:flex; justify-content:space-between; font-size:8px; color:#6B5B52; }
-    @media print{ .noprint{ display:none!important; } }
-  </style></head><body>
-  <div class="noprint">
-    <span style="font-size:14px;font-weight:700;">🍽️ Txoko Azkena · Vista previa del informe</span>
-    <button onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
-  </div>
-  <div class="hdr">
-    <div class="hdr-l" style="display:flex;align-items:center;gap:14px;">
-      <img src="${LOGO_SRC}"
-           style="width:60px;height:60px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);object-fit:cover;"
-           onerror="this.style.display='none'" alt="Logo">
-      <div>
-        <h1>Txoko Azkena</h1>
-        <h2>Asociación Gastronómica Azkena · Basauri (Bizkaia)</h2>
-        <span class="hdr-badge">📋 LIBRO DIETARIO DIGITAL</span>
-      </div>
-    </div>
-    <div class="hdr-r">
-      CIF: G95368627 · C/ Pozokoetxe, 2 – Bajo · 48970 Basauri<br>
-      azkenabasauri@gmail.com · Reg. AS/B/11831/2005<br>
-      <strong>Informe generado: ${now}</strong>
-    </div>
-  </div>
-  <div class="stats no-break">
-    <div class="stat"><div class="stat-icon">📋</div><div class="stat-val">${reservas.length}</div><div class="stat-lbl">Reservas</div></div>
-    <div class="stat"><div class="stat-icon">🧾</div><div class="stat-val" style="color:#283593">${cuentasL.length}</div><div class="stat-lbl">Cuentas libres</div></div>
-    <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" style="color:#2E7D32">${conf.length}</div><div class="stat-lbl">Confirmadas</div></div>
-    <div class="stat"><div class="stat-icon">❌</div><div class="stat-val" style="color:#C62828">${canc.length}</div><div class="stat-lbl">Canceladas</div></div>
-    <div class="stat"><div class="stat-icon">🪑</div><div class="stat-val" style="color:#6B1A1A">${totalMesas}</div><div class="stat-lbl">Mesas totales</div></div>
-    <div class="stat"><div class="stat-icon">👥</div><div class="stat-val" style="color:#1565C0">${totalComsls}</div><div class="stat-lbl">Comensales</div></div>
-    <div class="stat"><div class="stat-icon">🔥</div><div class="stat-val" style="color:#E65100">${conCocina}</div><div class="stat-lbl">Usaron cocina</div></div>
-    <div class="stat"><div class="stat-icon">🧹</div><div class="stat-val" style="color:#00695C">${conLimp}</div><div class="stat-lbl">Limp. externa</div></div>
-    <div class="stat"><div class="stat-icon">💶</div><div class="stat-val" style="color:#C8952A">${totalLimp.toFixed(0)}€</div><div class="stat-lbl">Coste limp.</div></div>
-    <div class="stat"><div class="stat-icon">💰</div><div class="stat-val" style="color:#2E7D32">${totalCuenta.toFixed(0)}€</div><div class="stat-lbl">Total facturado</div></div>
-  </div>
-  <div class="sub-bar no-break">
-    <div class="sub-item"><span class="sub-label">🍴 Comidas</span><span class="sub-val">${porFranja.comida}</span></div>
-    <div class="sub-item"><span class="sub-label">🌙 Cenas</span><span class="sub-val">${porFranja.cena}</span></div>
-    <div class="sub-item"><span class="sub-label">☀️ Días completos</span><span class="sub-val">${porFranja.dia}</span></div>
-    <div class="sub-item"><span class="sub-label">🏠 Planta baja</span><span class="sub-val">${conf.filter(r=>r.planta==='baja').length}</span></div>
-    <div class="sub-item"><span class="sub-label">🏠 Planta superior</span><span class="sub-val">${conf.filter(r=>r.planta==='superior').length}</span></div>
-    <div class="sub-item"><span class="sub-label">👥 Media comensales</span><span class="sub-val">${conf.length ? (totalComsls/conf.length).toFixed(1) : '–'}</span></div>
-  </div>
-  <div class="section-title">📋 Uso del Txoko — Reservas y Cuentas (${allE.length} registros)</div>
-  <table>
-    <thead><tr>
-      <th style="width:28px;text-align:center">Nº</th>
-      <th style="width:90px">Fecha</th>
-      <th style="width:105px">Tipo</th>
-      <th style="width:180px">Socio</th>
-      <th style="width:52px;text-align:center">Comens.</th>
-      <th style="width:75px;text-align:right">💰 Reserva</th>
-      <th style="width:70px;text-align:right">🔥 Cocina</th>
-      <th style="width:70px;text-align:right">🧹 Limp.</th>
-      <th style="width:85px;text-align:right">🍸 Consum.</th>
-      <th style="width:70px;text-align:right">🫙 Extras</th>
-      <th style="width:65px;text-align:right">💰 Bote</th>
-      <th style="width:80px;text-align:right">TOTAL</th>
-      <th style="width:35px;text-align:center">Est.</th>
-    </tr></thead>
-    <tbody>${rows || `<tr><td colspan="13" style="text-align:center;padding:20px;color:#9E9E9E;font-style:italic">No hay registros</td></tr>`}</tbody>
-  </table>
-  <div class="footer">
-    <span>🍽️ Txoko Azkena · Libro Dietario Digital · Basauri · CIF G95368627</span>
-    <span>Registro de Asociaciones del País Vasco: AS/B/11831/2005</span>
-  </div>
-  </body></html>`;
+  const totalCeldas = ['reserva','cocina','limpieza','consumiciones','extras','bote','total'].map(function(clave) {
+    const etiqueta = clave === 'total' ? 'TOTAL' : clave.charAt(0).toUpperCase() + clave.slice(1);
+    return '<td data-label="' + informeEsc(etiqueta) + '" class="inf-num">' + informeEsc(informeFmtEuros(totales[clave])) + '</td>';
+  }).join('');
 
-  // ── DATOS PARA GRÁFICOS ──────────────────────────────
-  const meses    = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const barH     = (val, max, h=70) => `height:${Math.max(Math.round(val/max*h),2)}px`;
-  const barW     = (val, max)       => `width:${Math.max(Math.round(val/max*100),1)}%`;
-  const segBar   = (vals, colors, labels) => {
-    const tot = vals.reduce((s,v)=>s+v,0)||1;
-    return vals.map((v,i) => `<div style="flex:${v||0.01};background:${colors[i]};height:100%;${i===0?'border-radius:6px 0 0 6px;':''}${i===vals.length-1?'border-radius:0 6px 6px 0;':''}" title="${labels[i]}: ${v} (${Math.round(v/tot*100)}%)"></div>`).join('');
-  };
-  const card     = (content) => `<div class="no-break" style="background:#fff;border:1.5px solid #E0D5C8;border-radius:10px;padding:14px;box-shadow:0 2px 6px rgba(44,24,16,0.06);">${content}</div>`;
-  const secT     = (t) => `<div class="section-title" style="margin-bottom:12px;">${t}</div>`;
-  const kpi      = (icon,val,lbl,color='#6B1A1A') => `<div style="background:#F5EDD6;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#6B5B52;margin-bottom:3px;">${icon} ${lbl}</div><div style="font-size:22px;font-weight:900;color:${color};">${val}</div></div>`;
+  return '<section class="inf-seccion inf-listado">' + titulo + socios +
+    '<div class="inf-tabla-wrap"><table class="inf-tabla">' +
+    '<thead><tr><th>Nº</th><th>Fecha</th><th>Tipo</th><th>Socio</th><th>Comensales</th><th>Reserva</th><th>Cocina</th><th>Limpieza</th><th>Consumiciones</th><th>Extras</th><th>Bote</th><th>TOTAL</th><th>Estado</th></tr></thead>' +
+    '<tbody>' + filas + '</tbody>' +
+    '<tfoot><tr><td data-label="Nº"></td><td data-label="Fecha"></td><td data-label="Tipo"></td><td data-label="Socio"><strong>TOTALES CON CUENTA</strong></td><td data-label="Comensales"></td>' + totalCeldas + '<td data-label="Estado"></td></tr></tfoot>' +
+    '</table></div></section>';
+}
 
-  // Reservas por mes + cocina por mes
-  const porMes = Array(12).fill(0), porMesCocina = Array(12).fill(0);
-  reservas.forEach(r => {
-    const m = new Date((r.fechaReservada||'2000-01-01')+'T12:00:00').getMonth();
-    if (m>=0&&m<12){ porMes[m]++; if(r.usoCocina==='si') porMesCocina[m]++; }
+function informeKpi(valor, etiqueta) {
+  return '<div class="inf-kpi"><div class="inf-kpi-valor">' + informeEsc(valor) + '</div><div class="inf-kpi-etiqueta">' + informeEsc(etiqueta) + '</div></div>';
+}
+
+function informeBarraHorizontal(etiqueta, valor, total, textoValor) {
+  const pct = informePct(valor, total);
+  const valorVisible = textoValor === undefined ? informeFmtNum(valor, 2) : textoValor;
+  return '<div class="inf-barra-h-fila">' +
+    '<div class="inf-barra-h-cab"><span>' + informeEsc(etiqueta) + '</span><strong>' + informeEsc(valorVisible) + ' · ' + informeEsc(Math.round(pct)) + '%</strong></div>' +
+    '<div class="inf-barra-h-pista"><div class="inf-barra-h' + (Number(valor) > 0 ? ' inf-con-valor' : '') + '" style="--inf-pct:' + informeEsc(pct) + '%"></div></div>' +
+    '</div>';
+}
+
+function informeBarrasVerticales(items, maximo, tipo) {
+  const max = Number(maximo) > 0 ? Number(maximo) : 1;
+  return '<div class="inf-barras-v">' + items.map(function(item) {
+    const valor = Number(item.valor) || 0;
+    const segundo = Number(item.segundo) || 0;
+    const pct = informePct(valor, max);
+    const pctSegundo = informePct(segundo, max);
+    const textoValor = item.textoValor === undefined
+      ? informeFmtNum(valor, 2)
+      : (typeof item.textoValor === 'number' ? informeFmtNum(item.textoValor, 2) : item.textoValor);
+    const etiquetaPapel = item.etiquetaPapel === undefined ? item.etiqueta : item.etiquetaPapel;
+    return '<div class="inf-barra-v-item">' +
+      '<div class="inf-barra-v-valor">' + informeEsc(textoValor) + '</div>' +
+      '<div class="inf-barra-v-area">' +
+        '<div class="inf-barra-v ' + (tipo === 'fin' ? 'inf-verde ' : '') + (valor > 0 ? 'inf-con-valor' : '') + '" style="--inf-pct:' + informeEsc(pct) + '%"></div>' +
+        (item.segundo === undefined ? '' : '<div class="inf-barra-v ' + (tipo === 'fin' ? 'inf-verde-claro ' : 'inf-secundaria ') + (segundo > 0 ? 'inf-con-valor' : '') + '" style="--inf-pct:' + informeEsc(pctSegundo) + '%"></div>') +
+      '</div>' +
+      '<div class="inf-barra-v-label" data-inf-papel="' + informeEsc(etiquetaPapel) + '">' + informeEsc(item.etiqueta) + '</div>' +
+      '</div>';
+  }).join('') + '</div>';
+}
+
+function informeRenderUso(datos) {
+  const uso = datos && datos.uso ? datos.uso : {};
+  const titulo = '<h2 class="inf-seccion-titulo">📅 Uso del local</h2>';
+  const socios = informeSociosOcultos(datos);
+  const totalReservas = (Number(uso.confirmadas) || 0) + (Number(uso.canceladas) || 0);
+  if (!totalReservas) {
+    return '<section class="inf-seccion inf-uso">' + titulo + socios + '<div class="inf-vacio">No hay reservas en este periodo</div></section>';
+  }
+
+  const porMes = Array.isArray(uso.porMes) ? uso.porMes : [];
+  const maxMes = Math.max.apply(null, porMes.map(function(item) { return Number(item.n) || 0; }).concat([1]));
+  const muchosMeses = porMes.length > 12;
+  const mesItems = porMes.map(function(item, indice) {
+    return {
+      etiqueta:informeMesLabel(item.mes),
+      etiquetaPapel:muchosMeses ? (indice % 2 === 0 ? informeMesCorto(item.mes) : '') : informeMesLabel(item.mes),
+      valor:item.n,
+      segundo:item.conCocina,
+      textoValor:(muchosMeses && !item.n) ? '' : item.n
+    };
   });
-  const maxMes = Math.max(...porMes, 1);
+  const semana = Array.isArray(uso.porDiaSemana) ? uso.porDiaSemana : [0,0,0,0,0,0,0];
+  const maxSemana = Math.max.apply(null, semana.map(function(valor) { return Number(valor) || 0; }).concat([1]));
+  const semanaItems = ['L','M','X','J','V','S','D'].map(function(dia, indice) {
+    return { etiqueta:dia, valor:semana[indice] || 0 };
+  });
 
-  // Facturación mensual (todos los totales conocidos: completos + parciales/fijos)
-  const factMes = Array(12).fill(0), factMesPart = Array(12).fill(0);
-  allE.forEach(e => {
-    const fn = financials(e);
-    if (fn.total == null || fn.total === 0) return;
-    const m = new Date((e._fecha||'2000-01-01')+'T12:00:00').getMonth();
-    if (m>=0&&m<12) {
-      factMes[m] += fn.total;
-      if (fn.partial) factMesPart[m] += fn.total;
+  return '<section class="inf-seccion inf-uso">' + titulo + socios +
+    '<div class="inf-kpis">' +
+      informeKpi(uso.confirmadas || 0, 'Reservas confirmadas') +
+      informeKpi((uso.canceladas || 0) + ' · ' + (uso.pctCancelacion || 0) + '%', 'Canceladas') +
+      informeKpi(uso.mesas || 0, 'Mesas') +
+      informeKpi(uso.comensales || 0, 'Comensales') +
+      informeKpi(informeFmtNum(uso.mediaComensales, 1), 'Media comensales/reserva') +
+      informeKpi((uso.usoCocina || 0) + ' · ' + (uso.pctCocina || 0) + '%', 'Con cocina') +
+      informeKpi((uso.limpiezaExterna || 0) + ' · ' + (uso.pctLimpieza || 0) + '%', 'Con limpieza ext.') +
+      informeKpi(uso.diasBloqueados || 0, 'Días bloqueados') +
+    '</div>' +
+    '<div class="inf-tarjeta"><h3>Reservas por mes</h3>' + informeBarrasVerticales(mesItems, maxMes, 'uso') +
+      '<div class="inf-leyenda"><span><i class="inf-leyenda-marca" style="background:#6B1A1A"></i>Reservas</span><span><i class="inf-leyenda-marca" style="background:#E08A35"></i>Con cocina</span></div></div>' +
+    '<div class="inf-grid">' +
+      '<div class="inf-tarjeta"><h3>Por franja</h3>' +
+        informeBarraHorizontal('Comida', uso.porFranja && uso.porFranja.comida || 0, uso.confirmadas || 0) +
+        informeBarraHorizontal('Cena', uso.porFranja && uso.porFranja.cena || 0, uso.confirmadas || 0) +
+        informeBarraHorizontal('Día completo', uso.porFranja && uso.porFranja.dia_completo || 0, uso.confirmadas || 0) +
+      '</div>' +
+      '<div class="inf-tarjeta"><h3>Por planta</h3>' +
+        informeBarraHorizontal('Planta baja', uso.porPlanta && uso.porPlanta.baja || 0, uso.confirmadas || 0) +
+        informeBarraHorizontal('Planta superior', uso.porPlanta && uso.porPlanta.superior || 0, uso.confirmadas || 0) +
+      '</div>' +
+    '</div>' +
+    '<div class="inf-grid">' +
+      '<div class="inf-tarjeta"><h3>Por día de la semana</h3>' + informeBarrasVerticales(semanaItems, maxSemana, 'uso') + '</div>' +
+      '<div class="inf-tarjeta"><h3>Cocina e instalaciones</h3><div class="inf-kpis">' +
+        informeKpi(uso.hornoElectrico || 0, 'Horno eléctrico') +
+        informeKpi(uso.hornoGas || 0, 'Horno de gas') +
+        informeKpi(uso.planchaGas || 0, 'Plancha') +
+        informeKpi(uso.fuegos || 0, 'Fuegos (suma)') +
+      '</div></div>' +
+    '</div></section>';
+}
+
+function informeRenderFin(datos) {
+  const fin = datos && datos.fin ? datos.fin : {};
+  const titulo = '<h2 class="inf-seccion-titulo">💶 Financiero</h2>';
+  const socios = informeSociosOcultos(datos);
+  const porMes = Array.isArray(fin.porMes) ? fin.porMes : [];
+  const sinCuenta = Array.isArray(fin.sinCuenta) ? fin.sinCuenta : [];
+  const ranking = Array.isArray(fin.rankingSocios) ? fin.rankingSocios : [];
+  const hayDatos = (Number(fin.nCuentas) || 0) > 0 || sinCuenta.length > 0 || (Number(fin.nSinCuentaFuturas) || 0) > 0 ||
+    porMes.some(function(item) { return (Number(item.conCuenta) || 0) > 0 || (Number(item.estimadoSinCuenta) || 0) > 0; });
+  if (!hayDatos) {
+    return '<section class="inf-seccion inf-fin">' + titulo + socios + '<div class="inf-vacio">No hay datos financieros en este periodo</div></section>';
+  }
+
+  const conceptos = [
+    { clave:'reserva', nombre:'Reserva', color:'#6B1A1A' },
+    { clave:'cocina', nombre:'Cocina', color:'#E65100' },
+    { clave:'limpieza', nombre:'Limpieza', color:'#00695C' },
+    { clave:'consumiciones', nombre:'Consumiciones', color:'#1565C0' },
+    { clave:'extras', nombre:'Extras', color:'#880E4F' },
+    { clave:'bote', nombre:'Bote', color:'#C8952A' }
+  ];
+  const porConcepto = fin.porConcepto || {};
+  const totalConceptos = conceptos.reduce(function(suma, item) { return suma + (Number(porConcepto[item.clave]) || 0); }, 0);
+  const segmentos = conceptos.filter(function(item) { return (Number(porConcepto[item.clave]) || 0) > 0; }).map(function(item) {
+    const valor = Number(porConcepto[item.clave]) || 0;
+    const flex = Math.round(valor * 100) / 100;
+    return '<div class="inf-segmento" title="' + informeEsc(item.nombre + ': ' + informeFmtEuros(valor)) + '" style="--inf-flex:' + informeEsc(flex) + ';background:' + item.color + '"></div>';
+  }).join('');
+  const listaConceptos = conceptos.map(function(item) {
+    const valor = Number(porConcepto[item.clave]) || 0;
+    const pct = informePct(valor, totalConceptos);
+    return '<div class="inf-concepto-fila"><i class="inf-concepto-color" style="background:' + item.color + '"></i><span class="inf-concepto-nombre">' + informeEsc(item.nombre) + '</span><span class="inf-concepto-importe">' + informeEsc(informeFmtEuros(valor)) + '</span><span class="inf-concepto-pct">' + informeEsc(Math.round(pct)) + '%</span></div>';
+  }).join('');
+
+  const maxMes = Math.max.apply(null, porMes.map(function(item) {
+    return Math.max(Number(item.conCuenta) || 0, Number(item.estimadoSinCuenta) || 0);
+  }).concat([1]));
+  const muchosMeses = porMes.length > 12;
+  const mesItems = porMes.map(function(item, indice) {
+    return {
+      etiqueta:informeMesLabel(item.mes),
+      etiquetaPapel:muchosMeses ? (indice % 2 === 0 ? informeMesCorto(item.mes) : '') : informeMesLabel(item.mes),
+      valor:item.conCuenta,
+      segundo:item.estimadoSinCuenta,
+      textoValor:(Number(item.conCuenta) || 0) > 0 ? informeFmtEuros(item.conCuenta) : ''
+    };
+  });
+
+  const filasSinCuenta = sinCuenta.map(function(item) {
+    return '<tr><td data-label="Fecha">' + informeEsc(informeFmtFecha(item.fecha)) + '</td><td data-label="Socio">' + informeEsc(item.socio || '–') + '</td><td data-label="Comensales" class="inf-centro">' + informeEsc(item.comensales || 0) + '</td><td data-label="Fijos estimados" class="inf-num inf-estimado">' + informeEsc('≥' + informeFmtEuros(item.estimado || 0)) + '</td></tr>';
+  }).join('');
+  const sinCuentaHtml = sinCuenta.length
+    ? '<div class="inf-tabla-wrap"><table class="inf-tabla"><thead><tr><th>Fecha</th><th>Socio</th><th>Comensales</th><th>Fijos estimados</th></tr></thead><tbody>' + filasSinCuenta + '</tbody></table></div>'
+    : '<div class="inf-vacio">Todas las reservas pasadas tienen su cuenta guardada ✅</div>';
+  const futuras = Number(fin.nSinCuentaFuturas) || 0;
+  const futuroHtml = futuras
+    ? '<div class="inf-aviso">Hay ' + informeEsc(futuras) + ' reserva' + (futuras === 1 ? '' : 's') + ' futura' + (futuras === 1 ? '' : 's') + ' sin cuenta guardada.</div>'
+    : '<div class="inf-aviso">No hay reservas futuras sin cuenta guardada.</div>';
+
+  const primeroRanking = ranking.length ? Number(ranking[0].total) || 0 : 0;
+  const maxRanking = primeroRanking > 0 ? primeroRanking : 1;
+  const rankingHtml = ranking.length ? ranking.map(function(item) {
+    const total = Number(item.total) || 0;
+    return informeBarraHorizontal(
+      (item.socio || '–') + ' · ' + (item.n || 0) + ' cuenta' + (Number(item.n) === 1 ? '' : 's'),
+      total,
+      maxRanking,
+      informeFmtEuros(total)
+    );
+  }).join('') : '<div class="inf-vacio">No hay cuentas guardadas para elaborar el ranking</div>';
+
+  return '<section class="inf-seccion inf-fin">' + titulo + socios +
+    '<div class="inf-kpis">' +
+      informeKpi(informeFmtEuros(fin.totalConCuenta || 0), 'Total con cuenta') +
+      informeKpi(fin.nCuentas || 0, 'Nº de cuentas') +
+      informeKpi(informeFmtEuros(fin.mediaPorCuenta || 0), 'Media por cuenta') +
+      informeKpi(informeFmtEuros(fin.mediaPorComensal || 0), 'Media por comensal') +
+    '</div>' +
+    '<div class="inf-grid">' +
+      '<div class="inf-tarjeta"><h3>Por concepto</h3>' + (segmentos ? '<div class="inf-segmentada">' + segmentos + '</div>' : '<div class="inf-vacio">No hay importes con cuenta</div>') + listaConceptos + '</div>' +
+      '<div class="inf-tarjeta"><h3>Por mes</h3>' + informeBarrasVerticales(mesItems, maxMes, 'fin') +
+        '<div class="inf-leyenda"><span><i class="inf-leyenda-marca" style="background:#2E7D32"></i>Con cuenta</span><span><i class="inf-leyenda-marca" style="background:#81C784"></i>Fijos estimados sin cuenta</span></div></div>' +
+    '</div>' +
+    '<div class="inf-tarjeta"><h3>Reservas pasadas sin cuenta guardada (' + informeEsc(sinCuenta.length) + ' · ' + informeEsc(informeFmtEuros(fin.estimadoSinCuenta || 0)) + ' estimados)</h3>' + sinCuentaHtml + futuroHtml + '</div>' +
+    '<div class="inf-grid">' +
+      '<div class="inf-tarjeta"><h3>Limpieza externa</h3>' +
+        '<div class="inf-dato-fila"><span class="inf-concepto-nombre">Servicios</span><strong>' + informeEsc(fin.limpieza && fin.limpieza.servicios || 0) + '</strong></div>' +
+        '<div class="inf-dato-fila"><span class="inf-concepto-nombre">Importe cobrado</span><strong>' + informeEsc(informeFmtEuros(fin.limpieza && fin.limpieza.importe || 0)) + '</strong></div>' +
+      '</div>' +
+      '<div class="inf-tarjeta"><h3>Ranking de socios por facturación</h3>' + rankingHtml + '</div>' +
+    '</div>' +
+    '<p class="inf-nota">Solo ingresos cobrados a los socios (reserva, cocina, limpieza, consumiciones, extras y bote). No incluye gastos, compras ni cuotas.</p>' +
+    '</section>';
+}
+
+let informeEstadoUI = informeEstadoInicial();
+let informeEscapeHandler = null;
+
+function informeActualizarFormulario(root) {
+  if (!root) return;
+  root.querySelectorAll('[data-inf-modo]').forEach(function(boton) {
+    const activo = boton.getAttribute('data-inf-modo') === informeEstadoUI.modo;
+    boton.classList.toggle('active', activo);
+    boton.setAttribute('aria-pressed', activo ? 'true' : 'false');
+  });
+  const fechas = root.querySelector('#informe-fechas');
+  if (fechas) fechas.hidden = informeEstadoUI.modo !== 'personalizado';
+  const total = root.querySelector('[data-inf-total]');
+  if (total) total.checked = !!informeEstadoUI.total;
+  root.querySelectorAll('[data-inf-seccion]').forEach(function(casilla) {
+    casilla.checked = !!informeEstadoUI.secciones[casilla.getAttribute('data-inf-seccion')];
+  });
+  const canceladas = root.querySelector('[data-inf-canceladas]');
+  if (canceladas) canceladas.checked = !!informeEstadoUI.canceladas;
+}
+
+function informeRenderForm() {
+  const root = document.getElementById('informe-formulario');
+  if (!root) return;
+  const periodos = INFORME_PERIODOS.map(function(periodo) {
+    const activo = periodo.id === informeEstadoUI.modo;
+    return '<button type="button" class="inf-periodo-btn' + (activo ? ' active' : '') + '" data-inf-modo="' + informeEsc(periodo.id) + '" aria-pressed="' + (activo ? 'true' : 'false') + '">' + informeEsc(periodo.titulo) + '</button>';
+  }).join('');
+  const secciones = INFORME_SECCIONES.map(function(seccion) {
+    return '<label class="inf-check"><input type="checkbox" data-inf-seccion="' + informeEsc(seccion.id) + '"' + (informeEstadoUI.secciones[seccion.id] ? ' checked' : '') + '><span>' + informeEsc(seccion.icono + ' ' + seccion.titulo) + '</span></label>';
+  }).join('');
+
+  root.innerHTML = '<div class="inf-form-card">' +
+    '<div class="inf-form-titulo">📄 Generar informe</div>' +
+    '<div class="inf-form-ayuda">Elige el periodo y las secciones. Se abrirá una vista adaptable lista para imprimir o guardar como PDF.</div>' +
+    '<div class="inf-form-subtitulo">Periodo</div><div class="inf-periodos">' + periodos + '</div>' +
+    '<div id="informe-fechas" class="inf-fechas"' + (informeEstadoUI.modo === 'personalizado' ? '' : ' hidden') + '>' +
+      '<label>Desde<input type="date" data-inf-fecha="desde" value="' + informeEsc(informeEstadoUI.desde) + '"></label>' +
+      '<label>Hasta<input type="date" data-inf-fecha="hasta" value="' + informeEsc(informeEstadoUI.hasta) + '"></label>' +
+    '</div>' +
+    '<div class="inf-form-subtitulo">Secciones</div><div class="inf-selecciones">' +
+      '<label class="inf-check inf-check-total"><input type="checkbox" data-inf-total' + (informeEstadoUI.total ? ' checked' : '') + '><span>📘 Total</span></label>' + secciones +
+    '</div>' +
+    '<label class="inf-check inf-check-opcion"><input type="checkbox" data-inf-canceladas' + (informeEstadoUI.canceladas ? ' checked' : '') + '><span>Incluir reservas canceladas</span></label>' +
+    '<button type="button" class="inf-generar-btn" data-inf-generar>📄 Generar informe</button>' +
+    '</div>';
+
+  root.addEventListener('click', function(evento) {
+    const botonPeriodo = evento.target.closest('[data-inf-modo]');
+    if (botonPeriodo && root.contains(botonPeriodo)) {
+      informeEstadoUI = informeEstadoCopia(informeEstadoUI);
+      informeEstadoUI.modo = botonPeriodo.getAttribute('data-inf-modo');
+      informeActualizarFormulario(root);
+      return;
+    }
+    const generar = evento.target.closest('[data-inf-generar]');
+    if (generar && root.contains(generar)) informeConDatos();
+  });
+
+  root.addEventListener('change', function(evento) {
+    const objetivo = evento.target;
+    if (objetivo.hasAttribute('data-inf-total')) {
+      informeEstadoUI = informeAlternarTotal(informeEstadoUI, objetivo.checked);
+      informeActualizarFormulario(root);
+    } else if (objetivo.hasAttribute('data-inf-seccion')) {
+      informeEstadoUI = informeAlternarSeccion(informeEstadoUI, objetivo.getAttribute('data-inf-seccion'), objetivo.checked);
+      informeActualizarFormulario(root);
+    } else if (objetivo.hasAttribute('data-inf-canceladas')) {
+      informeEstadoUI = informeEstadoCopia(informeEstadoUI);
+      informeEstadoUI.canceladas = !!objetivo.checked;
+    } else if (objetivo.hasAttribute('data-inf-fecha')) {
+      informeEstadoUI = informeEstadoCopia(informeEstadoUI);
+      informeEstadoUI[objetivo.getAttribute('data-inf-fecha')] = objetivo.value || '';
     }
   });
-  const maxFactMes = Math.max(...factMes, 1);
-
-  // Ranking uso por socio
-  const socioMap = {};
-  allE.forEach(e => {
-    const key = e._socio || '–';
-    if (!socioMap[key]) socioMap[key] = { total:0, conf:0, comsls:0, fact:0 };
-    socioMap[key].total++;
-    if (e._type==='reserva'&&e.estado==='confirmada'){ socioMap[key].conf++; socioMap[key].comsls += Number(e.numeroComensales||e.comensalesEstimados||0); }
-    const fn = financials(e); if(fn.total) socioMap[key].fact += fn.total;
-  });
-  const ranking = Object.entries(socioMap).map(([name,d])=>({name,...d,avg:d.conf>0?(d.comsls/d.conf).toFixed(1):'–'})).sort((a,b)=>b.total-a.total);
-  const rankFact = [...ranking].sort((a,b)=>b.fact-a.fact).filter(s=>s.fact>0);
-  const maxR = ranking.length>0 ? ranking[0].total : 1;
-  const maxFact = rankFact.length>0 ? rankFact[0].fact : 1;
-
-  // Desglose económico (fijos conocidos + cuentas completas)
-  let totR=0,totC=0,totL=0,totB=0,totEx=0,totBo=0;
-  allE.forEach(e => {
-    const fn = financials(e);
-    totR += fn.reserva||0; totC += fn.cocina||0; totL += fn.limpieza||0;
-    if (fn.known){ totB += fn.consumiciones||0; totEx += fn.extras||0; totBo += fn.bote||0; }
-  });
-  const totEco = totR+totC+totL+totB+totEx+totBo || 1;
-  const ecoItems = [
-    ['💰 Reserva',totR,'#6B1A1A'],['🔥 Cocina',totC,'#E65100'],['🧹 Limpieza',totL,'#00695C'],
-    ['🍸 Consum.',totB,'#1565C0'],['🫙 Extras',totEx,'#880E4F'],['💰 Bote',totBo,'#C8952A']
-  ].filter(([,v])=>v>0);
-
-  // Aux
-  const pctLimp  = conf.length>0 ? Math.round(conLimp/conf.length*100) : 0;
-  const pctCocin = conf.length>0 ? Math.round(conCocina/conf.length*100) : 0;
-  const totalFranja = porFranja.comida+porFranja.cena+porFranja.dia||1;
-  const pBaja = conf.filter(r=>r.planta==='baja').length;
-  const pSup  = conf.filter(r=>r.planta==='superior').length;
-  const maxPlanta = Math.max(pBaja,pSup,1);
-
-  const chartsHtml = `
-  <div style="page-break-before:always;">
-    <div class="hdr" style="margin-bottom:16px;">
-      <div class="hdr-l" style="display:flex;align-items:center;gap:12px;">
-        <img src="${LOGO_SRC}" style="width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);object-fit:cover;" onerror="this.style.display='none'" alt="Logo">
-        <div><h1>Txoko Azkena · Estadísticas y Gráficos</h1><h2>Análisis de uso y gestión económica</h2></div>
-      </div>
-      <div class="hdr-r">CIF: G95368627 · Basauri · <strong>${now}</strong></div>
-    </div>
-
-    <!-- FILA 1: Facturación mensual + Ranking uso -->
-    <div class="grid-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-
-      ${card(`${secT('💰 Facturación mensual (cuentas registradas)')}
-        <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;margin-bottom:6px;">
-          ${meses.map((m,i) => `
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
-            <span style="font-size:9px;color:#2E7D32;font-weight:700;min-height:12px;">${factMes[i]>0?factMes[i].toFixed(0)+'€':''}</span>
-            <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;">
-              <div style="${barH(factMes[i],maxFactMes)};width:100%;background:${factMesPart[i]===factMes[i]&&factMes[i]>0?'#81C784':'#2E7D32'};border-radius:3px 3px 0 0;min-height:${factMes[i]>0?3:0}px;" title="${factMesPart[i]>0?'Solo fijos: '+factMesPart[i].toFixed(0)+'€':'Cuenta completa'}"></div>
-            </div>
-            <span style="font-size:9px;color:#6B5B52;">${m}</span>
-          </div>`).join('')}
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
-          ${kpi('≥', totalCuenta.toFixed(0)+'€', 'Total conocido (fijos+cuentas)', '#2E7D32')}
-          ${kpi('✅', String(conCuentaPlena)+' / '+String(conCuenta), 'Cuentas completas / con datos', '#6B1A1A')}
-          ${kpi('∅', mediaCuenta.toFixed(0)+'€', 'Media por entrada', '#C8952A')}
-        </div>`)}
-
-      ${card(`${secT('👤 Ranking de uso por socio')}
-        <div style="font-size:10px;color:#6B5B52;margin-bottom:8px;">Barras: ■ confirmadas · ░ canceladas incluidas · Nº = total · Pers. = media comensales</div>
-        ${ranking.slice(0,15).map(s => `
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-          <span style="width:140px;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2C1810;" title="${s.name}">${s.name}</span>
-          <div style="flex:1;background:#F0E8DC;border-radius:4px;height:14px;position:relative;">
-            <div style="${barW(s.conf,maxR)};background:#6B1A1A;height:100%;border-radius:4px;"></div>
-            ${s.total>s.conf?`<div style="${barW(s.total,maxR)};background:#C62828;height:100%;border-radius:4px;position:absolute;top:0;left:0;opacity:0.2;"></div>`:''}
-          </div>
-          <span style="width:18px;font-size:10px;font-weight:700;color:#6B1A1A;text-align:center;">${s.total}</span>
-          <span style="width:34px;font-size:9px;color:#6B5B52;text-align:right;">${s.avg} p.</span>
-        </div>`).join('')||'<div style="color:#9E9E9E;font-style:italic;">Sin datos</div>'}`)}
-    </div>
-
-    <!-- FILA 2: Desglose económico + Franja + Planta -->
-    <div class="grid-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-
-      ${card(`${secT('📊 Desglose económico')}
-        <div style="display:flex;height:20px;border-radius:6px;overflow:hidden;margin-bottom:12px;">
-          ${segBar(ecoItems.map(([,v])=>v),ecoItems.map(([,,c])=>c),ecoItems.map(([l])=>l))}
-        </div>
-        ${ecoItems.map(([lbl,val,col]) => `
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
-          <span style="font-size:11px;flex:1;">${lbl}</span>
-          <div style="width:80px;background:#F0E8DC;border-radius:3px;height:12px;">
-            <div style="${barW(val,totEco)};background:${col};height:100%;border-radius:3px;"></div>
-          </div>
-          <span style="font-size:11px;font-weight:700;color:${col};width:60px;text-align:right;">${val.toFixed(2)}€</span>
-          <span style="font-size:10px;color:#9E9E9E;width:30px;text-align:right;">${Math.round(val/totEco*100)}%</span>
-        </div>`).join('')||'<div style="color:#9E9E9E;font-style:italic;font-size:10px;">Sin cuentas aún</div>'}`)}
-
-      ${card(`${secT('⏰ Distribución por franja')}
-        <div style="display:flex;height:20px;border-radius:6px;overflow:hidden;margin-bottom:12px;">
-          ${segBar([porFranja.comida,porFranja.cena,porFranja.dia],['#E65100','#1565C0','#880E4F'],['Comida','Cena','Día completo'])}
-        </div>
-        ${[['🍴','Comida',porFranja.comida,'#E65100'],['🌙','Cena',porFranja.cena,'#1565C0'],['☀️','Día completo',porFranja.dia,'#880E4F']].map(([ic,lb,v,c])=>`
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-          <span style="font-size:16px;">${ic}</span>
-          <span style="flex:1;font-size:11px;">${lb}</span>
-          <span style="font-size:14px;font-weight:900;color:${c};">${v}</span>
-          <span style="font-size:10px;color:#9E9E9E;width:32px;text-align:right;">${Math.round(v/totalFranja*100)}%</span>
-        </div>`).join('')}`)}
-
-      ${card(`${secT('🏠 Uso y cocina por planta')}
-        ${[['Planta baja',pBaja,'#4527A0'],['Planta superior',pSup,'#283593']].map(([lb,v,c])=>`
-        <div style="margin-bottom:10px;">
-          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span>🏠 ${lb}</span><span style="font-weight:900;color:${c};">${v}</span></div>
-          <div style="background:#F0E8DC;border-radius:4px;height:16px;"><div style="${barW(v,maxPlanta)};background:${c};height:100%;border-radius:4px;"></div></div>
-        </div>`).join('')}
-        <div style="margin-top:10px;">
-          <div style="font-size:10px;color:#6B5B52;margin-bottom:4px;text-align:center;">Reparto planta baja / superior</div>
-          <div style="display:flex;height:16px;border-radius:6px;overflow:hidden;">${segBar([pBaja,pSup],['#4527A0','#283593'],['Baja','Superior'])}</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:14px;">
-          <div style="background:#FFF3E0;border-radius:6px;padding:8px;text-align:center;">
-            <div style="font-size:10px;color:#E65100;margin-bottom:2px;">🔥 Cocina</div>
-            <div style="font-size:18px;font-weight:900;color:#E65100;">${conCocina}</div>
-            <div style="font-size:9px;color:#9E9E9E;">${pctCocin}% de reservas</div>
-          </div>
-          <div style="background:#E0F2F1;border-radius:6px;padding:8px;text-align:center;">
-            <div style="font-size:10px;color:#00695C;margin-bottom:2px;">🧹 Limp. ext.</div>
-            <div style="font-size:18px;font-weight:900;color:#00695C;">${conLimp}</div>
-            <div style="font-size:9px;color:#9E9E9E;">${pctLimp}% de reservas</div>
-          </div>
-        </div>`)}
-    </div>
-
-    <!-- FILA 3: Ranking facturación + Actividad mensual -->
-    <div class="grid-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-
-      ${card(`${secT('💰 Ranking socios por facturación')}
-        ${rankFact.length>0 ? rankFact.slice(0,12).map(s=>`
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
-          <span style="width:140px;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2C1810;" title="${s.name}">${s.name}</span>
-          <div style="flex:1;background:#F0E8DC;border-radius:4px;height:14px;">
-            <div style="${barW(s.fact,maxFact)};background:#2E7D32;height:100%;border-radius:4px;"></div>
-          </div>
-          <span style="font-size:10px;font-weight:700;color:#2E7D32;width:60px;text-align:right;">${s.fact.toFixed(0)}€</span>
-          <span style="font-size:9px;color:#9E9E9E;width:28px;text-align:right;">${s.total}x</span>
-        </div>`).join('')
-        : '<div style="color:#9E9E9E;font-style:italic;font-size:11px;padding:10px;text-align:center;">Sin cuentas registradas aún</div>'}`)}
-
-      ${card(`${secT('📅 Actividad mensual — reservas y cocina')}
-        <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;">
-          ${meses.map((m,i) => `
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
-            <span style="font-size:9px;color:#6B1A1A;font-weight:700;min-height:12px;">${porMes[i]||''}</span>
-            <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;gap:1px;">
-              <div style="${barH(porMes[i],maxMes)};width:100%;background:#6B1A1A;border-radius:3px 3px 0 0;min-height:${porMes[i]?2:0}px;"></div>
-            </div>
-            <div style="width:100%;height:6px;background:${porMesCocina[i]>0?'#E65100':'transparent'};border-radius:0 0 3px 3px;opacity:0.7;" title="Cocina: ${porMesCocina[i]}"></div>
-            <span style="font-size:9px;color:#6B5B52;">${m}</span>
-          </div>`).join('')}
-        </div>
-        <div style="display:flex;gap:16px;font-size:10px;color:#6B5B52;margin-top:8px;justify-content:center;">
-          <span>■ <span style="color:#6B1A1A;font-weight:700;">Reservas</span></span>
-          <span>■ <span style="color:#E65100;font-weight:700;">Con cocina</span></span>
-        </div>`)}
-
-      ${card(`${secT('💶 Facturación mensual — total conocido')}
-        <div style="display:flex;align-items:flex-end;gap:4px;padding:0 4px;margin-bottom:8px;">
-          ${meses.map((m,i) => `
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
-            <span style="font-size:9px;font-weight:700;min-height:12px;color:${factMes[i]>0?(factMesPart[i]===factMes[i]?'#388E3C':'#2E7D32'):'#ccc'}">${factMes[i]>0?factMes[i].toFixed(0)+'€':''}</span>
-            <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;">
-              <div style="${barH(factMes[i],maxFactMes)};width:100%;background:${factMesPart[i]===factMes[i]&&factMes[i]>0?'#81C784':'#2E7D32'};border-radius:3px 3px 0 0;min-height:${factMes[i]>0?2:0}px;"></div>
-            </div>
-            <span style="font-size:9px;color:#6B5B52;">${m}</span>
-          </div>`).join('')}
-        </div>
-        <div style="display:flex;gap:16px;font-size:10px;color:#6B5B52;justify-content:center;">
-          <span>■ <span style="color:#2E7D32;font-weight:700;">Cuenta completa</span></span>
-          <span>■ <span style="color:#81C784;font-weight:700;">Solo fijos (≥)</span></span>
-        </div>`)}
-    </div>
-
-    <div class="footer" style="margin-top:12px;">
-      <span>🍽️ Txoko Azkena · Estadísticas · CIF G95368627 · Basauri</span>
-      <span>Registro de Asociaciones del País Vasco: AS/B/11831/2005</span>
-    </div>
-  </div>`;
-
-  const fullHtml = html.replace('</body></html>', chartsHtml + '</body></html>');
-  const win = window.open('', '_blank', 'width=1100,height=750');
-  if (!win) {
-    showToast('❌ El navegador bloqueó la ventana. Permite los popups para este sitio.', 'err', 4000);
-    return;
-  }
-  win.document.write(fullHtml);
-  win.document.close();
 }
+
+function informeCabeceraHtml(titulo, periodo, hoy) {
+  return '<header class="inf-cabecera">' +
+    '<div class="inf-marca"><img class="inf-logo" src="' + informeEsc(LOGO_SRC) + '" alt="Logo de Txoko Azkena"><div>' +
+      '<h1>Txoko Azkena</h1><div class="inf-marca-sub">Asociación Gastronómica Azkena · Basauri (Bizkaia)</div><span class="inf-libro">LIBRO DIETARIO DIGITAL</span>' +
+    '</div></div>' +
+    '<div class="inf-cabecera-datos"><strong>' + informeEsc(titulo) + '</strong><span>' + informeEsc(periodo.etiqueta) + '</span><span>Generado el ' + informeEsc(informeFmtFecha(hoy)) + '</span>' +
+      '<span class="inf-cabecera-legal">CIF G95368627 · C/ Pozokoetxe, 2 – Bajo · 48970 Basauri · azkenabasauri@gmail.com · Reg. AS/B/11831/2005</span></div>' +
+    '</header>';
+}
+
+function informePieHtml() {
+  return '<footer class="inf-pie"><span>Txoko Azkena · CIF G95368627 · C/ Pozokoetxe, 2 – Bajo · 48970 Basauri</span><span>azkenabasauri@gmail.com · Reg. AS/B/11831/2005</span></footer>';
+}
+
+function generarInforme() {
+  try {
+    const estado = informeEstadoCopia(informeEstadoUI);
+    const ids = informeIdsMarcados(estado);
+    if (!ids.length) {
+      showToast('Marca al menos una sección', 'err');
+      return;
+    }
+    const hoy = todayStr();
+    const todas = informeEntradas(getReservas(), getCuentasLibres());
+    const fechas = todas.map(function(entrada) { return entrada && entrada.fecha ? String(entrada.fecha) : ''; }).filter(function(fecha) { return !!fecha; }).sort();
+    const primera = fechas.length ? fechas[0] : '';
+    const periodo = informePeriodo(estado.modo, hoy, estado.desde, estado.hasta, primera);
+    if (!periodo.ok) {
+      showToast(periodo.error, 'err');
+      return;
+    }
+    const filtradas = informeFiltrar(todas, periodo, { canceladas:true });
+    const datos = informeCalcular(filtradas, periodo, hoy, getBloq(), { canceladas:estado.canceladas });
+    const titulo = informeTituloInforme(estado);
+    const secciones = INFORME_SECCIONES.filter(function(seccion) {
+      return ids.indexOf(seccion.id) !== -1;
+    }).map(function(seccion) {
+      return seccion.render(datos);
+    }).join('');
+    const html = informeCabeceraHtml(titulo, periodo, hoy) + secciones + informePieHtml();
+    informeAbrirVista(html, informeOrientacionAuto(ids));
+  } catch (error) {
+    showToast('❌ ' + (error && error.message ? error.message : 'No se ha podido generar el informe'), 'err', 4000);
+  }
+}
+
+function informeAbrirVista(html, orientacion) {
+  informeCerrarVista();
+  try {
+    const vista = document.createElement('div');
+    vista.id = 'informe-vista';
+    const titulo = informeTituloInforme(informeEstadoUI);
+    vista.innerHTML = '<div class="inf-barra">' +
+      '<button type="button" class="inf-barra-cerrar" id="informe-cerrar">← Cerrar</button>' +
+      '<div class="inf-barra-titulo">' + informeEsc(titulo) + '</div>' +
+      '<div class="inf-orientacion" role="group" aria-label="Orientación del papel">' +
+        '<button type="button" data-inf-orientacion="v" aria-pressed="false">Vertical</button>' +
+        '<button type="button" data-inf-orientacion="h" aria-pressed="false">Horizontal</button>' +
+      '</div>' +
+      '<button type="button" class="inf-imprimir" id="informe-imprimir">🖨️ Imprimir / Guardar PDF</button>' +
+      '</div><main class="inf-hoja">' + html + '</main>';
+    document.body.appendChild(vista);
+    document.body.classList.add('informe-abierto');
+    vista.querySelector('#informe-cerrar').addEventListener('click', informeCerrarVista);
+    vista.querySelector('#informe-imprimir').addEventListener('click', informeImprimir);
+    vista.querySelectorAll('[data-inf-orientacion]').forEach(function(boton) {
+      boton.addEventListener('click', function() { informeSetOrientacion(boton.getAttribute('data-inf-orientacion')); });
+    });
+    informeEscapeHandler = function(evento) {
+      if (evento.key === 'Escape' || evento.key === 'Esc') informeCerrarVista();
+    };
+    document.addEventListener('keydown', informeEscapeHandler);
+    informeSetOrientacion(orientacion);
+  } catch (error) {
+    informeCerrarVista();
+    throw error;
+  }
+}
+
+function informeCerrarVista() {
+  const vista = document.getElementById('informe-vista');
+  if (vista && vista.parentNode) vista.parentNode.removeChild(vista);
+  const estilo = document.getElementById('informe-page-style');
+  if (estilo && estilo.parentNode) estilo.parentNode.removeChild(estilo);
+  if (document.body) document.body.classList.remove('informe-abierto');
+  if (informeEscapeHandler) {
+    document.removeEventListener('keydown', informeEscapeHandler);
+    informeEscapeHandler = null;
+  }
+}
+
+function informeSetOrientacion(orientacion) {
+  const valor = orientacion === 'h' ? 'h' : 'v';
+  let estilo = document.getElementById('informe-page-style');
+  if (!estilo) {
+    estilo = document.createElement('style');
+    estilo.id = 'informe-page-style';
+    document.head.appendChild(estilo);
+  }
+  estilo.textContent = '@page{size:A4 ' + (valor === 'h' ? 'landscape' : 'portrait') + ';margin:12mm}';
+  const vista = document.getElementById('informe-vista');
+  if (!vista) return;
+  const hoja = vista.querySelector('.inf-hoja');
+  if (hoja) {
+    hoja.classList.remove('inf-h', 'inf-v');
+    hoja.classList.add('inf-' + valor);
+  }
+  vista.querySelectorAll('[data-inf-orientacion]').forEach(function(boton) {
+    const activo = boton.getAttribute('data-inf-orientacion') === valor;
+    boton.classList.toggle('active', activo);
+    boton.setAttribute('aria-pressed', activo ? 'true' : 'false');
+  });
+}
+
+function informeImprimir() {
+  window.print();
+}
+/* <<< INFORME PANTALLA (fin) */
 
 /* =========================================================
    INIT
