@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6B1A1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Azkena v2.1</title>
+  <title>Azkena v2.2</title>
   <!-- Abre ya la conexión con Google (los dos saltos de cada llamada) mientras se carga la página -->
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -390,6 +390,9 @@
       background: var(--error); border-radius: 50%; border: 1.5px solid var(--card);
     }
     .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 1px 3px var(--shadow); }
+    /* Pestañas de Comunidad: son cinco, así que icono encima y texto debajo para que quepan en un móvil estrecho */
+    .com-tabs .tab-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 6px 1px; line-height: 1.15; }
+    .com-tabs .tab-ico { font-size: 15px; }
 
     /* =====================================================
        ALERTAS / VACÍO / UTILIDAD
@@ -497,10 +500,10 @@
     .voto-btn.voted-abs { background:#E65100; color:#fff; border-color:#E65100; }
     .voto-result { margin-top:8px; }
     .voto-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; font-size:11px; }
-    .voto-bar-label { width:80px; font-weight:700; }
+    .voto-bar-label { width:84px; font-weight:700; white-space:nowrap; }
     .voto-bar-track { flex:1; background:#F0E8DC; border-radius:4px; height:12px; }
     .voto-bar-fill { height:100%; border-radius:4px; transition:width 0.4s ease; }
-    .voto-bar-pct { width:32px; text-align:right; color:var(--text-muted); }
+    .voto-bar-pct { min-width:52px; text-align:right; color:var(--text-muted); white-space:nowrap; }
     .badge-activa  { background:#E8F5E9; color:#2E7D32; }
     .badge-cerrada { background:#F5F5F5; color:#757575; }
 
@@ -513,6 +516,33 @@
     .incid-meta   { font-size:11px; color:var(--text-muted); margin-bottom:6px; }
     .incid-desc   { font-size:12px; color:var(--text); line-height:1.5; }
     .incid-notas  { font-size:11px; color:#1565C0; background:#E3F2FD; border-radius:6px; padding:6px 8px; margin-top:6px; }
+
+    /* Comunidad › Todo: avisos, votaciones, incidencias y tablón en una sola lista, solo títulos desplegables */
+    .ct-item { background:var(--card); border-radius:12px; margin-bottom:8px; border-left:5px solid var(--border); box-shadow:0 1px 4px var(--shadow); overflow:hidden; }
+    .ct-item.k-info    { border-color:#1565C0; }
+    .ct-item.k-urgente { border-color:#C62828; }
+    .ct-item.k-evento  { border-color:#F9A825; }
+    .ct-item.k-portada { border-color:var(--primary); }
+    .ct-item.k-votos   { border-color:#2E7D32; }
+    .ct-item.k-cerrada { border-color:#9E9E9E; }
+    .ct-item.k-tablon  { border-color:#E65100; }
+    .ct-item.resuelta  { opacity:0.7; }
+    .ct-item summary { display:flex; align-items:center; gap:10px; padding:11px 12px; cursor:pointer; list-style:none; }
+    .ct-item summary::-webkit-details-marker { display:none; }
+    .ct-ico    { font-size:20px; flex-shrink:0; width:26px; text-align:center; }
+    .ct-txt    { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+    .ct-titulo { font-size:14px; font-weight:800; color:var(--text); line-height:1.3; overflow-wrap:anywhere; }
+    .ct-meta   { font-size:11px; color:var(--text-muted); }
+    .ct-nuevo  { display:inline-block; background:var(--error); color:#fff; font-size:9px; font-weight:800; letter-spacing:0.4px; text-transform:uppercase; padding:1px 6px; border-radius:8px; margin-right:6px; vertical-align:2px; }
+    .ct-flecha {
+      width:16px; height:16px; flex-shrink:0; transition:transform 0.2s;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5B52' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center / 16px no-repeat;
+    }
+    .ct-item[open] .ct-flecha { transform:rotate(180deg); }
+    .ct-cuerpo { padding:0 14px 12px; font-size:13px; color:var(--text); line-height:1.5; }
+    .ct-cuerpo .voto-btn { padding:10px 2px; font-size:12px; white-space:nowrap; }
+    .ct-cuerpo .ct-sub  { font-size:11px; color:var(--text-muted); margin-top:6px; }
+    .ct-cuerpo .incid-notas { margin-top:8px; }
     .badge-abierta    { background:#FFEBEE; color:#C62828; }
     .badge-en_proceso { background:#FFF3E0; color:#E65100; }
     .badge-resuelta   { background:#E8F5E9; color:#2E7D32; }
@@ -1017,7 +1047,7 @@
     <img class="logo-img" src="data:image/webp;base64,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" alt="Txoko Azkena" onerror="this.style.display='none'">
     <div class="logo-txt">
       <span class="title">Txoko Azkena</span>
-      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.1</span></span>
+      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.2</span></span>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -1241,13 +1271,15 @@
       <div class="screen-title" id="tt-av">💬 Comunidad</div>
       <div class="screen-subtitle" id="ts-av">Avisos · Votaciones · Incidencias</div>
     </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" id="ctab-avisos" onclick="comunidadTab('avisos')" style="font-size:10px;">📢 Avisos<span class="tab-dot hidden" id="dot-avisos"></span></button>
-      <button class="tab-btn"        id="ctab-votos"  onclick="comunidadTab('votos')"  style="font-size:10px;">🗳️ Votaciones<span class="tab-dot hidden" id="dot-votos"></span></button>
-      <button class="tab-btn"        id="ctab-incid"  onclick="comunidadTab('incid')"  style="font-size:10px;">🔧 Incidencias<span class="tab-dot hidden" id="dot-incid"></span></button>
-      <button class="tab-btn"        id="ctab-tablon" onclick="comunidadTab('tablon')" style="font-size:10px;"><span class="tab-lbl">📌 Tablón</span><span class="tab-dot hidden" id="dot-tablon"></span></button>
+    <div class="tab-bar com-tabs">
+      <button class="tab-btn active" id="ctab-todo"   onclick="comunidadTab('todo')"   style="font-size:10px;"><span class="tab-ico">🗂️</span><span class="tab-lbl">Todo</span></button>
+      <button class="tab-btn"        id="ctab-avisos" onclick="comunidadTab('avisos')" style="font-size:10px;"><span class="tab-ico">📢</span><span class="tab-lbl">Avisos</span><span class="tab-dot hidden" id="dot-avisos"></span></button>
+      <button class="tab-btn"        id="ctab-votos"  onclick="comunidadTab('votos')"  style="font-size:10px;"><span class="tab-ico">🗳️</span><span class="tab-lbl">Votaciones</span><span class="tab-dot hidden" id="dot-votos"></span></button>
+      <button class="tab-btn"        id="ctab-incid"  onclick="comunidadTab('incid')"  style="font-size:10px;"><span class="tab-ico">🔧</span><span class="tab-lbl">Incidencias</span><span class="tab-dot hidden" id="dot-incid"></span></button>
+      <button class="tab-btn"        id="ctab-tablon" onclick="comunidadTab('tablon')" style="font-size:10px;"><span class="tab-ico">📌</span><span class="tab-lbl">Tablón</span><span class="tab-dot hidden" id="dot-tablon"></span></button>
     </div>
-    <div id="com-avisos"><div id="avisos-list"></div></div>
+    <div id="com-todo"></div>
+    <div id="com-avisos" class="hidden"><div id="avisos-list"></div></div>
     <div id="com-votos"  class="hidden"></div>
     <div id="com-incid"  class="hidden"></div>
     <div id="com-tablon" class="hidden"></div>
@@ -1688,7 +1720,7 @@ function toggleLang() {
   lang = lang === 'es' ? 'eu' : 'es';
   document.getElementById('lang-toggle').textContent = lang === 'es' ? 'EU' : 'ES';
   applyTR();
-  document.querySelector('#ctab-tablon .tab-lbl').textContent = tbt('tab');
+  document.querySelector('#ctab-tablon .tab-lbl').textContent = tbt('tab').replace(/^\S+\s*/, '');
   document.getElementById('at-tablon-admin').textContent = tbt('tab');
   renderCalendar();
   renderNormas();
@@ -1696,10 +1728,11 @@ function toggleLang() {
   if (currentScreen === 'reserva')     initReservaForm();
   if (currentScreen === 'calc')        { renderCalcTexts(); calcMostrarBotonGuardar(); }
   if (currentScreen === 'avisos' && _comunidadTab === 'tablon') renderTablon();
+  if (currentScreen === 'avisos' && _comunidadTab === 'todo')   renderComunidadTodo();
 }
 
 // Subir este número con CADA actualización que se suba a GitHub (así se ve si el móvil tiene la versión nueva)
-const APP_VERSION = '2.1';
+const APP_VERSION = '2.2';
 
 function applyTR() {
   const sub = document.getElementById('h-subtitle');
@@ -2540,7 +2573,7 @@ async function autoExpireVotes() {
   }
 }
 
-let _comunidadTab = 'avisos';
+let _comunidadTab = 'todo';
 function tbt(k) { return (TABLON_TX[lang] || TABLON_TX.es)[k]; }
 
 const TABLON_TX = {
@@ -2629,15 +2662,166 @@ const TABLON_TX = {
 };
 
 function comunidadTab(tab) {
+  const veniaDeOtra = _comunidadTab !== tab;
   _comunidadTab = tab;
-  ['avisos','votos','incid','tablon'].forEach(t => {
+  ['todo','avisos','votos','incid','tablon'].forEach(t => {
     document.getElementById('com-'+t)?.classList.toggle('hidden', t !== tab);
     document.getElementById('ctab-'+t)?.classList.toggle('active', t === tab);
   });
+  if (tab === 'todo') {
+    if (veniaDeOtra) _comTodoNuevos = new Set();
+    comTodoCapturarNuevos(); // antes de checkAvisosBadge, que lo da todo por visto
+    renderComunidadTodo();
+  }
+  if (tab === 'avisos') renderAvisos();
   if (tab === 'votos') renderVotaciones();
   if (tab === 'incid') renderIncidencias();
   if (tab === 'tablon') renderTablon();
   checkAvisosBadge();
+}
+
+/* ── Comunidad › Todo ────────────────────────────────────────────────────
+   Avisos, votaciones, incidencias y tablón en una sola lista, de lo más reciente a lo más antiguo
+   (fecha; a igualdad, el id más alto). Solo se ve el título: al tocarlo se despliega el mensaje COMPLETO
+   (texto, foto, resultados…). Se puede votar desde aquí; para reportar una incidencia o publicar en
+   el tablón (y borrar un anuncio) se usa su pestaña de siempre, que el usuario abre si quiere.
+   · Un aviso enlazado desde una incidencia o una votación activa (avisoId) NO sale aparte: ya sale
+     como esa incidencia / votación.
+   · Votaciones activas y cerradas (estas con su resultado final y sin botones), como en la pestaña Votaciones.
+   · Abrir «Todo» da por vistas las 4 secciones (puntitos rojos), pero los elementos que eran nuevos
+     se marcan con «NUEVO» mientras se está en la pestaña (_comTodoNuevos). */
+const _comTodoAbiertos = new Set();
+let _comTodoNuevos = new Set();
+
+function comTodoCapturarNuevos() {
+  if (!_comDatosCargados) return;
+  COM_SECCIONES.forEach(sec => {
+    const visto = _comCargarVisto(sec);
+    _comItems(sec).forEach(([id, sig]) => { if (visto[id] !== sig) _comTodoNuevos.add(sec + ':' + id); });
+  });
+}
+
+function comTodoElementos() {
+  const votaciones = getVotaciones();
+  const enlazados = new Set();
+  getIncidencias().forEach(i => { if (i.avisoId) enlazados.add(i.avisoId); });
+  votaciones.forEach(v => { if (v.avisoId) enlazados.add(v.avisoId); });
+  const el = [];
+  getAvisos().forEach(a => { if (!enlazados.has(a.id)) el.push({ sec: 'avisos', id: a.id, fecha: a.fecha, d: a }); });
+  votaciones.forEach(v => el.push({ sec: 'votos', id: v.id, fecha: v.fecha, d: v }));
+  getIncidencias().forEach(i => el.push({ sec: 'incid', id: i.id, fecha: i.fecha, d: i }));
+  getAnuncios().forEach(a => el.push({ sec: 'tablon', id: a.id, fecha: a.fecha, d: a }));
+  return el.sort((x, y) =>
+    String(y.fecha || '').localeCompare(String(x.fecha || '')) ||
+    String(y.id).localeCompare(String(x.id), undefined, { numeric: true }));
+}
+
+function comTodoFotoHtml(url, clase) {
+  url = String(url || '');
+  return url.startsWith('https://')
+    ? `<img src="${escapeHtml(url)}" class="${clase}" onclick="window.open(this.src,'_blank')" loading="lazy" alt="">`
+    : '';
+}
+
+function comTodoElementoHtml(e) {
+  const eu = lang === 'eu';
+  const d = e.d;
+  const key = e.sec + ':' + e.id;
+  let clase, ico, titulo, tipo, extra = '', cuerpo;
+
+  if (e.sec === 'avisos') {
+    clase = 'k-' + (AVISO_TIPOS[d.tipo] ? d.tipo : 'info');
+    ico = (AVISO_TIPOS[d.tipo]?.label || '📢').split(' ')[0];
+    titulo = d.titulo || (eu ? 'Oharra' : 'Aviso');
+    tipo = eu ? 'Oharra' : 'Aviso';
+    extra = (AVISO_TIPOS[d.tipo]?.label || '').replace(/^\S+\s*/, '');
+    cuerpo = `<div>${escapeHtml(d.mensaje).replace(/\n/g, '<br>')}</div>${comTodoFotoHtml(d.fotoUrl, 'av-foto')}`;
+  } else if (e.sec === 'votos') {
+    const cerrada = d.estado !== 'activa';
+    clase = cerrada ? 'k-cerrada' : 'k-votos';
+    ico = '🗳️';
+    titulo = d.pregunta || d.titulo;
+    tipo = eu ? 'Bozketa' : 'Votación';
+    extra = cerrada ? '🔒 ' + (eu ? 'Itxita' : 'Cerrada') : '🟢 ' + (eu ? 'Irekita' : 'Activa');
+    let miVoto = '';
+    try { miVoto = (JSON.parse(localStorage.getItem('azk_mis_votos') || '{}'))[d.id] || ''; } catch(err) {}
+    const total = d.total || 0;
+    const pct = x => total > 0 ? Math.round(x / total * 100) : 0;
+    const barras = [['✅ Sí','si','#2E7D32'],['❌ No','no','#C62828'],['⬜ Abstención','abstencion','#E65100']].map(([lb,k,c]) => `
+      <div class="voto-bar-row">
+        <span class="voto-bar-label" style="color:${c}">${lb}</span>
+        <div class="voto-bar-track"><div class="voto-bar-fill" style="width:${pct(d[k])}%;background:${c};"></div></div>
+        <span class="voto-bar-pct">${d[k]} (${pct(d[k])}%)</span>
+      </div>`).join('');
+    const tuVoto = miVoto
+      ? `✓ ${eu ? 'Zure botoa' : 'Has votado'}: <strong>${miVoto === 'si' ? '✅ Sí' : miVoto === 'no' ? '❌ No' : '⬜ Abstención'}</strong>`
+      : cerrada ? '' : `⏳ <strong>${eu ? 'Oraindik ez duzu bozkatu' : 'Aún no has votado'}</strong>`;
+    const botones = !cerrada && !miVoto && getSession() ? `
+      <div class="voto-btns">
+        <button type="button" class="voto-btn si"  onclick="votar('${d.id}','si')">✅ Sí</button>
+        <button type="button" class="voto-btn no"  onclick="votar('${d.id}','no')">❌ No</button>
+        <button type="button" class="voto-btn abs" onclick="votar('${d.id}','abstencion')">⬜ ${eu ? 'Abstentzioa' : 'Abstención'}</button>
+      </div>` : '';
+    cuerpo = `<div class="ct-sub" style="margin:0 0 6px;">${escapeHtml(eu ? 'Nork sortua' : 'Creada por')}: ${escapeHtml(d.creadoPor)}${d.fechaLimite ? ` · ${eu ? 'Muga' : 'Límite'}: ${escapeHtml(fmtDate(d.fechaLimite))}` : ''}</div>
+      ${tuVoto ? `<div class="ct-sub" style="margin:0 0 8px;">${tuVoto}</div>` : ''}
+      ${botones}
+      <div class="voto-result"><div style="font-size:10px;color:var(--text-muted);margin-bottom:5px;">📊 ${total} voto${total !== 1 ? 's' : ''} emitido${total !== 1 ? 's' : ''}</div>${barras}</div>`;
+  } else if (e.sec === 'incid') {
+    clase = d.urgencia === 'urgente' ? 'k-urgente' : 'k-info';
+    if (d.estado === 'resuelta') clase += ' resuelta';
+    ico = '🔧';
+    titulo = (eu ? 'Gorabehera: ' : 'Incidencia en ') + d.ubicacion;
+    tipo = eu ? 'Gorabehera' : 'Incidencia';
+    const estado = { abierta: '🔴 Abierta', en_proceso: '🟡 En proceso', resuelta: '🟢 Resuelta' }[d.estado] || d.estado;
+    extra = estado + (d.urgencia === 'urgente' ? ' · 🔴 Urgente' : '');
+    cuerpo = `<div class="ct-sub" style="margin:0 0 4px;">${escapeHtml(d.socioNombre)}</div>
+      <div>${escapeHtml(d.descripcion)}</div>${comTodoFotoHtml(d.fotoUrl, 'av-foto')}
+      ${d.notasAdmin ? `<div class="incid-notas">💬 Junta: ${escapeHtml(d.notasAdmin)}</div>` : ''}
+      ${d.estado === 'resuelta' && d.fechaResolucion ? `<div class="ct-sub" style="color:var(--success);">✅ Resuelta el ${escapeHtml(fmtDate(d.fechaResolucion))}</div>` : ''}`;
+  } else {
+    clase = 'k-tablon';
+    ico = '📌';
+    titulo = d.titulo || tablonCategoriaLabel(d.categoria);
+    tipo = tbt('tab').replace(/^\S+\s*/, '');
+    extra = tablonCategoriaLabel(d.categoria);
+    cuerpo = `${d.texto ? `<div>${escapeHtml(d.texto).replace(/\n/g, '<br>')}</div>` : ''}${comTodoFotoHtml(d.fotoUrl, 'tb-foto')}
+      <div class="ct-sub">${escapeHtml(tbt('publicado_por'))} ${escapeHtml(d.socioNombre)} · ${escapeHtml(tbt('caduca_el'))} ${escapeHtml(fmtDate(d.fechaCaducidad))}</div>`;
+  }
+
+  const nuevo = _comTodoNuevos.has(key) ? `<span class="ct-nuevo">${eu ? 'Berria' : 'Nuevo'}</span>` : '';
+  return `
+    <details class="ct-item ${clase}" data-key="${escapeHtml(key)}"${_comTodoAbiertos.has(key) ? ' open' : ''}>
+      <summary>
+        <span class="ct-ico">${ico}</span>
+        <span class="ct-txt">
+          <span class="ct-titulo">${nuevo}${escapeHtml(titulo)}</span>
+          <span class="ct-meta">${escapeHtml([tipo, extra, fmtDate(e.fecha)].filter(Boolean).join(' · '))}</span>
+        </span>
+        <span class="ct-flecha"></span>
+      </summary>
+      <div class="ct-cuerpo">${cuerpo}</div>
+    </details>`;
+}
+
+function renderComunidadTodo() {
+  const cont = document.getElementById('com-todo');
+  if (!cont) return;
+  const eu = lang === 'eu';
+  const lbl = document.querySelector('#ctab-todo .tab-lbl');
+  if (lbl) lbl.textContent = eu ? 'Dena' : 'Todo';
+  const elementos = comTodoElementos();
+  if (!elementos.length) {
+    cont.innerHTML = `<div class="empty-state">
+      <div class="ei">🗂️</div>
+      <div class="et">${eu ? 'Oraindik ez dago ezer argitaratuta' : 'Todavía no hay nada publicado'}</div>
+      <div class="eh">${eu ? 'Oharrak, bozketak, gorabeherak eta iragarkiak hemen agertuko dira.' : 'Aquí saldrán los avisos, votaciones, incidencias y anuncios del tablón.'}</div>
+    </div>`;
+    return;
+  }
+  cont.innerHTML = elementos.map(comTodoElementoHtml).join('');
+  cont.querySelectorAll('details').forEach(det => det.addEventListener('toggle', () => {
+    if (det.open) _comTodoAbiertos.add(det.dataset.key); else _comTodoAbiertos.delete(det.dataset.key);
+  }));
 }
 
 function _avisosSeenKey() {
@@ -2703,7 +2887,10 @@ function _comHayNovedad(sec) {
 // Recalcula todos los puntitos (se llama cada vez que cambian los datos o se abre una pestaña)
 function checkAvisosBadge(sinMarcarPestanaActual = false) {
   if (!_comDatosCargados) return;
-  if (currentScreen === 'avisos' && !sinMarcarPestanaActual) _comMarcarVisto(_comunidadTab); // la pestaña que se está mirando ya está vista
+  if (currentScreen === 'avisos' && !sinMarcarPestanaActual) {
+    // la pestaña que se está mirando ya está vista («Todo» enseña las cuatro secciones)
+    (_comunidadTab === 'todo' ? COM_SECCIONES : [_comunidadTab]).forEach(_comMarcarVisto);
+  }
   let alguna = false;
   COM_SECCIONES.forEach(sec => {
     const hay = _comHayNovedad(sec);
@@ -3273,7 +3460,10 @@ function repintarReservas() {
 
 function repintarTrasRefresco() {
   renderAvisoCarga();
-  if (_comDatosCargados) checkAvisosBadge(currentScreen === 'avisos' && (_comunidadTab === 'votos' || _comunidadTab === 'incid'));
+  if (_comDatosCargados) {
+    if (currentScreen === 'avisos' && _comunidadTab === 'todo') comTodoCapturarNuevos(); // lo que llega ahora también es «Nuevo»
+    checkAvisosBadge(currentScreen === 'avisos' && (_comunidadTab === 'votos' || _comunidadTab === 'incid'));
+  }
   renderAvisoBanner();
   repintarReservas();
   if (_comDatosCargados && currentScreen === 'calendario') {
@@ -3282,6 +3472,7 @@ function repintarTrasRefresco() {
   }
 
   const enComunidad = currentScreen === 'avisos';
+  if (enComunidad && _comunidadTab === 'todo') renderComunidadTodo();
   if (enComunidad && _comunidadTab === 'avisos') renderAvisos();
   if (enComunidad && _comunidadTab === 'tablon') renderTablonLista();
 
@@ -3493,7 +3684,7 @@ function navigate(screen) {
   }
   if (screen === 'reserva')     initReservaForm();
   if (screen === 'misreservas') { populateMRSocioSelect(); renderMisReservas(); }
-  if (screen === 'avisos')      { _comunidadTab='avisos'; comunidadTab('avisos'); renderAvisos(); markAvisosRead(); }
+  if (screen === 'avisos')      { _comunidadTab=''; comunidadTab('todo'); markAvisosRead(); }
   if (screen === 'normas')      { renderNormas(); normasMarcarVistaActual(); }
   if (screen === 'calc')        { initCalc(); calcMostrarBotonGuardar(); }
   if (screen === 'admin')       renderAdminScreen();
@@ -3893,14 +4084,14 @@ function renderAvisoBanner() {
 function renderVotaciones() {
   const cont = document.getElementById('com-votos');
   if (!cont) return;
-  // Solo votaciones activas en Comunidad — las cerradas solo las ve Admin
-  const votos = getVotaciones().filter(v => v.estado === 'activa')
-    .slice().sort((a,b) => String(b.id).localeCompare(String(a.id)));
+  // Las activas primero y después las cerradas (con su resultado final): las ven todos los socios
+  const votos = getVotaciones().slice().sort((a,b) =>
+    (a.estado === 'activa' ? 0 : 1) - (b.estado === 'activa' ? 0 : 1) || String(b.id).localeCompare(String(a.id)));
   const socioId = document.getElementById('f-socio')?.value || '';
   const misVotos = JSON.parse(localStorage.getItem('azk_mis_votos') || '{}');
 
   if (!votos.length) {
-    cont.innerHTML = `<div class="empty-state"><div class="ei">🗳️</div><div class="et">No hay votaciones abiertas</div><div class="eh">La junta publicará aquí las próximas votaciones.</div></div>`;
+    cont.innerHTML = `<div class="empty-state"><div class="ei">🗳️</div><div class="et">No hay votaciones</div><div class="eh">La junta publicará aquí las próximas votaciones.</div></div>`;
     return;
   }
 
@@ -4028,6 +4219,7 @@ async function votar(votoId, respuesta) {
     ? (lang === 'eu' ? '✅ Botoa jada erregistratuta dago' : '✅ Voto ya registrado')
     : `✅ ${lang === 'eu' ? 'Botoa erregistratuta' : 'Voto registrado'}: ${respuesta==='si'?(lang==='eu'?'Bai':'Sí'):respuesta==='no'?'No':(lang==='eu'?'Abstentzioa':'Abstención')}`, 'ok');
   renderVotaciones();
+  if (currentScreen === 'avisos' && _comunidadTab === 'todo') renderComunidadTodo();
   refrescarDatos({ motivo: 'tras-escritura' });
 }
 
@@ -4199,7 +4391,7 @@ function tablonCategoriaLabel(categoria) {
 function renderTablon() {
   const cont = document.getElementById('com-tablon');
   if (!cont) return;
-  document.querySelector('#ctab-tablon .tab-lbl').textContent = tbt('tab');
+  document.querySelector('#ctab-tablon .tab-lbl').textContent = tbt('tab').replace(/^\S+\s*/, '');
 
   const session = getSession();
   const maxCad = new Date();
