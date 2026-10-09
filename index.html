@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6B1A1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Azkena v2.3</title>
+  <title>Azkena v2.4</title>
   <!-- Abre ya la conexión con Google (los dos saltos de cada llamada) mientras se carga la página -->
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -1071,6 +1071,24 @@
       font: inherit;
       font-size: 14px;
     }
+    .inf-filtro-socio {
+      display: block;
+      margin-top: 14px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .inf-filtro-socio select {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 5px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
     .inf-selecciones {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -1276,6 +1294,9 @@
     }
     .inf-estado-cancelada { background: #FFEBEE; color: #C62828; }
     .inf-estado-estimado { background: #FFF3E0; color: #E65100; }
+    .inf-estado-resuelta { background: #E8F5E9; color: #2E7D32; }
+    .inf-estado-en-proceso { background: #FFF3E0; color: #E65100; }
+    .inf-estado-abierta { background: #FFEBEE; color: #C62828; }
     .inf-kpis {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
@@ -1334,9 +1355,13 @@
     .inf-barra-v-label { margin-top: 5px; color: var(--text-muted); font-size: 13px; }
     .inf-barra-h-fila { margin: 9px 0; }
     .inf-barra-h-cab { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .inf-barra-h-cab strong { white-space: nowrap; flex-shrink: 0; } /* el nombre largo se parte; el importe nunca */
+    .inf-barra-h-cab span { min-width: 0; }
+    .inf-barra-h-cab--una-linea span { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .inf-barra-h-pista { height: 15px; overflow: hidden; border-radius: 7px; background: #F0E8DC; }
     .inf-barra-h { width: var(--inf-pct); height: 100%; min-width: 0; border-radius: 7px; background: var(--primary); }
     .inf-barra-h.inf-con-valor { min-width: 2px; }
+    .inf-barra-h-detalle { margin-top: 3px; color: var(--text-muted); font-size: 11px; }
     .inf-segmentada { display: flex; min-height: 20px; overflow: hidden; border-radius: 7px; background: #F0E8DC; }
     .inf-segmento { min-width: 0; flex-grow: var(--inf-flex); }
     .inf-concepto-fila,
@@ -1355,6 +1380,30 @@
       background: var(--bg);
     }
     .inf-nota { margin-top: 15px; color: var(--text-muted); font-style: italic; }
+    .inf-firma {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 13px;
+      background: #fff;
+    }
+    .inf-firma h3 { margin: 0 0 12px; color: var(--primary); font-size: 15px; }
+    .inf-firma-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5%;
+    }
+    .inf-firma-campo { min-width: 0; font-weight: 700; }
+    .inf-firma-linea { min-height: 32px; border-bottom: 1px solid #2C1810; }
+    .inf-socios-sin {
+      columns: 2;
+      column-gap: 2rem;
+      margin: 0;
+      padding-left: 1.3rem;
+    }
+    .inf-socios-sin li { break-inside: avoid; margin-bottom: 0.35rem; }
+    .inf-asamblea-resumen { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .inf-asamblea-resumen p { margin: 0; }
     .inf-pie {
       display: flex;
       justify-content: space-between;
@@ -1393,6 +1442,8 @@
       .inf-marca h1 { font-size: 19px; }
       .inf-cabecera-datos { max-width: none; margin-top: 12px; text-align: left; }
       .inf-grid { grid-template-columns: 1fr; }
+      .inf-socios-sin { columns: 1; }
+      .inf-firma-grid { grid-template-columns: 1fr; gap: 12px; }
       .inf-pie { display: block; }
       .inf-pie span { display: block; margin-top: 4px; }
     }
@@ -1444,12 +1495,94 @@
       .inf-listado .inf-tabla td[colspan] { display: block; text-align: center; }
       .inf-listado .inf-tabla td[colspan]::before { display: none; }
       .inf-listado .inf-tabla tfoot tr { background: var(--bg); }
+
+      .inf-cierre .inf-tabla,
+      .inf-cierre .inf-tabla tbody,
+      .inf-cierre .inf-tabla tfoot,
+      .inf-cierre .inf-tabla tr,
+      .inf-cierre .inf-tabla td { display: block; width: 100%; }
+      .inf-cierre .inf-tabla thead { display: none; }
+      .inf-cierre .inf-tabla tr {
+        margin-bottom: 11px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 7px;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(44,24,16,0.06);
+      }
+      .inf-cierre .inf-tabla td,
+      .inf-cierre .inf-tabla .inf-num,
+      .inf-cierre .inf-tabla .inf-centro {
+        min-height: 31px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid #F0E8DC;
+        padding: 5px;
+        text-align: right;
+        white-space: normal;
+      }
+      .inf-cierre .inf-tabla td:last-child { border-bottom: 0; }
+      .inf-cierre .inf-tabla td::before {
+        content: attr(data-label) ":";
+        color: var(--text-muted);
+        font-weight: 800;
+        text-align: left;
+      }
+      .inf-cierre .inf-tabla tfoot tr { background: var(--bg); }
+
+      .inf-incidencias .inf-tabla,
+      .inf-incidencias .inf-tabla tbody,
+      .inf-incidencias .inf-tabla tr,
+      .inf-incidencias .inf-tabla td,
+      .inf-votaciones .inf-tabla,
+      .inf-votaciones .inf-tabla tbody,
+      .inf-votaciones .inf-tabla tr,
+      .inf-votaciones .inf-tabla td { display: block; width: 100%; }
+      .inf-incidencias .inf-tabla thead,
+      .inf-votaciones .inf-tabla thead { display: none; }
+      .inf-incidencias .inf-tabla tr,
+      .inf-votaciones .inf-tabla tr {
+        margin-bottom: 11px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 7px;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(44,24,16,0.06);
+      }
+      .inf-incidencias .inf-tabla td,
+      .inf-incidencias .inf-tabla .inf-num,
+      .inf-incidencias .inf-tabla .inf-centro,
+      .inf-votaciones .inf-tabla td,
+      .inf-votaciones .inf-tabla .inf-num,
+      .inf-votaciones .inf-tabla .inf-centro {
+        min-height: 31px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid #F0E8DC;
+        padding: 5px;
+        text-align: right;
+        white-space: normal;
+      }
+      .inf-incidencias .inf-tabla td:last-child,
+      .inf-votaciones .inf-tabla td:last-child { border-bottom: 0; }
+      .inf-incidencias .inf-tabla td::before,
+      .inf-votaciones .inf-tabla td::before {
+        content: attr(data-label) ":";
+        color: var(--text-muted);
+        font-weight: 800;
+        text-align: left;
+      }
     }
     /* tablet apaisada / portátil pequeño: tabla compacta para que las 13 columnas quepan sin desplazar de lado */
     @media screen and (min-width: 900px) and (max-width: 1139px) {
       .inf-listado .inf-tabla { font-size: 11px; }
       .inf-listado .inf-tabla th,
       .inf-listado .inf-tabla td { padding: 5px 3px; }
+      .inf-cierre .inf-tabla { font-size: 11px; }
+      .inf-cierre .inf-tabla th,
+      .inf-cierre .inf-tabla td { padding: 5px 3px; }
     }
     @media screen and (min-width: 560px) and (max-width: 899px) {
       .inf-listado .inf-tabla tbody {
@@ -1458,6 +1591,20 @@
         gap: 10px;
       }
       .inf-listado .inf-tabla tbody tr { margin-bottom: 0; }
+      .inf-cierre .inf-tabla tbody {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .inf-cierre .inf-tabla tbody tr { margin-bottom: 0; }
+      .inf-incidencias .inf-tabla tbody,
+      .inf-votaciones .inf-tabla tbody {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .inf-incidencias .inf-tabla tbody tr,
+      .inf-votaciones .inf-tabla tbody tr { margin-bottom: 0; }
     }
     @media print {
       @page { margin: 12mm; }
@@ -1491,6 +1638,12 @@
       .inf-tabla td { display: table-cell; padding: 5px 4px; }
       .inf-tabla td::before { display: none !important; content: none !important; }
       .inf-tabla-wrap { overflow: visible; }
+      .inf-incidencias .inf-tabla,
+      .inf-votaciones .inf-tabla { display: table; }
+      .inf-incidencias .inf-tabla thead,
+      .inf-votaciones .inf-tabla thead { display: table-header-group; }
+      .inf-incidencias .inf-tabla tbody,
+      .inf-votaciones .inf-tabla tbody { display: table-row-group; }
       .inf-grid { width: 100%; max-width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .inf-grid > * { min-width: 0; }
       .inf-barras-v { max-width: 100%; overflow: visible; }
@@ -1498,6 +1651,7 @@
       .inf-barra-v-label { min-height: 2.4em; } /* las columnas sin etiqueta (periodos largos) no quedan más bajas que las demás */
       .inf-barra-v-label[data-inf-papel] { font-size: 0; }
       .inf-barra-v-label[data-inf-papel]::after { content: attr(data-inf-papel); font-size: 9pt; }
+      .inf-barra-h-detalle { font-size: 8pt; }
       thead { display: table-header-group; }
       tr,
       .inf-tarjeta,
@@ -1508,6 +1662,8 @@
       .inf-nota,
       .inf-pie { break-before: avoid; page-break-before: avoid; }
       .inf-pie { break-inside: avoid; page-break-inside: avoid; }
+      .inf-firma { break-inside: avoid; page-break-inside: avoid; }
+      .inf-asamblea-resumen { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
 
     .admin-tab-bar {
@@ -1559,7 +1715,7 @@
     <img class="logo-img" src="data:image/webp;base64,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" alt="Txoko Azkena" onerror="this.style.display='none'">
     <div class="logo-txt">
       <span class="title">Txoko Azkena</span>
-      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.3</span></span>
+      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.4</span></span>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -2244,7 +2400,7 @@ function toggleLang() {
 }
 
 // Subir este número con CADA actualización que se suba a GitHub (así se ve si el móvil tiene la versión nueva)
-const APP_VERSION = '2.3';
+const APP_VERSION = '2.4';
 
 function applyTR() {
   const sub = document.getElementById('h-subtitle');
@@ -6685,7 +6841,9 @@ const informeConstantes = {
   TARIFA_COMENSAL_SIN_RESERVA: 1.0,
   TARIFA_COCINA_COMENSAL: 0.5,
   TARIFA_LIMPIEZA_COMENSAL: 1.5,
-  LIMPIEZA_MINIMA: 15
+  LIMPIEZA_MINIMA: 15,
+  TARIFA_ACEITE: 6.0,
+  TARIFA_DESCORCHE: 1.0
 };
 
 function informeNumero(valor) {
@@ -6804,6 +6962,28 @@ function informeNormSocioLibre(cuenta, cd) {
   return numero && nombre ? 'Nº ' + numero + ' – ' + nombre : (nombre || numero || '–');
 }
 
+function informeSocioNumReserva(reserva) {
+  const r = reserva || {};
+  const directo = informeTexto(r.socioNumero || r.socioId || '');
+  if (directo) {
+    try { return padId(directo); }
+    catch(e) { return directo; }
+  }
+  const encontrado = /Nº\s*(\d+)/i.exec(informeTexto(r.socioResponsable));
+  if (!encontrado) return '';
+  try { return padId(encontrado[1]); }
+  catch(e) { return encontrado[1]; }
+}
+
+function informeSocioNumLibre(cuenta, cd) {
+  const c = cuenta || {};
+  const datos = cd || {};
+  const directo = informeTexto(c.socioId || datos.socioId || '');
+  if (!directo) return '';
+  try { return padId(directo); }
+  catch(e) { return directo; }
+}
+
 function informeFechaCuentaLibre(cuenta, cd) {
   const c = cuenta || {};
   const datos = cd || {};
@@ -6838,6 +7018,7 @@ function informeEntradas(reservas, cuentasLibres) {
       tipo: 'reserva',
       fecha: informeTexto(r.fechaReservada),
       socio: informeNormSocioReserva(r),
+      socioNum: informeSocioNumReserva(r),
       id: informeTexto(r.id),
       estado: informeTexto(r.estado || 'confirmada'),
       comensales: informeNumero(r.numeroComensales) || informeNumero(r.comensalesEstimados),
@@ -6867,6 +7048,7 @@ function informeEntradas(reservas, cuentasLibres) {
       tipo: 'libre',
       fecha: informeFechaCuentaLibre(c, cd),
       socio: informeNormSocioLibre(c, cd),
+      socioNum: informeSocioNumLibre(c, cd),
       id: informeTexto(c.id),
       estado: 'confirmada',
       comensales: informeNumero(datos.comensales),
@@ -6933,12 +7115,14 @@ function informeFiltrar(entradas, periodo, opciones) {
   const lista = Array.isArray(entradas) ? entradas : [];
   const p = periodo || {};
   const incluirCanceladas = !!(opciones && opciones.canceladas);
+  const socioNum = informeNormalizarSocioNum(opciones && opciones.socioNum);
   if (!p.desde || !p.hasta || p.ok === false) return [];
   return informeOrdenarEntradas(lista.filter(function(entrada) {
     const e = entrada || {};
     const fecha = informeTexto(e.fecha);
     if (!fecha || fecha < p.desde || fecha > p.hasta) return false;
     if (!incluirCanceladas && e.tipo === 'reserva' && e.estado === 'cancelada') return false;
+    if (socioNum && informeNormalizarSocioNum(e.socioNum) !== socioNum) return false;
     return true;
   }));
 }
@@ -6970,11 +7154,469 @@ function informeEsCancelada(entrada) {
   return !!entrada && entrada.tipo === 'reserva' && entrada.estado === 'cancelada';
 }
 
-function informeCalcular(entradas, periodo, hoy, bloqueos, opciones) {
-  const lista = informeOrdenarEntradas(entradas);
+function informeCantidadPositiva(valor) {
+  const numero = informeNumero(valor);
+  return numero > 0 ? numero : 0;
+}
+
+function informeCalcularConsumo(entradas, periodo, productos) {
+  const lista = Array.isArray(entradas) ? entradas : [];
+  const catalogo = Array.isArray(productos) ? productos : [];
+  const cuentas = lista.filter(function(entrada) {
+    return !informeEsCancelada(entrada) && informeFinDe(entrada).conCuenta;
+  });
+  const porMes = informeMesesEntre(periodo && periodo.desde, periodo && periodo.hasta).map(function(mes) {
+    return { mes:mes, euros:0 };
+  });
+  const acumulados = [];
+
+  catalogo.forEach(function(producto) {
+    if (!producto || (producto.id === null || producto.id === undefined)) return;
+    const idTexto = informeTexto(producto.id);
+    const repetido = acumulados.some(function(item) { return item.idTexto === idTexto; });
+    if (repetido) return;
+    acumulados.push({
+      id: producto.id,
+      idTexto: idTexto,
+      nombre: informeTexto(producto.nom || producto.nombre) || 'Producto ' + idTexto,
+      cat: informeTexto(producto.cat) || 'Sin categoría',
+      txup: producto.txup,
+      copa: producto.copa,
+      unit: producto.unit,
+      unidades: 0,
+      txupitos: 0,
+      copas: 0,
+      euros: 0
+    });
+  });
+
+  let nConBebidas = 0;
+  let euros = 0;
+  let eurosConBebidas = 0;
+  let comensalesConBebidas = 0;
+  let aceiteUnidades = 0;
+  let descorcheUnidades = 0;
+
+  cuentas.forEach(function(entrada) {
+    const cd = entrada && entrada.cd && typeof entrada.cd === 'object' ? entrada.cd : {};
+    const bebidas = cd.bebidas && typeof cd.bebidas === 'object' && !Array.isArray(cd.bebidas) ? cd.bebidas : null;
+    const cobrado = informeNumero(cd.totales && cd.totales.bebidas);
+    euros += cobrado;
+    aceiteUnidades += informeCantidadPositiva(cd.aceite);
+    descorcheUnidades += informeCantidadPositiva(cd.descorche);
+
+    const claveMes = informeTexto(entrada && entrada.fecha).substring(0, 7);
+    for (let i = 0; i < porMes.length; i++) {
+      if (porMes[i].mes === claveMes) {
+        porMes[i].euros += cobrado;
+        break;
+      }
+    }
+
+    let tieneBebidas = false;
+    if (bebidas) {
+      try {
+        tieneBebidas = Object.keys(bebidas).some(function(clave) {
+          return informeCantidadPositiva(bebidas[clave]) > 0;
+        });
+      } catch(e) {
+        tieneBebidas = false;
+      }
+    }
+    if (tieneBebidas) {
+      nConBebidas++;
+      eurosConBebidas += cobrado;
+      comensalesConBebidas += informeCantidadPositiva(entrada && entrada.comensales);
+    }
+
+    if (!bebidas) return;
+    acumulados.forEach(function(item) {
+      const usaTxupCopa = item.txup !== undefined || item.copa !== undefined;
+      if (usaTxupCopa) {
+        const txupitos = informeCantidadPositiva(bebidas[item.idTexto + '_t']);
+        const copas = informeCantidadPositiva(bebidas[item.idTexto + '_c']);
+        item.txupitos += txupitos;
+        item.copas += copas;
+        item.unidades += txupitos + copas;
+        item.euros += txupitos * informeNumero(item.txup) + copas * informeNumero(item.copa);
+      } else {
+        const unidades = informeCantidadPositiva(bebidas[item.idTexto + '_u']);
+        item.unidades += unidades;
+        item.euros += unidades * informeNumero(item.unit);
+      }
+    });
+  });
+
+  const porProducto = acumulados.filter(function(item) {
+    return item.unidades > 0;
+  }).map(function(item) {
+    return {
+      id:item.id,
+      nombre:item.nombre,
+      cat:item.cat,
+      unidades:item.unidades,
+      txupitos:item.txupitos,
+      copas:item.copas,
+      euros:item.euros
+    };
+  }).sort(function(a, b) {
+    if (b.euros !== a.euros) return b.euros - a.euros;
+    return a.nombre < b.nombre ? -1 : (a.nombre > b.nombre ? 1 : 0);
+  });
+
+  const porCategoria = [];
+  porProducto.forEach(function(producto) {
+    let categoria = null;
+    for (let i = 0; i < porCategoria.length; i++) {
+      if (porCategoria[i].cat === producto.cat) { categoria = porCategoria[i]; break; }
+    }
+    if (!categoria) {
+      categoria = { cat:producto.cat, euros:0, unidades:0 };
+      porCategoria.push(categoria);
+    }
+    categoria.euros += producto.euros;
+    categoria.unidades += producto.unidades;
+  });
+  porCategoria.sort(function(a, b) {
+    if (b.euros !== a.euros) return b.euros - a.euros;
+    return a.cat < b.cat ? -1 : (a.cat > b.cat ? 1 : 0);
+  });
+
+  return {
+    nCuentas: cuentas.length,
+    nConBebidas: nConBebidas,
+    euros: euros,
+    eurosCalculados: porProducto.reduce(function(suma, item) { return suma + item.euros; }, 0),
+    unidades: porProducto.reduce(function(suma, item) { return suma + item.unidades; }, 0),
+    txupitos: porProducto.reduce(function(suma, item) { return suma + item.txupitos; }, 0),
+    copas: porProducto.reduce(function(suma, item) { return suma + item.copas; }, 0),
+    porCategoria: porCategoria,
+    porProducto: porProducto,
+    porMes: porMes,
+    mediaPorComensal: comensalesConBebidas ? eurosConBebidas / comensalesConBebidas : 0,
+    aceite: { unidades:aceiteUnidades, euros:aceiteUnidades * informeConstantes.TARIFA_ACEITE },
+    descorche: { unidades:descorcheUnidades, euros:descorcheUnidades * informeConstantes.TARIFA_DESCORCHE }
+  };
+}
+
+function informeCalcularCierre(entradas) {
+  const lista = informeOrdenarEntradas(entradas).filter(function(entrada) {
+    return !informeEsCancelada(entrada) && informeFinDe(entrada).conCuenta;
+  });
+  const totales = { reserva:0, cocina:0, limpieza:0, consumiciones:0, extras:0, bote:0, total:0 };
+  const cuentas = lista.map(function(entrada) {
+    const fin = informeFinDe(entrada);
+    const cuenta = {
+      fecha: informeTexto(entrada && entrada.fecha),
+      tipo: informeTexto(entrada && entrada.tipo),
+      socio: informeTexto(entrada && entrada.socio) || '–',
+      comensales: informeNumero(entrada && entrada.comensales),
+      reserva: informeNumero(fin.reserva),
+      cocina: informeNumero(fin.cocina),
+      limpieza: informeNumero(fin.limpieza),
+      consumiciones: informeNumero(fin.consumiciones),
+      extras: informeNumero(fin.extras),
+      bote: informeNumero(fin.bote),
+      total: informeNumero(fin.total)
+    };
+    Object.keys(totales).forEach(function(clave) { totales[clave] += cuenta[clave]; });
+    return cuenta;
+  });
+  return { cuentas:cuentas, totales:totales, nCuentas:cuentas.length };
+}
+
+function informeNormalizarSocioNum(valor) {
+  const texto = informeTexto(valor).trim();
+  if (!texto) return '';
+  try { return padId(texto); }
+  catch(e) { return texto; }
+}
+
+function informeSocioTexto(numero, nombre) {
+  const socioNum = informeNormalizarSocioNum(numero);
+  const socioNombre = informeTexto(nombre).trim();
+  if (socioNum && socioNombre) return 'Nº ' + socioNum + ' – ' + socioNombre;
+  return socioNombre || (socioNum ? 'Nº ' + socioNum : '–');
+}
+
+function informeCalcularSocios(entradas, sociosExtra, socioFiltro) {
+  const lista = Array.isArray(entradas) ? entradas : [];
+  const socios = Array.isArray(sociosExtra) ? sociosExtra : [];
+  const socioNumFiltro = informeNormalizarSocioNum(socioFiltro);
+  const filtrado = !!socioNumFiltro;
+  const activosLista = socios.filter(function(socio) {
+    return socio && informeTexto(socio.estado) === 'activo';
+  }).map(function(socio) {
+    return {
+      socioNum:informeNormalizarSocioNum(socio.id),
+      nombre:informeTexto(socio.nombre)
+    };
+  });
+  const ranking = [];
+
+  lista.forEach(function(entrada) {
+    const e = entrada || {};
+    const fin = informeFinDe(e);
+    const esReservaConActividad = e.tipo === 'reserva' && (e.estado === 'confirmada' || e.estado === 'cancelada');
+    const esCuentaConActividad = !!fin.conCuenta && !informeEsCancelada(e);
+    if (!esReservaConActividad && !esCuentaConActividad) return;
+    const socioNum = informeNormalizarSocioNum(e.socioNum);
+    const socio = informeTexto(e.socio) || informeSocioTexto(socioNum, '');
+    const clave = socioNum ? 'n:' + socioNum : 's:' + socio;
+    let fila = null;
+    for (let i = 0; i < ranking.length; i++) {
+      if (ranking[i]._clave === clave) { fila = ranking[i]; break; }
+    }
+    if (!fila) {
+      fila = { _clave:clave, socio:socio, socioNum:socioNum, reservas:0, comensales:0, canceladas:0, cuentas:0, total:0 };
+      ranking.push(fila);
+    }
+    if (e.tipo === 'reserva' && e.estado === 'confirmada') {
+      fila.reservas++;
+      fila.comensales += informeNumero(e.comensales);
+    } else if (e.tipo === 'reserva' && e.estado === 'cancelada') {
+      fila.canceladas++;
+    }
+    if (esCuentaConActividad) {
+      fila.cuentas++;
+      fila.total += informeNumero(fin.total);
+    }
+  });
+
+  ranking.sort(function(a, b) {
+    if (b.reservas !== a.reservas) return b.reservas - a.reservas;
+    if (b.total !== a.total) return b.total - a.total;
+    return a.socio < b.socio ? -1 : (a.socio > b.socio ? 1 : 0);
+  });
+  const rankingLimpio = ranking.map(function(fila) {
+    return {
+      socio:fila.socio,
+      socioNum:fila.socioNum,
+      reservas:fila.reservas,
+      comensales:fila.comensales,
+      canceladas:fila.canceladas,
+      cuentas:fila.cuentas,
+      total:fila.total
+    };
+  });
+  const numerosConActividad = {};
+  rankingLimpio.forEach(function(fila) {
+    if (fila.socioNum) numerosConActividad[fila.socioNum] = true;
+  });
+  const conActividad = activosLista.filter(function(socio) {
+    return !!socio.socioNum && !!numerosConActividad[socio.socioNum];
+  }).length;
+  const sinActividad = filtrado ? [] : activosLista.filter(function(socio) {
+    return !socio.socioNum || !numerosConActividad[socio.socioNum];
+  }).sort(function(a, b) {
+    const numeroA = /^\d+$/.test(a.socioNum) ? Number(a.socioNum) : Number.MAX_SAFE_INTEGER;
+    const numeroB = /^\d+$/.test(b.socioNum) ? Number(b.socioNum) : Number.MAX_SAFE_INTEGER;
+    if (numeroA !== numeroB) return numeroA - numeroB;
+    return a.socioNum < b.socioNum ? -1 : (a.socioNum > b.socioNum ? 1 : 0);
+  });
+
+  let ficha = null;
+  if (filtrado) {
+    let filaFicha = null;
+    for (let i = 0; i < rankingLimpio.length; i++) {
+      if (rankingLimpio[i].socioNum === socioNumFiltro) { filaFicha = rankingLimpio[i]; break; }
+    }
+    let socioTexto = '';
+    for (let i = 0; i < activosLista.length; i++) {
+      if (activosLista[i].socioNum === socioNumFiltro) {
+        socioTexto = informeSocioTexto(socioNumFiltro, activosLista[i].nombre);
+        break;
+      }
+    }
+    if (!socioTexto && filaFicha) socioTexto = filaFicha.socio;
+    const nCuentas = filaFicha ? filaFicha.cuentas : 0;
+    const totalConCuenta = filaFicha ? filaFicha.total : 0;
+    ficha = {
+      socio:socioTexto || informeSocioTexto(socioNumFiltro, ''),
+      reservas:filaFicha ? filaFicha.reservas : 0,
+      canceladas:filaFicha ? filaFicha.canceladas : 0,
+      comensales:filaFicha ? filaFicha.comensales : 0,
+      nCuentas:nCuentas,
+      totalConCuenta:totalConCuenta,
+      mediaPorCuenta:nCuentas ? totalConCuenta / nCuentas : 0
+    };
+  }
+
+  return {
+    filtrado:filtrado,
+    activos:activosLista.length,
+    conActividad:conActividad,
+    ranking:rankingLimpio,
+    sinActividad:sinActividad,
+    ficha:ficha
+  };
+}
+
+function informeDiasEntre(fecha, fechaResolucion) {
+  const inicio = informePartesFecha(informeTexto(fecha));
+  const fin = informePartesFecha(informeTexto(fechaResolucion));
+  if (!inicio || !fin) return null;
+  const inicioMs = Date.UTC(inicio.anio, inicio.mes - 1, inicio.dia);
+  const finMs = Date.UTC(fin.anio, fin.mes - 1, fin.dia);
+  const inicioReal = new Date(inicioMs);
+  const finReal = new Date(finMs);
+  if (inicioReal.getUTCFullYear() !== inicio.anio || inicioReal.getUTCMonth() + 1 !== inicio.mes || inicioReal.getUTCDate() !== inicio.dia) return null;
+  if (finReal.getUTCFullYear() !== fin.anio || finReal.getUTCMonth() + 1 !== fin.mes || finReal.getUTCDate() !== fin.dia) return null;
+  if (finMs < inicioMs) return null;
+  return Math.round((finMs - inicioMs) / 86400000);
+}
+
+function informeCalcularIncidencias(incidencias, periodo, socioFiltro) {
+  const listaOriginal = Array.isArray(incidencias) ? incidencias : [];
+  const p = periodo || {};
+  const socioNumFiltro = informeNormalizarSocioNum(socioFiltro);
+  const porUbicacion = [];
+  const porUrgencia = { normal:0, urgente:0 };
+  let abiertas = 0;
+  let enProceso = 0;
+  let resueltas = 0;
+  let urgentes = 0;
+  const diasResolucion = [];
+  const lista = [];
+
+  listaOriginal.forEach(function(incidencia) {
+    const item = incidencia || {};
+    const fecha = informeTexto(item.fecha).substring(0, 10);
+    if (!fecha || !p.desde || !p.hasta || fecha < p.desde || fecha > p.hasta) return;
+    const socioNum = informeNormalizarSocioNum(item.socioId);
+    if (socioNumFiltro && socioNum !== socioNumFiltro) return;
+    const estado = informeTexto(item.estado);
+    const urgencia = informeTexto(item.urgencia);
+    const ubicacion = informeTexto(item.ubicacion) || 'Sin ubicación';
+    const fechaResolucion = informeTexto(item.fechaResolucion).substring(0, 10);
+    const dias = informeDiasEntre(fecha, fechaResolucion);
+    if (estado === 'abierta') abiertas++;
+    else if (estado === 'en_proceso') enProceso++;
+    else if (estado === 'resuelta') resueltas++;
+    if (urgencia === 'urgente') urgentes++;
+    if (urgencia === 'normal' || urgencia === 'urgente') porUrgencia[urgencia]++;
+    if (dias !== null) diasResolucion.push(dias);
+    let grupoUbicacion = null;
+    for (let i = 0; i < porUbicacion.length; i++) {
+      if (porUbicacion[i].ubicacion === ubicacion) { grupoUbicacion = porUbicacion[i]; break; }
+    }
+    if (!grupoUbicacion) {
+      grupoUbicacion = { ubicacion:ubicacion, n:0 };
+      porUbicacion.push(grupoUbicacion);
+    }
+    grupoUbicacion.n++;
+    lista.push({
+      _id:informeTexto(item.id),
+      fecha:fecha,
+      ubicacion:ubicacion,
+      urgencia:urgencia,
+      estado:estado,
+      descripcion:informeTexto(item.descripcion),
+      socio:informeSocioTexto(socioNum, item.socioNombre),
+      notas:informeTexto(item.notasAdmin),
+      fechaResolucion:fechaResolucion,
+      dias:dias
+    });
+  });
+  porUbicacion.sort(function(a, b) {
+    if (b.n !== a.n) return b.n - a.n;
+    return a.ubicacion < b.ubicacion ? -1 : (a.ubicacion > b.ubicacion ? 1 : 0);
+  });
+  lista.sort(function(a, b) {
+    if (a.fecha !== b.fecha) return a.fecha < b.fecha ? 1 : -1;
+    return a._id < b._id ? 1 : (a._id > b._id ? -1 : 0);
+  });
+  const listaLimpia = lista.map(function(item) {
+    return {
+      fecha:item.fecha,
+      ubicacion:item.ubicacion,
+      urgencia:item.urgencia,
+      estado:item.estado,
+      descripcion:item.descripcion,
+      socio:item.socio,
+      notas:item.notas,
+      fechaResolucion:item.fechaResolucion,
+      dias:item.dias
+    };
+  });
+  const sumaDias = diasResolucion.reduce(function(suma, dias) { return suma + dias; }, 0);
+  return {
+    total:listaLimpia.length,
+    abiertas:abiertas,
+    enProceso:enProceso,
+    resueltas:resueltas,
+    urgentes:urgentes,
+    diasMediosResolucion:diasResolucion.length ? Math.round(sumaDias * 10 / diasResolucion.length) / 10 : null,
+    porUbicacion:porUbicacion,
+    porUrgencia:porUrgencia,
+    lista:listaLimpia
+  };
+}
+
+function informeCalcularAsamblea(votaciones, periodo, sociosActivos) {
+  const listaOriginal = Array.isArray(votaciones) ? votaciones : [];
+  const p = periodo || {};
+  const activos = informeNumero(sociosActivos);
+  const lista = [];
+  listaOriginal.forEach(function(votacion) {
+    const item = votacion || {};
+    const fecha = informeTexto(item.fecha).substring(0, 10);
+    if (!fecha || !p.desde || !p.hasta || fecha < p.desde || fecha > p.hasta) return;
+    const total = informeNumero(item.total);
+    lista.push({
+      _id:informeTexto(item.id),
+      fecha:fecha,
+      pregunta:informeTexto(item.pregunta),
+      estado:informeTexto(item.estado),
+      si:informeNumero(item.si),
+      no:informeNumero(item.no),
+      abstencion:informeNumero(item.abstencion),
+      total:total,
+      participacion:activos ? Math.round(total * 100 / activos) : 0
+    });
+  });
+  lista.sort(function(a, b) {
+    if (a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
+    return a._id < b._id ? -1 : (a._id > b._id ? 1 : 0);
+  });
+  const votacionesLimpias = lista.map(function(item) {
+    return {
+      fecha:item.fecha,
+      pregunta:item.pregunta,
+      estado:item.estado,
+      si:item.si,
+      no:item.no,
+      abstencion:item.abstencion,
+      total:item.total,
+      participacion:item.participacion
+    };
+  });
+  const sumaParticipacion = votacionesLimpias.reduce(function(suma, item) { return suma + item.participacion; }, 0);
+  return {
+    votaciones:votacionesLimpias,
+    sociosActivos:activos,
+    participacionMedia:votacionesLimpias.length ? Math.round(sumaParticipacion / votacionesLimpias.length) : 0
+  };
+}
+
+function informeCalcular(entradas, periodo, hoy, bloqueos, opciones, extras) {
+  let lista = informeOrdenarEntradas(entradas);
   const p = periodo || {};
   const hoyTexto = informeTexto(hoy);
   const incluirCanceladas = !!(opciones && opciones.canceladas);
+  const socioNumFiltro = informeNormalizarSocioNum(opciones && opciones.socioNum);
+  if (socioNumFiltro) {
+    lista = lista.filter(function(entrada) {
+      return informeNormalizarSocioNum(entrada && entrada.socioNum) === socioNumFiltro;
+    });
+  }
+  const extraDatos = extras || {};
+  const listasExtra = {
+    productos:Array.isArray(extraDatos.productos) ? extraDatos.productos : [],
+    incidencias:Array.isArray(extraDatos.incidencias) ? extraDatos.incidencias : [],
+    votaciones:Array.isArray(extraDatos.votaciones) ? extraDatos.votaciones : [],
+    socios:Array.isArray(extraDatos.socios) ? extraDatos.socios : []
+  };
   const reservas = lista.filter(function(e) { return e && e.tipo === 'reserva'; });
   const confirmadas = reservas.filter(function(e) { return e.estado === 'confirmada'; });
   const canceladas = reservas.filter(function(e) { return e.estado === 'cancelada'; });
@@ -7154,7 +7796,12 @@ function informeCalcular(entradas, periodo, hoy, bloqueos, opciones) {
   const listado = lista.filter(function(entrada) {
     return incluirCanceladas || !informeEsCancelada(entrada);
   });
-  return { periodo:p, hoy:hoyTexto, uso:uso, fin:fin, listado:listado };
+  const consumo = informeCalcularConsumo(lista, p, listasExtra.productos);
+  const cierre = informeCalcularCierre(lista);
+  const socios = informeCalcularSocios(lista, listasExtra.socios, socioNumFiltro);
+  const incid = informeCalcularIncidencias(listasExtra.incidencias, p, socioNumFiltro);
+  const asamblea = informeCalcularAsamblea(listasExtra.votaciones, p, socios.activos);
+  return { periodo:p, hoy:hoyTexto, uso:uso, fin:fin, listado:listado, consumo:consumo, cierre:cierre, socios:socios, incid:incid, asamblea:asamblea };
 }
 
 function informeFmtFecha(fecha) {
@@ -7207,7 +7854,12 @@ function informeFmtNum(valor, decimales) {
 const INFORME_SECCIONES = [
   { id:'listado', icono:'📋', titulo:'Listado de registros', apaisado:true,  render:informeRenderListado },
   { id:'uso',     icono:'📅', titulo:'Uso del local',        apaisado:false, render:informeRenderUso },
-  { id:'fin',     icono:'💶', titulo:'Financiero',           apaisado:false, render:informeRenderFin }
+  { id:'fin',     icono:'💶', titulo:'Financiero',           apaisado:false, render:informeRenderFin },
+  { id:'consumo', icono:'🍷', titulo:'Consumo',              apaisado:false, render:informeRenderConsumo },
+  { id:'cierre',  icono:'🧾', titulo:'Cierre del periodo',   apaisado:true,  render:informeRenderCierre },
+  { id:'socios',  icono:'👤', titulo:'Socios',                apaisado:false, render:informeRenderSocios },
+  { id:'incidencias', icono:'🔧', titulo:'Incidencias',       apaisado:false, render:informeRenderIncidencias },
+  { id:'asamblea', icono:'🏛️', titulo:'Resumen para la Asamblea', apaisado:false, render:informeRenderAsamblea }
 ];
 
 const INFORME_PERIODOS = [
@@ -7220,25 +7872,36 @@ const INFORME_PERIODOS = [
 ];
 
 function informeEstadoInicial() {
+  const secciones = {};
+  INFORME_SECCIONES.forEach(function(seccion) { secciones[seccion.id] = true; });
   return {
     modo:'todo',
     desde:'',
     hasta:'',
-    secciones:{ listado:true, uso:true, fin:true },
+    secciones:secciones,
     total:true,
-    canceladas:false
+    canceladas:false,
+    socioNum:''
   };
 }
 
 function informeEstadoCopia(estado) {
   const base = estado || informeEstadoInicial();
+  const origen = base.secciones || {};
+  const secciones = {};
+  INFORME_SECCIONES.forEach(function(seccion) {
+    secciones[seccion.id] = Object.prototype.hasOwnProperty.call(origen, seccion.id)
+      ? !!origen[seccion.id]
+      : !!base.total;
+  });
   return {
     modo:base.modo || 'todo',
     desde:base.desde || '',
     hasta:base.hasta || '',
-    secciones:Object.assign({}, base.secciones || {}),
-    total:!!base.total,
-    canceladas:!!base.canceladas
+    secciones:secciones,
+    total:INFORME_SECCIONES.every(function(seccion) { return !!secciones[seccion.id]; }),
+    canceladas:!!base.canceladas,
+    socioNum:base.socioNum || ''
   };
 }
 
@@ -7389,12 +8052,14 @@ function informeKpi(valor, etiqueta) {
   return '<div class="inf-kpi"><div class="inf-kpi-valor">' + informeEsc(valor) + '</div><div class="inf-kpi-etiqueta">' + informeEsc(etiqueta) + '</div></div>';
 }
 
-function informeBarraHorizontal(etiqueta, valor, total, textoValor) {
+function informeBarraHorizontal(etiqueta, valor, total, textoValor, detalle) {
   const pct = informePct(valor, total);
   const valorVisible = textoValor === undefined ? informeFmtNum(valor, 2) : textoValor;
+  const conDetalle = detalle !== undefined;
   return '<div class="inf-barra-h-fila">' +
-    '<div class="inf-barra-h-cab"><span>' + informeEsc(etiqueta) + '</span><strong>' + informeEsc(valorVisible) + ' · ' + informeEsc(Math.round(pct)) + '%</strong></div>' +
+    '<div class="inf-barra-h-cab' + (conDetalle ? ' inf-barra-h-cab--una-linea' : '') + '"><span>' + informeEsc(etiqueta) + '</span><strong>' + informeEsc(valorVisible) + (conDetalle ? '' : ' · ' + informeEsc(Math.round(pct)) + '%') + '</strong></div>' +
     '<div class="inf-barra-h-pista"><div class="inf-barra-h' + (Number(valor) > 0 ? ' inf-con-valor' : '') + '" style="--inf-pct:' + informeEsc(pct) + '%"></div></div>' +
+    (conDetalle && detalle ? '<div class="inf-barra-h-detalle">' + informeEsc(detalle) + '</div>' : '') +
     '</div>';
 }
 
@@ -7577,6 +8242,310 @@ function informeRenderFin(datos) {
     '</section>';
 }
 
+function informeRenderConsumo(datos) {
+  const consumo = datos && datos.consumo ? datos.consumo : {};
+  const titulo = '<h2 class="inf-seccion-titulo">🍷 Consumo</h2>';
+  const socios = informeSociosOcultos(datos);
+  const nCuentas = Number(consumo.nCuentas) || 0;
+  if (!nCuentas) {
+    return '<section class="inf-seccion inf-consumo">' + titulo + socios + '<div class="inf-vacio">No hay consumos en este periodo</div></section>';
+  }
+
+  const categorias = Array.isArray(consumo.porCategoria) ? consumo.porCategoria : [];
+  const productos = Array.isArray(consumo.porProducto) ? consumo.porProducto.slice(0, 10) : [];
+  const porMes = Array.isArray(consumo.porMes) ? consumo.porMes : [];
+  const colores = ['#6B1A1A','#1565C0','#E65100','#00695C','#880E4F','#C8952A','#5E35B1','#2E7D32'];
+  const totalCategorias = categorias.reduce(function(suma, item) { return suma + (Number(item.euros) || 0); }, 0);
+  const segmentos = categorias.filter(function(item) { return (Number(item.euros) || 0) > 0; }).map(function(item, indice) {
+    const valor = Number(item.euros) || 0;
+    return '<div class="inf-segmento" title="' + informeEsc((item.cat || 'Sin categoría') + ': ' + informeFmtEuros(valor)) + '" style="--inf-flex:' + informeEsc(Math.round(valor * 100) / 100) + ';background:' + colores[indice % colores.length] + '"></div>';
+  }).join('');
+  const listaCategorias = categorias.map(function(item, indice) {
+    const valor = Number(item.euros) || 0;
+    return '<div class="inf-concepto-fila"><i class="inf-concepto-color" style="background:' + colores[indice % colores.length] + '"></i><span class="inf-concepto-nombre">' + informeEsc(item.cat || 'Sin categoría') + ' · ' + informeEsc(informeFmtNum(item.unidades || 0, 2)) + ' uds.</span><span class="inf-concepto-importe">' + informeEsc(informeFmtEuros(valor)) + '</span><span class="inf-concepto-pct">' + informeEsc(Math.round(informePct(valor, totalCategorias))) + '%</span></div>';
+  }).join('');
+
+  const maxProducto = Math.max.apply(null, productos.map(function(item) { return Number(item.euros) || 0; }).concat([1]));
+  const productosHtml = productos.length ? productos.map(function(item) {
+    return informeBarraHorizontal(
+      (item.nombre || '–') + ' · ' + (item.cat || 'Sin categoría') + ' · ' + informeFmtNum(item.unidades || 0, 2) + ' uds.',
+      Number(item.euros) || 0,
+      maxProducto,
+      informeFmtEuros(item.euros || 0)
+    );
+  }).join('') : '<div class="inf-vacio">No hay productos anotados en las cuentas</div>';
+
+  const maxMes = Math.max.apply(null, porMes.map(function(item) { return Number(item.euros) || 0; }).concat([1]));
+  const muchosMeses = porMes.length > 12;
+  const mesItems = porMes.map(function(item, indice) {
+    return {
+      etiqueta:informeMesLabel(item.mes),
+      etiquetaPapel:muchosMeses ? (indice % 2 === 0 ? informeMesCorto(item.mes) : '') : informeMesLabel(item.mes),
+      valor:item.euros,
+      textoValor:(Number(item.euros) || 0) > 0 ? informeFmtEuros(item.euros) : ''
+    };
+  });
+  const aceite = consumo.aceite || {};
+  const descorche = consumo.descorche || {};
+  const diferencia = Math.abs((Number(consumo.eurosCalculados) || 0) - (Number(consumo.euros) || 0));
+  const avisoDiferencia = diferencia > 0.01
+    ? '<div class="inf-aviso">Con los precios actuales los productos suman ' + informeEsc(informeFmtEuros(consumo.eurosCalculados || 0)) + '; lo cobrado en las cuentas fue ' + informeEsc(informeFmtEuros(consumo.euros || 0)) + '.</div>'
+    : '';
+
+  return '<section class="inf-seccion inf-consumo">' + titulo + socios +
+    '<div class="inf-kpis">' +
+      informeKpi(informeFmtEuros(consumo.euros || 0), 'Consumiciones cobradas') +
+      informeKpi((consumo.nConBebidas || 0) + ' de ' + nCuentas, 'Cuentas con bebidas') +
+      informeKpi(informeFmtEuros(consumo.mediaPorComensal || 0), 'Media por comensal') +
+      informeKpi(informeFmtNum(consumo.txupitos || 0, 2), 'Txupitos') +
+      informeKpi(informeFmtNum(consumo.copas || 0, 2), 'Copas') +
+    '</div>' +
+    '<div class="inf-grid">' +
+      '<div class="inf-tarjeta"><h3>Por categoría</h3>' + (segmentos ? '<div class="inf-segmentada">' + segmentos + '</div>' : '<div class="inf-vacio">No hay categorías con consumo</div>') + listaCategorias + '</div>' +
+      '<div class="inf-tarjeta"><h3>Productos más pedidos</h3>' + productosHtml + '</div>' +
+    '</div>' +
+    '<div class="inf-grid">' +
+      '<div class="inf-tarjeta"><h3>Por mes</h3>' + informeBarrasVerticales(mesItems, maxMes, 'fin') + '</div>' +
+      '<div class="inf-tarjeta"><h3>Aceite y descorches</h3>' +
+        '<div class="inf-dato-fila"><span class="inf-concepto-nombre">Aceite</span><strong>' + informeEsc(informeFmtNum(aceite.unidades || 0, 2)) + ' uds. · ' + informeEsc(informeFmtEuros(aceite.euros || 0)) + '</strong></div>' +
+        '<div class="inf-dato-fila"><span class="inf-concepto-nombre">Descorches</span><strong>' + informeEsc(informeFmtNum(descorche.unidades || 0, 2)) + ' uds. · ' + informeEsc(informeFmtEuros(descorche.euros || 0)) + '</strong></div>' +
+      '</div>' +
+    '</div>' + avisoDiferencia +
+    '<p class="inf-nota">Solo cuentas guardadas: ' + informeEsc(consumo.nConBebidas || 0) + ' de ' + informeEsc(nCuentas) + ' cuentas del periodo llevan bebidas anotadas.</p>' +
+    '</section>';
+}
+
+function informeRenderCierre(datos) {
+  const cierre = datos && datos.cierre ? datos.cierre : {};
+  const fin = datos && datos.fin ? datos.fin : {};
+  const cuentas = Array.isArray(cierre.cuentas) ? cierre.cuentas : [];
+  const totales = cierre.totales || {};
+  const titulo = '<h2 class="inf-seccion-titulo">🧾 Cierre del periodo — cuentas guardadas</h2>';
+  const socios = informeSociosOcultos(datos);
+  const filas = cuentas.map(function(cuenta) {
+    const tipo = cuenta.tipo === 'libre' ? 'Cuenta libre' : 'Reserva';
+    return '<tr>' +
+      '<td data-label="Fecha">' + informeEsc(informeFmtFecha(cuenta.fecha)) + '</td>' +
+      '<td data-label="Tipo">' + informeEsc(tipo) + '</td>' +
+      '<td data-label="Socio">' + informeEsc(cuenta.socio || '–') + '</td>' +
+      '<td data-label="Comens." class="inf-centro">' + informeEsc(cuenta.comensales || 0) + '</td>' +
+      '<td data-label="Reserva" class="inf-num">' + informeEsc(informeFmtEuros(cuenta.reserva || 0)) + '</td>' +
+      '<td data-label="Cocina" class="inf-num">' + informeEsc(informeFmtEuros(cuenta.cocina || 0)) + '</td>' +
+      '<td data-label="Limpieza" class="inf-num">' + informeEsc(informeFmtEuros(cuenta.limpieza || 0)) + '</td>' +
+      '<td data-label="Consumic." class="inf-num">' + informeEsc(informeFmtEuros(cuenta.consumiciones || 0)) + '</td>' +
+      '<td data-label="Extras" class="inf-num">' + informeEsc(informeFmtEuros(cuenta.extras || 0)) + '</td>' +
+      '<td data-label="Bote" class="inf-num">' + informeEsc(informeFmtEuros(cuenta.bote || 0)) + '</td>' +
+      '<td data-label="TOTAL" class="inf-num"><strong>' + informeEsc(informeFmtEuros(cuenta.total || 0)) + '</strong></td>' +
+      '</tr>';
+  }).join('');
+  const tabla = cuentas.length
+    ? '<div class="inf-tabla-wrap"><table class="inf-tabla"><thead><tr><th>Fecha</th><th>Tipo</th><th>Socio</th><th>Comens.</th><th>Reserva</th><th>Cocina</th><th>Limpieza</th><th>Consumic.</th><th>Extras</th><th>Bote</th><th>TOTAL</th></tr></thead><tbody>' + filas + '</tbody>' +
+      '<tfoot><tr><td data-label="Fecha"><strong>TOTALES</strong></td><td data-label="Tipo"></td><td data-label="Socio"></td><td data-label="Comens."></td>' +
+      '<td data-label="Reserva" class="inf-num">' + informeEsc(informeFmtEuros(totales.reserva || 0)) + '</td>' +
+      '<td data-label="Cocina" class="inf-num">' + informeEsc(informeFmtEuros(totales.cocina || 0)) + '</td>' +
+      '<td data-label="Limpieza" class="inf-num">' + informeEsc(informeFmtEuros(totales.limpieza || 0)) + '</td>' +
+      '<td data-label="Consumic." class="inf-num">' + informeEsc(informeFmtEuros(totales.consumiciones || 0)) + '</td>' +
+      '<td data-label="Extras" class="inf-num">' + informeEsc(informeFmtEuros(totales.extras || 0)) + '</td>' +
+      '<td data-label="Bote" class="inf-num">' + informeEsc(informeFmtEuros(totales.bote || 0)) + '</td>' +
+      '<td data-label="TOTAL" class="inf-num">' + informeEsc(informeFmtEuros(totales.total || 0)) + '</td></tr></tfoot></table></div>'
+    : '<div class="inf-vacio">No hay cuentas guardadas en este periodo</div>';
+  const pendientes = Array.isArray(fin.sinCuenta) ? fin.sinCuenta : [];
+  const pendientesHtml = pendientes.length
+    ? '<div class="inf-aviso">Pendientes de cuenta: ' + informeEsc(pendientes.length) + ' reserva' + (pendientes.length === 1 ? '' : 's') + ' pasada' + (pendientes.length === 1 ? '' : 's') + ' sin cuenta guardada (≥ ' + informeEsc(informeFmtEuros(fin.estimadoSinCuenta || 0)) + ' estimados)</div>'
+    : '';
+  const firma = '<div class="inf-firma"><h3>Revisión y conformidad</h3><div class="inf-firma-grid">' +
+    '<div class="inf-firma-campo"><span>Revisado por:</span><div class="inf-firma-linea"></div></div>' +
+    '<div class="inf-firma-campo"><span>Fecha:</span><div class="inf-firma-linea"></div></div>' +
+    '<div class="inf-firma-campo"><span>Firma:</span><div class="inf-firma-linea"></div></div>' +
+    '</div></div>';
+
+  return '<section class="inf-seccion inf-cierre">' + titulo + socios + tabla + pendientesHtml + firma + '</section>';
+}
+
+function informeRenderSocios(datos) {
+  const sociosDatos = datos && datos.socios ? datos.socios : {};
+  const ranking = Array.isArray(sociosDatos.ranking) ? sociosDatos.ranking : [];
+  const sinActividad = Array.isArray(sociosDatos.sinActividad) ? sociosDatos.sinActividad : [];
+  const titulo = '<h2 class="inf-seccion-titulo">👤 Socios</h2>';
+  const sociosOcultos = informeSociosOcultos(datos);
+  if (!(Number(sociosDatos.activos) || 0) && !ranking.length && !sociosDatos.filtrado) {
+    return '<section class="inf-seccion inf-socios">' + titulo + sociosOcultos + '<div class="inf-vacio">No hay datos de socios en este periodo</div></section>';
+  }
+
+  if (sociosDatos.filtrado) {
+    const ficha = sociosDatos.ficha || {};
+    const listado = datos && Array.isArray(datos.listado) ? datos.listado : [];
+    const filas = listado.map(function(entrada) {
+      const e = entrada || {};
+      const fin = e.fin || {};
+      const total = fin.conCuenta ? informeFmtEuros(fin.total || 0) : (fin.parcial ? '≥' + informeFmtEuros(fin.total || 0) : '–');
+      return '<tr>' +
+        '<td data-label="Fecha">' + informeEsc(informeFmtFecha(e.fecha)) + '</td>' +
+        '<td data-label="Tipo">' + informeEsc(informeTipoListado(e)) + '</td>' +
+        '<td data-label="Comensales" class="inf-centro">' + informeEsc(e.comensales || 0) + '</td>' +
+        '<td data-label="Total" class="inf-num">' + informeEsc(total) + '</td>' +
+        '</tr>';
+    }).join('');
+    const tabla = listado.length
+      ? '<div class="inf-tabla-wrap"><table class="inf-tabla"><thead><tr><th>Fecha</th><th>Tipo</th><th>Comensales</th><th>Total</th></tr></thead><tbody>' + filas + '</tbody></table></div>'
+      : '<div class="inf-vacio">No hay entradas de este socio en el periodo</div>';
+    return '<section class="inf-seccion inf-socios inf-socios-ficha">' + titulo + sociosOcultos +
+      '<div class="inf-tarjeta"><h3>Ficha de ' + informeEsc(ficha.socio || '–') + '</h3><div class="inf-kpis">' +
+        informeKpi(ficha.reservas || 0, 'Reservas confirmadas') +
+        informeKpi(ficha.canceladas || 0, 'Canceladas') +
+        informeKpi(ficha.comensales || 0, 'Comensales') +
+        informeKpi(ficha.nCuentas || 0, 'Cuentas guardadas') +
+        informeKpi(informeFmtEuros(ficha.totalConCuenta || 0), 'Total con cuenta') +
+        informeKpi(informeFmtEuros(ficha.mediaPorCuenta || 0), 'Media por cuenta') +
+      '</div>' + tabla + '</div></section>';
+  }
+
+  const maxUso = Math.max.apply(null, ranking.map(function(item) { return Number(item.reservas) || 0; }).concat([1]));
+  const rankingUso = ranking.slice(0, 15).map(function(item) {
+    const reservas = Number(item.reservas) || 0;
+    const detalle = [];
+    if ((Number(item.comensales) || 0) > 0) detalle.push((Number(item.comensales) || 0) + ' comensales');
+    if ((Number(item.cuentas) || 0) > 0) detalle.push((Number(item.cuentas) || 0) + ' cuentas');
+    if ((Number(item.canceladas) || 0) > 0) detalle.push((Number(item.canceladas) || 0) + ' canceladas');
+    return informeBarraHorizontal(
+      item.socio || '–',
+      reservas,
+      maxUso,
+      reservas + ' res.',
+      detalle.join(' · ')
+    );
+  }).join('') || '<div class="inf-vacio">No hay actividad de socios en este periodo</div>';
+  const gasto = ranking.filter(function(item) { return (Number(item.total) || 0) > 0; }).sort(function(a, b) {
+    if ((Number(b.total) || 0) !== (Number(a.total) || 0)) return (Number(b.total) || 0) - (Number(a.total) || 0);
+    return informeTexto(a.socio) < informeTexto(b.socio) ? -1 : 1;
+  }).slice(0, 10);
+  const maxGasto = Math.max.apply(null, gasto.map(function(item) { return Number(item.total) || 0; }).concat([1]));
+  const rankingGasto = gasto.map(function(item) {
+    return informeBarraHorizontal(item.socio || '–', Number(item.total) || 0, maxGasto, informeFmtEuros(item.total || 0));
+  }).join('') || '<div class="inf-vacio">Ningún socio tiene cuentas guardadas en este periodo</div>';
+  const visiblesSinActividad = sinActividad.slice(0, 30);
+  const listaSinActividad = visiblesSinActividad.length
+    ? '<ul class="inf-socios-sin">' + visiblesSinActividad.map(function(socio) {
+        return '<li>' + informeEsc(informeSocioTexto(socio.socioNum, socio.nombre)) + '</li>';
+      }).join('') + '</ul>' + (sinActividad.length > 30 ? '<p class="inf-nota">y ' + informeEsc(sinActividad.length - 30) + ' más</p>' : '')
+    : '<div class="inf-vacio">Todos los socios activos tuvieron actividad en el periodo</div>';
+
+  return '<section class="inf-seccion inf-socios">' + titulo + sociosOcultos +
+    '<div class="inf-kpis">' +
+      informeKpi(sociosDatos.activos || 0, 'Socios activos') +
+      informeKpi(sociosDatos.conActividad || 0, 'Con actividad') +
+      informeKpi(sinActividad.length, 'Sin actividad') +
+    '</div>' +
+    '<div class="inf-grid"><div class="inf-tarjeta"><h3>Ranking de uso</h3>' + rankingUso + '</div>' +
+      '<div class="inf-tarjeta"><h3>Ranking de gasto</h3>' + rankingGasto + '</div></div>' +
+    '<div class="inf-tarjeta"><h3>Socios sin actividad en el periodo</h3>' + listaSinActividad + '</div>' +
+    '</section>';
+}
+
+function informeEstadoIncidencia(estado) {
+  if (estado === 'resuelta') return { texto:'Resuelta', clase:' inf-estado-resuelta' };
+  if (estado === 'en_proceso') return { texto:'En proceso', clase:' inf-estado-en-proceso' };
+  if (estado === 'abierta') return { texto:'Abierta', clase:' inf-estado-abierta' };
+  return { texto:informeTexto(estado) || 'Sin estado', clase:'' };
+}
+
+function informeRenderIncidencias(datos) {
+  const incid = datos && datos.incid ? datos.incid : {};
+  const lista = Array.isArray(incid.lista) ? incid.lista : [];
+  const ubicaciones = Array.isArray(incid.porUbicacion) ? incid.porUbicacion : [];
+  const titulo = '<h2 class="inf-seccion-titulo">🔧 Incidencias</h2>';
+  const socios = informeSociosOcultos(datos);
+  if (!(Number(incid.total) || 0)) {
+    return '<section class="inf-seccion inf-incidencias">' + titulo + socios + '<div class="inf-vacio">No hay incidencias en este periodo</div></section>';
+  }
+  const maxUbicacion = Math.max.apply(null, ubicaciones.map(function(item) { return Number(item.n) || 0; }).concat([1]));
+  const ubicacionesHtml = ubicaciones.map(function(item) {
+    return informeBarraHorizontal(item.ubicacion || 'Sin ubicación', item.n || 0, maxUbicacion);
+  }).join('');
+  const urgencias = incid.porUrgencia || {};
+  const filas = lista.map(function(item) {
+    const estado = informeEstadoIncidencia(item.estado);
+    return '<tr>' +
+      '<td data-label="Fecha">' + informeEsc(informeFmtFecha(item.fecha)) + '</td>' +
+      '<td data-label="Ubicación">' + informeEsc(item.ubicacion || 'Sin ubicación') + '</td>' +
+      '<td data-label="Urgencia">' + informeEsc(item.urgencia === 'urgente' ? 'Urgente' : (item.urgencia === 'normal' ? 'Normal' : item.urgencia || '–')) + '</td>' +
+      '<td data-label="Estado"><span class="inf-estado' + estado.clase + '">' + informeEsc(estado.texto) + '</span></td>' +
+      '<td data-label="Descripción">' + informeEsc(item.descripcion || '–') + '</td>' +
+      '<td data-label="Notas de la Junta">' + informeEsc(item.notas || '–') + '</td>' +
+      '<td data-label="Días" class="inf-centro">' + informeEsc(item.dias === null || item.dias === undefined ? '–' : item.dias) + '</td>' +
+      '</tr>';
+  }).join('');
+
+  return '<section class="inf-seccion inf-incidencias">' + titulo + socios +
+    '<div class="inf-kpis">' +
+      informeKpi(incid.total || 0, 'Total') +
+      informeKpi(incid.abiertas || 0, 'Abiertas') +
+      informeKpi(incid.enProceso || 0, 'En proceso') +
+      informeKpi(incid.resueltas || 0, 'Resueltas') +
+      informeKpi(incid.urgentes || 0, 'Urgentes') +
+      informeKpi(incid.diasMediosResolucion === null || incid.diasMediosResolucion === undefined ? '–' : informeFmtNum(incid.diasMediosResolucion, 1), 'Días medios de resolución') +
+    '</div>' +
+    '<div class="inf-grid"><div class="inf-tarjeta"><h3>Por ubicación</h3>' + ubicacionesHtml + '</div>' +
+      '<div class="inf-tarjeta"><h3>Por urgencia</h3>' +
+        informeBarraHorizontal('Normal', urgencias.normal || 0, incid.total || 0) +
+        informeBarraHorizontal('Urgente', urgencias.urgente || 0, incid.total || 0) +
+      '</div></div>' +
+    '<div class="inf-tabla-wrap"><table class="inf-tabla"><thead><tr><th>Fecha</th><th>Ubicación</th><th>Urgencia</th><th>Estado</th><th>Descripción</th><th>Notas de la Junta</th><th>Días</th></tr></thead><tbody>' + filas + '</tbody></table></div>' +
+    '</section>';
+}
+
+function informeRenderAsamblea(datos) {
+  const asamblea = datos && datos.asamblea ? datos.asamblea : {};
+  const uso = datos && datos.uso ? datos.uso : {};
+  const fin = datos && datos.fin ? datos.fin : {};
+  const consumo = datos && datos.consumo ? datos.consumo : {};
+  const incid = datos && datos.incid ? datos.incid : {};
+  const votaciones = Array.isArray(asamblea.votaciones) ? asamblea.votaciones : [];
+  const titulo = '<h2 class="inf-seccion-titulo">🏛️ Resumen para la Asamblea</h2>';
+  const socios = informeSociosOcultos(datos);
+  const hayDatos = (Number(uso.confirmadas) || 0) || (Number(fin.nCuentas) || 0) || (Number(incid.total) || 0) ||
+    (Number(asamblea.sociosActivos) || 0) || votaciones.length;
+  if (!hayDatos) {
+    return '<section class="inf-seccion inf-asamblea">' + titulo + socios + '<div class="inf-vacio">No hay datos para la Asamblea en este periodo</div></section>';
+  }
+  const productos = Array.isArray(consumo.porProducto) ? consumo.porProducto.slice(0, 3) : [];
+  const topProductos = productos.length ? productos.map(function(item) {
+    return informeEsc(item.nombre || '–') + ' (' + informeEsc(informeFmtNum(item.unidades || 0, 2)) + ')';
+  }).join(', ') : 'Sin productos anotados';
+  const filas = votaciones.map(function(item) {
+    return '<tr>' +
+      '<td data-label="Fecha">' + informeEsc(informeFmtFecha(item.fecha)) + '</td>' +
+      '<td data-label="Pregunta">' + informeEsc(item.pregunta || '–') + '</td>' +
+      '<td data-label="Sí" class="inf-centro">' + informeEsc(item.si || 0) + '</td>' +
+      '<td data-label="No" class="inf-centro">' + informeEsc(item.no || 0) + '</td>' +
+      '<td data-label="Abst." class="inf-centro">' + informeEsc(item.abstencion || 0) + '</td>' +
+      '<td data-label="Total" class="inf-centro">' + informeEsc(item.total || 0) + '</td>' +
+      '<td data-label="Participación" class="inf-centro">' + informeEsc(item.participacion || 0) + '%</td>' +
+      '</tr>';
+  }).join('');
+  const votacionesHtml = votaciones.length
+    ? '<div class="inf-votaciones"><div class="inf-tabla-wrap"><table class="inf-tabla"><thead><tr><th>Fecha</th><th>Pregunta</th><th>Sí</th><th>No</th><th>Abst.</th><th>Total</th><th>Participación</th></tr></thead><tbody>' + filas + '</tbody></table></div><p class="inf-nota">Participación media: ' + informeEsc(asamblea.participacionMedia || 0) + '%</p></div>'
+    : '<div class="inf-vacio">No hay votaciones en este periodo</div>';
+
+  return '<section class="inf-seccion inf-asamblea">' + titulo + socios +
+    '<div class="inf-kpis inf-asamblea-kpis">' +
+      informeKpi(uso.confirmadas || 0, 'Reservas confirmadas') +
+      informeKpi(uso.comensales || 0, 'Comensales') +
+      informeKpi(informeFmtEuros(fin.totalConCuenta || 0), 'Total con cuenta') +
+      informeKpi(fin.nCuentas || 0, 'Nº de cuentas') +
+      informeKpi(((incid.abiertas || 0) + (incid.enProceso || 0)) + ' / ' + (incid.resueltas || 0), 'Incidencias sin resolver / resueltas') +
+      informeKpi(asamblea.sociosActivos || 0, 'Socios activos') +
+    '</div>' +
+    '<div class="inf-grid inf-asamblea-resumen">' +
+      '<div class="inf-tarjeta"><h3>Uso</h3><p><strong>' + informeEsc(uso.confirmadas || 0) + '</strong> reservas, <strong>' + informeEsc(uso.comensales || 0) + '</strong> comensales y <strong>' + informeEsc(uso.mesas || 0) + '</strong> mesas. Con cocina: ' + informeEsc(uso.usoCocina || 0) + '.</p></div>' +
+      '<div class="inf-tarjeta"><h3>Ingresos</h3><p><strong>' + informeEsc(informeFmtEuros(fin.totalConCuenta || 0)) + '</strong> en ' + informeEsc(fin.nCuentas || 0) + ' cuentas. Pendientes: ' + informeEsc(Array.isArray(fin.sinCuenta) ? fin.sinCuenta.length : 0) + ' (≥ ' + informeEsc(informeFmtEuros(fin.estimadoSinCuenta || 0)) + ').</p></div>' +
+      '<div class="inf-tarjeta"><h3>Consumo</h3><p><strong>' + informeEsc(informeFmtEuros(consumo.euros || 0)) + '</strong> en consumiciones; ' + informeEsc(consumo.nConBebidas || 0) + ' de ' + informeEsc(consumo.nCuentas || 0) + ' cuentas con bebidas. Top: ' + topProductos + '.</p></div>' +
+    '</div>' +
+    '<div class="inf-tarjeta"><h3>Votaciones del periodo</h3>' + votacionesHtml + '</div>' +
+    '<p class="inf-nota">Cifras de ingresos cobrados a los socios; no incluyen gastos, compras ni cuotas.</p>' +
+    '</section>';
+}
+
 let informeEstadoUI = informeEstadoInicial();
 let informeEscapeHandler = null;
 
@@ -7596,6 +8565,8 @@ function informeActualizarFormulario(root) {
   });
   const canceladas = root.querySelector('[data-inf-canceladas]');
   if (canceladas) canceladas.checked = !!informeEstadoUI.canceladas;
+  const socio = root.querySelector('[data-inf-socio]');
+  if (socio) socio.value = informeEstadoUI.socioNum || '';
 }
 
 function informeRenderForm() {
@@ -7608,6 +8579,21 @@ function informeRenderForm() {
   const secciones = INFORME_SECCIONES.map(function(seccion) {
     return '<label class="inf-check"><input type="checkbox" data-inf-seccion="' + informeEsc(seccion.id) + '"' + (informeEstadoUI.secciones[seccion.id] ? ' checked' : '') + '><span>' + informeEsc(seccion.icono + ' ' + seccion.titulo) + '</span></label>';
   }).join('');
+  const sociosActivos = (Array.isArray(getSocios()) ? getSocios() : []).filter(function(socio) {
+    return socio && String(socio.estado) === 'activo';
+  }).slice().sort(function(a, b) {
+    const numA = informeNormalizarSocioNum(a && a.id);
+    const numB = informeNormalizarSocioNum(b && b.id);
+    const valorA = /^\d+$/.test(numA) ? Number(numA) : Number.MAX_SAFE_INTEGER;
+    const valorB = /^\d+$/.test(numB) ? Number(numB) : Number.MAX_SAFE_INTEGER;
+    if (valorA !== valorB) return valorA - valorB;
+    return numA < numB ? -1 : (numA > numB ? 1 : 0);
+  });
+  const opcionesSocios = sociosActivos.map(function(socio) {
+    const numero = informeNormalizarSocioNum(socio.id);
+    const seleccionado = numero === informeNormalizarSocioNum(informeEstadoUI.socioNum);
+    return '<option value="' + informeEsc(numero) + '"' + (seleccionado ? ' selected' : '') + '>' + informeEsc(informeSocioTexto(numero, socio.nombre)) + '</option>';
+  }).join('');
 
   root.innerHTML = '<div class="inf-form-card">' +
     '<div class="inf-form-titulo">📄 Generar informe</div>' +
@@ -7617,6 +8603,7 @@ function informeRenderForm() {
       '<label>Desde<input type="date" data-inf-fecha="desde" value="' + informeEsc(informeEstadoUI.desde) + '"></label>' +
       '<label>Hasta<input type="date" data-inf-fecha="hasta" value="' + informeEsc(informeEstadoUI.hasta) + '"></label>' +
     '</div>' +
+    '<label class="inf-filtro-socio"><span>Solo un socio</span><select data-inf-socio><option value="">Todos los socios</option>' + opcionesSocios + '</select></label>' +
     '<div class="inf-form-subtitulo">Secciones</div><div class="inf-selecciones">' +
       '<label class="inf-check inf-check-total"><input type="checkbox" data-inf-total' + (informeEstadoUI.total ? ' checked' : '') + '><span>📘 Total</span></label>' + secciones +
     '</div>' +
@@ -7647,6 +8634,9 @@ function informeRenderForm() {
     } else if (objetivo.hasAttribute('data-inf-canceladas')) {
       informeEstadoUI = informeEstadoCopia(informeEstadoUI);
       informeEstadoUI.canceladas = !!objetivo.checked;
+    } else if (objetivo.hasAttribute('data-inf-socio')) {
+      informeEstadoUI = informeEstadoCopia(informeEstadoUI);
+      informeEstadoUI.socioNum = objetivo.value || '';
     } else if (objetivo.hasAttribute('data-inf-fecha')) {
       informeEstadoUI = informeEstadoCopia(informeEstadoUI);
       informeEstadoUI[objetivo.getAttribute('data-inf-fecha')] = objetivo.value || '';
@@ -7654,12 +8644,12 @@ function informeRenderForm() {
   });
 }
 
-function informeCabeceraHtml(titulo, periodo, hoy) {
+function informeCabeceraHtml(titulo, periodo, hoy, socio) {
   return '<header class="inf-cabecera">' +
     '<div class="inf-marca"><img class="inf-logo" src="' + informeEsc(LOGO_SRC) + '" alt="Logo de Txoko Azkena"><div>' +
       '<h1>Txoko Azkena</h1><div class="inf-marca-sub">Asociación Gastronómica Azkena · Basauri (Bizkaia)</div><span class="inf-libro">LIBRO DIETARIO DIGITAL</span>' +
     '</div></div>' +
-    '<div class="inf-cabecera-datos"><strong>' + informeEsc(titulo) + '</strong><span>' + informeEsc(periodo.etiqueta) + '</span><span>Generado el ' + informeEsc(informeFmtFecha(hoy)) + '</span>' +
+    '<div class="inf-cabecera-datos"><strong>' + informeEsc(titulo) + '</strong><span>' + informeEsc(periodo.etiqueta) + '</span>' + (socio ? '<span>Socio: ' + informeEsc(socio) + '</span>' : '') + '<span>Generado el ' + informeEsc(informeFmtFecha(hoy)) + '</span>' +
       '<span class="inf-cabecera-legal">CIF G95368627 · C/ Pozokoetxe, 2 – Bajo · 48970 Basauri · azkenabasauri@gmail.com · Reg. AS/B/11831/2005</span></div>' +
     '</header>';
 }
@@ -7685,15 +8675,29 @@ function generarInforme() {
       showToast(periodo.error, 'err');
       return;
     }
-    const filtradas = informeFiltrar(todas, periodo, { canceladas:true });
-    const datos = informeCalcular(filtradas, periodo, hoy, getBloq(), { canceladas:estado.canceladas });
+    const filtradas = informeFiltrar(todas, periodo, { canceladas:true, socioNum:estado.socioNum });
+    const extras = {
+      productos: CALC_PRODS,
+      incidencias: getIncidencias(),
+      votaciones: getVotaciones(),
+      socios: getSocios()
+    };
+    const datos = informeCalcular(filtradas, periodo, hoy, getBloq(), { canceladas:estado.canceladas, socioNum:estado.socioNum }, extras);
     const titulo = informeTituloInforme(estado);
     const secciones = INFORME_SECCIONES.filter(function(seccion) {
       return ids.indexOf(seccion.id) !== -1;
     }).map(function(seccion) {
       return seccion.render(datos);
     }).join('');
-    const html = informeCabeceraHtml(titulo, periodo, hoy) + secciones + informePieHtml();
+    let socioCabecera = '';
+    if (estado.socioNum) {
+      const numeroElegido = informeNormalizarSocioNum(estado.socioNum);
+      const socioElegido = (Array.isArray(extras.socios) ? extras.socios : []).filter(function(socio) {
+        return informeNormalizarSocioNum(socio && socio.id) === numeroElegido;
+      })[0];
+      socioCabecera = informeSocioTexto(numeroElegido, socioElegido && socioElegido.nombre);
+    }
+    const html = informeCabeceraHtml(titulo, periodo, hoy, socioCabecera) + secciones + informePieHtml();
     informeAbrirVista(html, informeOrientacionAuto(ids));
   } catch (error) {
     showToast('❌ ' + (error && error.message ? error.message : 'No se ha podido generar el informe'), 'err', 4000);
