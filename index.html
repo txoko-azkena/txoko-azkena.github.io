@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6B1A1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Azkena v2.7</title>
+  <title>Azkena v2.8</title>
   <!-- Abre ya la conexión con Google (los dos saltos de cada llamada) mientras se carga la página -->
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -1804,6 +1804,110 @@
       flex: 0 0 auto;
       min-width: 76px;
     }
+    /* >>> Informe de visitas (inicio) */
+    .vrep { color:#0b0b0b; font-family:system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .vrep h1, .vrep h2, .vrep h3 { color:#6b1a1a; }
+    .vrep-aviso-lib { background:#fff6e5; border:1px solid #fab219; border-radius:8px; padding:8px 12px; margin:0 0 10px; font-size:13px; }
+    .vrep-reintentar { margin-left:8px; border:1.5px solid #6b1a1a; background:#fff; color:#6b1a1a; border-radius:8px; padding:4px 10px; font-weight:700; cursor:pointer; }
+    .vrep-tex { display:inline-flex; align-items:center; gap:6px; font-size:12px; margin:0 8px; cursor:pointer; color:#fff; }
+    .inf-barra .vrep-tex { color:#fff; }
+    .vrep-portada { display:flex; align-items:center; gap:16px; padding:10px 0 12px; border-bottom:3px solid #6b1a1a; margin-bottom:14px; }
+    .vrep-logo { width:76px; height:76px; border-radius:50%; flex-shrink:0; }
+    .vrep-portada h1 { margin:0; font-size:27px; line-height:1.1; }
+    .vrep-sub { color:#52514e; font-size:13px; margin-top:4px; }
+    .vrep-periodo { font-weight:800; margin-top:8px; font-size:15px; }
+    .vrep-filtros, .vrep-generado { color:#52514e; font-size:12px; margin-top:2px; }
+    .vrep-kpis { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; margin:12px 0; }
+    .vrep-kpi { border:1px solid #e1e0d9; border-radius:10px; padding:10px 12px; background:#fff; break-inside:avoid; }
+    .vrep-kpi-valor { font-size:28px; font-weight:800; color:#6b1a1a; line-height:1.1; }
+    .vrep-kpi-etiqueta { font-size:12px; color:#52514e; margin-bottom:4px; }
+    .vrep-spark { width:100%; }
+    .vrep-delta { display:block; font-size:11px; margin-top:4px; color:#52514e; }
+    .vrep-delta-na { color:#898781; }
+    .vrep-flecha { font-weight:800; }
+    .vrep-f-sube { color:#2a78d6; }
+    .vrep-f-baja { color:#e34948; }
+    .vrep-f-neutra { color:#898781; }
+    .vrep-hallazgos { border:1px solid #e1e0d9; border-left:4px solid #6b1a1a; border-radius:8px; padding:10px 14px; background:#faf9f6; break-inside:avoid; }
+    .vrep-hallazgos h3 { margin:0 0 6px; font-size:16px; }
+    .vrep-hallazgos ul { margin:0; padding-left:18px; }
+    .vrep-hallazgos li { margin:4px 0; font-size:13px; line-height:1.45; }
+    .vrep-seccion { margin-top:24px; }
+    .vrep-seccion h2 { font-size:20px; margin:0 0 4px; padding-bottom:4px; border-bottom:2px solid #e1e0d9; display:flex; align-items:center; }
+    .vrep-num { display:inline-block; background:#6b1a1a; color:#fff; border-radius:50%; width:26px; height:26px; line-height:26px; text-align:center; font-size:14px; margin-right:8px; flex-shrink:0; }
+    .vrep-intro { margin:2px 0 8px; color:#52514e; font-size:13px; }
+    .vrep-tarjeta { border:1px solid #e1e0d9; border-radius:10px; padding:12px; margin:12px 0; background:#fff; break-inside:avoid; }
+    .vrep-tarjeta h3 { margin:0 0 2px; font-size:15px; }
+    .vrep-pregunta { margin:0 0 6px; color:#52514e; font-size:12px; }
+    .vrep-lectura { margin:6px 0 0; color:#52514e; font-size:11px; line-height:1.45; }
+    .vrep-grafico { width:100%; }
+    .vrep-grafico.vrep-vacio { display:none; }
+    .vrep-sindatos { padding:22px; text-align:center; color:#898781; background:#f1efe9; border-radius:8px; font-size:13px; }
+    .vrep-nota { color:#898781; font-size:12px; }
+    .vrep-datos { margin-top:8px; font-size:12px; }
+    .vrep-datos summary { display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; color:#6b1a1a; font-weight:700; list-style:none; }
+    .vrep-datos summary::-webkit-details-marker { display:none; }
+    .vrep-datos summary::after {
+      content:''; width:16px; height:16px; flex-shrink:0; transition:transform 0.2s;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B1A1A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center / 16px no-repeat;
+    }
+    .vrep-datos[open] > summary::after { transform:rotate(180deg); }
+    .vrep-tabla-wrap { overflow-x:auto; margin-top:6px; }
+    .vrep-tabla { width:100%; border-collapse:collapse; font-size:11px; }
+    .vrep-tabla th, .vrep-tabla td { padding:4px 6px; border-bottom:1px solid #e1e0d9; text-align:left; vertical-align:top; }
+    .vrep-tabla th { background:#faf9f6; color:#52514e; font-weight:700; }
+    .vrep-tabla td:first-child { white-space:nowrap; }
+    .vrep-grupo { display:grid; grid-template-columns:1fr; gap:12px; }
+    .vrep-grupo .vrep-tarjeta { margin:0; }
+    .vrep-etapas { display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:#52514e; padding:0 22% 2px 1%; }
+    .vrep-retorno { display:flex; align-items:baseline; gap:10px; margin:2px 0 6px; }
+    .vrep-retorno-valor { font-size:30px; font-weight:800; color:#6b1a1a; }
+    .vrep-retorno-texto { font-size:12px; color:#52514e; }
+    .vrep-estados { display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px; }
+    .vrep-estado { display:flex; gap:10px; border:1px solid #e1e0d9; border-left-width:5px; border-radius:8px; padding:10px; background:#fff; break-inside:avoid; }
+    .vrep-estado-bien { border-left-color:#0ca30c; }
+    .vrep-estado-atencion { border-left-color:#fab219; }
+    .vrep-estado-mal { border-left-color:#d03b3b; }
+    .vrep-estado-icono { font-size:20px; font-weight:800; line-height:1.2; }
+    .vrep-estado-bien .vrep-estado-icono { color:#0ca30c; }
+    .vrep-estado-atencion .vrep-estado-icono { color:#b87f00; }
+    .vrep-estado-mal .vrep-estado-icono { color:#d03b3b; }
+    .vrep-estado-titulo { font-weight:800; font-size:13px; }
+    .vrep-estado-valor { font-size:13px; }
+    .vrep-estado-texto { font-size:12px; color:#52514e; }
+    .vrep-estado-umbral { font-size:10.5px; color:#898781; margin-top:2px; }
+    .vrep-definiciones { padding-left:18px; font-size:12px; line-height:1.55; margin:6px 0 0; }
+    @media (min-width:600px) {
+      .vrep-kpis { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+      .vrep-grupo { grid-template-columns:1fr 1fr; }
+      .vrep-estados { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width:420px) {
+      .vrep-portada { flex-direction:column; align-items:flex-start; }
+      .vrep-portada h1 { font-size:22px; }
+    }
+    @media print {
+      .vrep { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .vrep * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .vrep-seccion { margin-top:14px; }
+      .vrep-seccion:first-of-type, .vrep-apendice { break-before:page; margin-top:0; }
+      .vrep-seccion h2, .vrep-intro { break-after:avoid; }
+      .vrep-ancha { break-inside:auto; }
+      .vrep-tabla tr { break-inside:avoid; }
+      .vrep-tabla thead { display:table-header-group; }
+      .vrep-datos, .vrep-tex, .vrep-aviso-lib .vrep-reintentar { display:none !important; }
+      .vrep-sin-lib .vrep-datos { display:block !important; }
+      .vrep-kpis { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+      .vrep-grupo { grid-template-columns:1fr 1fr; }
+      .vrep-estados { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+      .vrep-grafico { height:auto !important; }
+      .vrep-grafico svg { width:100% !important; height:auto !important; max-width:100%; }
+      .vrep-spark { height:38px !important; }
+      .vrep-spark svg { height:38px !important; }
+      .vrep-tabla { font-size:8pt; }
+      .vrep-tarjeta { margin:8px 0; }
+    }
+    /* >>> Informe de visitas (fin) */
   </style>
 </head>
 <body>
@@ -1844,7 +1948,7 @@
     <img class="logo-img" src="data:image/webp;base64,UklGRmgMAABXRUJQVlA4IFwMAADQNACdASqAAIAAPmEqkEYkIqGhKJtLuIAMCWcA1XG6+2Rw3Pfou26l3FbzvkJPlnsU/xnhX+LfJv2H8kf67y9ug/Mr+K/Yz7z+YvsJ/iPBX1JeoR+K/zX/F/1P9weArAB+c/1P/Nf3X9yP676Rf9n6G+IB/If6L/pPza5pLyz/Se4F/K/6x/vfvD+mH+f/6n+R/y37fe2j83/v//L/xX5PfYN/K/6j/sv73/eP/V/mfnV9iH7jey7+yX//YrrNvYnVkx4CKYLC8rrmDh3yA8iPc7ybn8LdEWt9FEb55rhE1i47SYPPYThtj8sIdBTU0ScmvzaNE2PSl8ejNlnEWFX7rnYUqDTWg8tVA3VFQT9Ncc1CCH4wHj8GN36qRA5cQ6ChzPq3eD6bWT65Es1VzJnE9f1XlZNqeq8xNkTZzsdBjHTtPe78R3xA5JXiAT7DEDnAI2VraChnIdTvdViXPqXhXxGS41d9UzcN4ZLOfmhBqwya5JL2xZnZtl+z8bal0roExegxmBdfc5giNhFood/zcdVuf1OXTVgVcFA0cFNu/sPZRQmfFbJq3F6/vzMkwAD+7O3/5WfwfbeY8FczPTD/pCeuK6xxrt93Pfqm0fGzWson8jwBajUBgi/6uPYWu7/0nTdfROecqqvg9wBp4dRvPxXMKFp+DHekmErgp77p9qV/JRBaoRt7luMOB1/XfD4WaWZEVOQplOjs/pX6PYh2LFcjrya3Vp7kKzHHfV/6hnh5i/MfsmH0QW5opaqiD640f3xYkXV8SjsQRmhLgDfEWIrBDOvwff4AArXZlfQR5tZ+FmSUtWMO92dbaupGp7mWkipCPDzVVRlpf7eYcnskXUpNKEwgSqJnUKUnBhksvg2QwzbJUlEkhND4OKYVjpTEetMCa4SCrIcx/rUuPpnyXyPVGdczeoKQdqBT7NYCaSZcKPARGu1f57GI3bKOyb2xWfylcMUzzkwBfOw9UP/aBP9qon8TRGDd/h8dtUFRF0qFEBIEts/KNU7Nd6Eb+pw5LbwoNOPkIOHa24AhwMMl7ZG95YddsGl+sCO/n3GXftrwLQWNptdPA+ns8AYFdgELf/kesGnvZozxSP6mwxu1AN9fC1Yo2TX8kQF1Xbshva3aEzjMg8dYQZ8l1PJMjX3U9fxKd60Ncr7gYpYZGT2CiwfjKtHHSdxYnyHfHZkKFDbzOO9cEgRTqHYpIdZbvSSfmSA9izMsjlhdj4mmNm1ioWde6Kw4QCouXuXM1us1HqBFv9E7rhGgC+O98+DO+8D3RSJknesvtXDD8QNxDYL4d7E/wqx0HHFWiptQDUEb66q1RKaXwtW2NLz/TrslHTJl6zTPqK0TnAI5CYzTVcBd4KzyoWfIyQsxoWgEjh4MTHixANmFYcOX5jmWVquphiyoPhG37lQSOUTydDr6xG2B2BzgEvxXKHh8kwDWQdXZYZcpC+y9DD0LJttJVan7ckpw2uK8jQF9o3pqi6+Gb/y2GLhDMrNmDhvD9Wg6MNLnAhAL3NOPB7KGX2NSWSJGdRx6Q/zUpT7sFa2UcaecLAartVmNvt9yGmvYk95y8QumlxWeM/O7gPQfuNP6gWp6sX2DoXRPJLxfl4sJAqCfcm/g2Naa9E6qmD8dPTcyT8XaXD6z21aaEfJ+pViiN/1HkEc6vreWwTdLo329JcjlJiVGvCNGa2I9RdDgrpV7pBhl+jXiJDC4DCpw+9c6f9HawcbHTU5XR0hKsdK/p1qbxTrCOsscmWczIF4ENibAtJ/P17H51B7xGjTyW7BwATIuMMIgcO3jwXFFa+bQ+0Htbzj9rK+Besoz2Ry0j8NlCe2B2y3836s4otM1sEl0n6KV8L3fSq8vo/jFMZ/nniezjasn2H+ug839y8f5gfc24CpCIPWBITu+mv/NFdvUxxN87MLvTiFDNntNKJk6TH7aMF7BzfWeglSbFLDA/T7hW+6+7S0j/Oha4A8TRGa1wpT4RP5Aoz1sT6O2044PZ8FabGlf8//HnegyJEIEFfFW1yC+x/hbAlXAywxN4wLKLqb4X4Tx3L+VSp+fvagzmrSu33O02Yy7BSxjqv2OhYIdXds/1f2VrpngSgfAfvhDUix8saKQTDt8rGu2+32u8ahOHG58yTxX2snhIUnTMN/eZum48NsbLpidpxGAh9G1NGYJvueElGzC5qKu64tRd2d+adiD0NDl/efDRFt9Q9/tEpb7ixqnDKLZekNmklchZuQfnKTxPV1uf13A7Y1UWoB3NYu4euxjrK++A3+Qe3waUN0NTuqPiOOEIFwmYOSlbBaTdj5R8vTbjU4dUr3b3CIfde2Z1GpdIidy6O7CM0U7tnDMOY6F607Fknd2A2SMnVS4llkl91BNcRPSQGr+dFaghNf4NYrtk+ATQE+z4o9X222TFRT48QzhnNMQD8VIEJhImwn3sfbx2T04e/1ArgNkkwH51uZaiNjLzkHcmMSKUzVgj86MzwT2H8Mgm/0z9fihexJ+5v71jctDZ/f5NM0CGdEjlI+BGwIr2bJ69XiVreVLXnXxNaeGJZCs2yqNp2zFbBdp4BeR6gmti/qERJdJrMGCJO9fyaxUGRqqJD6ANMuVetIYrrKek997ayHCA/4eRU2ah2LwkwK+DOhS4cdCu9RgFBm55sNPNyYLFUN9rFC0f1Ve06/Ep2foDIrpMltfSjuzg9HRl4iASiqKmNek6Py5uC5P4nuLDBVJM5ck19xCiF/hLoAXB8UjHcHSrUN6CKirpGYK051vp3u+zpX2rriSbUXp/QAgIPa2mLyat9Ov1IKMfR8VAk7D2OFUkzO521sQRoxPwjQLNbqpA7spqh7W+tZ5OfTbguZcPKU1j9Vd+RFcZrVqJdDPkvWc4uyuvgND0UY51JgsnVRnk+aqWmq69aoGiy6GV23ClO77+pUoSRseAG90kn16zPZNDQtmzX86a5dyvEIvHgNEmZt3ANIEqxjyxrtg+gjEeCSOr38wn+7iZvTIEpboACKc6vpteVOtf4VKGG52+7lTXY7hcr4y105Q2HhsiNv0HS1zyvXrKz54wVvN//VmKJk8qOKmWf8FWW8pb9nEscgUORbR6fckBUuBauL24Ld/brIhoiXDdzptXami7h0oJB3JX4a8WVTWGPqBbTP1ShqNtlMRxbOVt2GxgtveraepA/HQDTf3HSzzDadb+7bLY142tTSyEEnXBSvYYwGN3x05SQZyMyfKQRQy37mu9gwjSrJqlsanANCB+1DV37qruhyUtjPH9DsiBVlSFSAy65jT3cuVlxeIYKtP5qBLHV0Ksa+uDcfScV4Ht5OdtDVr39YP727S2pLJ/huA4nOForr8sUCgyf2zfuijF2ffsYSDTf8rBf8R+o0jAGsl9WpPVmcRJhsKtgVCCO9nGfLfg6ut11gR4TB8Q4WjcPd5laNN1ShD6b2b2ZLf/o3X+ACirh8+zkPs1eAh+wCeU77ciEL1V62wD7liPyebsrgSifSF54tKS+gVy4k++fLXAScCcnwTBYgfA00D1YU3Y2Mh3yFDb7CgvjCB1F7PBzxI4myyXjh9+wNAXvbb0TYOE5GmfG6cOqb4NDDLkVCIEo5MoNcFwpzNRQKwf79hDKb9kRTELQEyMSa4oLF85f7kzz5nVIxsULPGk/eMBYEoJbYVf8abY/VOZuSGeAEsMyoU9XIns+X2MS0DH+6ocX9y+NnUlRNafEopG845T2KeVhIgXIWPEgR6gb2+73MBuLk3eenrtaNn/5/PCn85jNn3wUntnIR6jTcWtGdsJ+nci+X6bGpF/fgIEFlNh2LzMVePsvY0LPbl2KpFX0y9WhCcq6l7Sm/pQf2bERONIGBOH54eI93cuDZ3vZ2UCuGaQg5SyJFK6+8v3Db4kpZeTDRtZtQLe0eYTl4oJ3UCcomN0Y/yemNzTMgvo3Ctpu+UFc+7jXyUixctNKJ86G/N2hHH1XLjJPLpuaX75GDXIEy2mUFmnPuxAA80AgfjvFSyElE727SSxnPbgsPWU40j+nbOn/uiaGM9eUzpNJGD7W/Br9oSMQXIsBFimRQhOtGcr/QVnfAngQO/TFwQh1W/hgE0Wzto0Udh2keczizfyOQdke1gSo3eS1LZzH2BAyd8u3HstVadw+40K/vNzj3bABJJr/t22NOR9VnWjXIHSixspoCDrdpJw1Af/KA+D7ZQgYRcDQExZLezVFlXJsbJ+RQ+okAAAAAAAA==" alt="Txoko Azkena" onerror="this.style.display='none'">
     <div class="logo-txt">
       <span class="title">Txoko Azkena</span>
-      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.7</span></span>
+      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.8</span></span>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -2531,7 +2635,7 @@ function toggleLang() {
 }
 
 // Subir este número con CADA actualización que se suba a GitHub (así se ve si el móvil tiene la versión nueva)
-const APP_VERSION = '2.7';
+const APP_VERSION = '2.8';
 
 function applyTR() {
   const sub = document.getElementById('h-subtitle');
@@ -4525,6 +4629,941 @@ function visitasCsv(sesiones) {
   return '\uFEFF' + lineas.join('\r\n');
 }
 /* >>> VISITAS DATOS (fin) */
+
+/* >>> VISITAS INFORME DATOS (inicio) */
+/*
+ * Capa de datos pura del informe de visitas. Todo el estado necesario entra
+ * por parametros; las fechas civiles se resuelven con visitasFecha.
+ */
+function visitasInfPct(parte, total) {
+  return total > 0 ? parte * 100 / total : 0;
+}
+
+function visitasInfDiasEntre(desde, hasta) {
+  const a = visitasPartesYmd(desde);
+  const b = visitasPartesYmd(hasta);
+  if (!a || !b) return 0;
+  return Math.round((Date.UTC(b.anio, b.mes - 1, b.dia) - Date.UTC(a.anio, a.mes - 1, a.dia)) / 86400000);
+}
+
+function visitasInfMapaSocios(sociosActivos) {
+  const mapa = Object.create(null);
+  (Array.isArray(sociosActivos) ? sociosActivos : []).forEach(function(socio) {
+    const id = visitasId(socio && socio.id);
+    if (id) mapa[id] = visitasTexto(socio && socio.nombre);
+  });
+  return mapa;
+}
+
+function visitasInfOpcionesPeriodo(opciones, desde, hasta) {
+  const opts = opciones && typeof opciones === 'object' ? opciones : {};
+  return {
+    desde:desde, hasta:hasta, hoy:opts.hoy,
+    incluirAdmin:!!opts.incluirAdmin, excluirSocio:opts.excluirSocio,
+    versionActual:opts.versionActual
+  };
+}
+
+function visitasInfContarFechas(sesiones) {
+  const mapa = Object.create(null);
+  (Array.isArray(sesiones) ? sesiones : []).forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    if (fecha) mapa[fecha] = (mapa[fecha] || 0) + 1;
+  });
+  return mapa;
+}
+
+function visitasInfPrimeraFecha(sesiones) {
+  let primera = '';
+  (Array.isArray(sesiones) ? sesiones : []).forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    if (fecha && (!primera || fecha < primera)) primera = fecha;
+  });
+  return primera;
+}
+
+function visitasInfSumaContadores(valor, excluidas) {
+  const mapa = visitasContadores(valor);
+  let total = 0;
+  Object.keys(mapa).forEach(function(clave) {
+    if (!excluidas || !excluidas[clave]) {
+      const numero = visitasNumero(mapa[clave], false);
+      if (numero > 0) total += numero;
+    }
+  });
+  return total;
+}
+
+function visitasInfValorContador(valor, claves) {
+  const mapa = visitasContadores(valor);
+  let total = 0;
+  claves.forEach(function(clave) {
+    const numero = visitasNumero(mapa[clave], false);
+    if (numero > 0) total += numero;
+  });
+  return total;
+}
+
+function visitasInfTipo(tipo) {
+  const clave = visitasTexto(tipo).trim().toLowerCase();
+  if (clave === 'movil') return 'movil';
+  if (clave === 'escritorio') return 'escritorio';
+  return 'otro';
+}
+
+function visitasInfResumenAnterior(todas, sociosActivos, opciones) {
+  const opts = opciones || {};
+  if (!visitasPartesYmd(opts.anteriorDesde) || !visitasPartesYmd(opts.anteriorHasta)) return null;
+  return visitasResumen(todas, sociosActivos, visitasInfOpcionesPeriodo(opts, opts.anteriorDesde, opts.anteriorHasta));
+}
+
+function visitasInfKpis(resumen, anterior) {
+  function valores(r) {
+    const total = r.sesiones;
+    return {
+      visitas:total,
+      aparatos:r.dispositivos,
+      socios:r.socios,
+      sociosActivosTotal:r.sociosActivosTotal,
+      sinIdentificar:r.sesionesSinSocio,
+      duracionMedianaS:r.duracionMedianaS,
+      cargaMedianaMs:r.cargaMedianaMs,
+      cargaP90Ms:r.cargaP90Ms,
+      pctConError:visitasInfPct(r.sesionesConError, total),
+      nuevos:r.nuevos,
+      recurrentes:r.recurrentes
+    };
+  }
+  const actuales = valores(resumen);
+  const previos = anterior ? valores(anterior) : null;
+  const salida = {};
+  Object.keys(actuales).forEach(function(clave) {
+    const previo = previos ? previos[clave] : null;
+    salida[clave] = {
+      valor:actuales[clave],
+      anterior:previo,
+      delta:previo === null ? null : actuales[clave] - previo
+    };
+  });
+  return salida;
+}
+
+function visitasInfEvolucion(actuales, historial, resumen, opciones, anteriorExiste) {
+  const opts = opciones || {};
+  const serie = resumen.porDia.map(function(fila) { return { fecha:fila.fecha, n:fila.n }; });
+  const conteosHistorial = visitasInfContarFechas(historial);
+  const primeraHistorial = visitasInfPrimeraFecha(historial);
+  const mediaMovil7 = serie.map(function(fila) {
+    let inicio = visitasMoverDias(fila.fecha, -6);
+    if (primeraHistorial && inicio < primeraHistorial) inicio = primeraHistorial;
+    if (inicio > fila.fecha) inicio = fila.fecha;
+    let cursor = inicio;
+    let suma = 0;
+    let dias = 0;
+    while (cursor && cursor <= fila.fecha) {
+      suma += conteosHistorial[cursor] || 0;
+      dias++;
+      cursor = visitasMoverDias(cursor, 1);
+    }
+    return { fecha:fila.fecha, v:dias ? suma / dias : 0 };
+  });
+  let anteriorAlineada = null;
+  if (anteriorExiste) {
+    const anteriores = visitasFiltrar(historial, visitasInfOpcionesPeriodo(opts, opts.anteriorDesde, opts.anteriorHasta));
+    const conteosAnteriores = visitasInfContarFechas(anteriores);
+    anteriorAlineada = serie.map(function(fila, indice) {
+      const fechaAnterior = visitasMoverDias(opts.anteriorDesde, indice);
+      const n = fechaAnterior && fechaAnterior <= opts.anteriorHasta ? (conteosAnteriores[fechaAnterior] || 0) : 0;
+      return { fecha:fila.fecha, n:n };
+    });
+  }
+  let pico = { fecha:'', n:0 };
+  serie.forEach(function(fila) {
+    if (fila.n > pico.n) pico = { fecha:fila.fecha, n:fila.n };
+  });
+  const primerasVersiones = Object.create(null);
+  historial.forEach(function(sesion) {
+    const version = visitasTexto(sesion && sesion.version).trim();
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    if (version && fecha && (!primerasVersiones[version] || fecha < primerasVersiones[version])) primerasVersiones[version] = fecha;
+  });
+  const limites = serie.length ? { desde:serie[0].fecha, hasta:serie[serie.length - 1].fecha } : null;
+  const versionesAparicion = Object.keys(primerasVersiones).filter(function(version) {
+    const fecha = primerasVersiones[version];
+    return limites && fecha >= limites.desde && fecha <= limites.hasta;
+  }).map(function(version) {
+    return { version:version, fecha:primerasVersiones[version] };
+  }).sort(function(a, b) {
+    if (a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
+    return a.version < b.version ? -1 : (a.version > b.version ? 1 : 0);
+  });
+  return { serie:serie, mediaMovil7:mediaMovil7, anteriorAlineada:anteriorAlineada, pico:pico, versionesAparicion:versionesAparicion };
+}
+
+function visitasInfCalendario(historial, hoy) {
+  if (!visitasPartesYmd(hoy)) return { desde:'', hasta:'', dias:[] };
+  const domingo = visitasMoverDias(hoy, 6 - visitasDiaSemanaYmd(hoy));
+  const primera = visitasInfPrimeraFecha(historial);
+  let semanas = 8;
+  if (primera) {
+    const primeraSemana = visitasLunes(primera);
+    semanas = Math.floor(visitasInfDiasEntre(primeraSemana, domingo) / 7) + 1;
+    if (semanas < 8) semanas = 8;
+    if (semanas > 26) semanas = 26;
+  }
+  const desde = visitasMoverDias(domingo, -(semanas * 7 - 1));
+  const mapa = visitasInfContarFechas(historial);
+  const dias = [];
+  let cursor = desde;
+  while (cursor && cursor <= domingo) {
+    dias.push({ fecha:cursor, n:mapa[cursor] || 0 });
+    cursor = visitasMoverDias(cursor, 1);
+  }
+  return { desde:desde, hasta:domingo, dias:dias };
+}
+
+function visitasInfAdopcion(historial, sociosActivos, hoy) {
+  const activos = visitasInfMapaSocios(sociosActivos);
+  const primera = visitasInfPrimeraFecha(historial);
+  if (!primera || !visitasPartesYmd(hoy) || primera > hoy) return { puntos:[], totalSocios:Object.keys(activos).length, pct:0 };
+  const porFecha = Object.create(null);
+  historial.forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    if (!fecha || fecha > hoy) return;
+    if (!porFecha[fecha]) porFecha[fecha] = [];
+    porFecha[fecha].push(sesion);
+  });
+  const socios = Object.create(null);
+  const aparatos = Object.create(null);
+  const puntos = [];
+  let cursor = primera;
+  while (cursor && cursor <= hoy) {
+    (porFecha[cursor] || []).forEach(function(sesion) {
+      const id = visitasId(sesion && sesion.socioId);
+      const dispositivo = visitasTexto(sesion && sesion.dispositivoId).trim();
+      if (id && Object.prototype.hasOwnProperty.call(activos, id)) socios[id] = true;
+      if (dispositivo) aparatos[dispositivo] = true;
+    });
+    puntos.push({ fecha:cursor, socios:Object.keys(socios).length, aparatos:Object.keys(aparatos).length });
+    cursor = visitasMoverDias(cursor, 1);
+  }
+  const totalSocios = Object.keys(activos).length;
+  const ultimo = puntos.length ? puntos[puntos.length - 1].socios : 0;
+  return { puntos:puntos, totalSocios:totalSocios, pct:visitasInfPct(ultimo, totalSocios) };
+}
+
+function visitasInfSemanaHora(sesiones) {
+  const matriz = [];
+  let dia;
+  let hora;
+  for (dia = 0; dia < 7; dia++) {
+    const fila = [];
+    for (hora = 0; hora < 24; hora++) fila.push(0);
+    matriz.push(fila);
+  }
+  const momentos = [
+    { clave:'madrugada', etiqueta:'Madrugada', rango:'0–6 h', desde:0, hasta:6, n:0 },
+    { clave:'manana', etiqueta:'Mañana', rango:'6–12 h', desde:6, hasta:12, n:0 },
+    { clave:'tarde', etiqueta:'Tarde', rango:'12–20 h', desde:12, hasta:20, n:0 },
+    { clave:'noche', etiqueta:'Noche', rango:'20–24 h', desde:20, hasta:24, n:0 }
+  ];
+  let maximo = 0;
+  sesiones.forEach(function(sesion) {
+    const partes = visitasFecha(sesion && sesion.inicio);
+    if (partes.diaSemana === null || partes.hora === null) return;
+    matriz[partes.diaSemana][partes.hora]++;
+    if (matriz[partes.diaSemana][partes.hora] > maximo) maximo = matriz[partes.diaSemana][partes.hora];
+    momentos.forEach(function(momento) {
+      if (partes.hora >= momento.desde && partes.hora < momento.hasta) momento.n++;
+    });
+  });
+  return {
+    matriz:matriz,
+    max:maximo,
+    momentos:momentos.map(function(momento) {
+      return { clave:momento.clave, etiqueta:momento.etiqueta, rango:momento.rango, n:momento.n };
+    })
+  };
+}
+
+function visitasInfSemanasPeriodo(sesiones, opciones) {
+  const limites = visitasLimitesSerie(sesiones, opciones || {});
+  if (!limites) return [];
+  const semanas = [];
+  let cursor = visitasLunes(limites.desde);
+  const ultima = visitasLunes(limites.hasta);
+  while (cursor && cursor <= ultima) {
+    semanas.push(cursor);
+    cursor = visitasMoverDias(cursor, 7);
+  }
+  return semanas.length > 26 ? semanas.slice(semanas.length - 26) : semanas;
+}
+
+function visitasInfMatrizSocios(sesiones, sociosActivos, opciones) {
+  const semanasTexto = visitasInfSemanasPeriodo(sesiones, opciones);
+  const semanas = semanasTexto.map(function(desde) { return { desde:desde }; });
+  const indiceSemana = Object.create(null);
+  semanasTexto.forEach(function(desde, indice) { indiceSemana[desde] = indice; });
+  const grupos = Object.create(null);
+  (Array.isArray(sociosActivos) ? sociosActivos : []).forEach(function(socio) {
+    const id = visitasId(socio && socio.id);
+    if (id) grupos[id] = { id:id, nombre:visitasTexto(socio && socio.nombre), total:0, porSemana:semanasTexto.map(function() { return 0; }), ultima:'' };
+  });
+  sesiones.forEach(function(sesion) {
+    const id = visitasId(sesion && sesion.socioId);
+    if (!id || !grupos[id]) return;
+    const inicio = visitasTexto(sesion && sesion.inicio);
+    const fecha = visitasFecha(inicio).fecha;
+    const lunes = fecha ? visitasLunes(fecha) : '';
+    grupos[id].total++;
+    if (!grupos[id].ultima || visitasTimestamp(inicio) > visitasTimestamp(grupos[id].ultima)) grupos[id].ultima = inicio;
+    if (Object.prototype.hasOwnProperty.call(indiceSemana, lunes)) grupos[id].porSemana[indiceSemana[lunes]]++;
+  });
+  const filas = Object.keys(grupos).map(function(id) { return grupos[id]; }).sort(function(a, b) {
+    if (b.total !== a.total) return b.total - a.total;
+    const diferencia = visitasTimestamp(b.ultima) - visitasTimestamp(a.ultima);
+    if (diferencia) return diferencia;
+    return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+  });
+  return { semanas:semanas, filas:filas };
+}
+
+function visitasInfBurbujas(sesiones, sociosActivos) {
+  const nombres = visitasInfMapaSocios(sociosActivos);
+  const grupos = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const id = visitasId(sesion && sesion.socioId);
+    if (!id) return;
+    if (!grupos[id]) grupos[id] = { visitas:0, duraciones:[], acciones:0, tipos:Object.create(null) };
+    const grupo = grupos[id];
+    grupo.visitas++;
+    const duracion = visitasNumero(sesion && sesion.duracionS, false);
+    if (duracion > 0) grupo.duraciones.push(duracion / 60);
+    grupo.acciones += visitasInfSumaContadores(sesion && sesion.acciones);
+    const tipo = visitasInfTipo(sesion && sesion.tipoDisp);
+    grupo.tipos[tipo] = (grupo.tipos[tipo] || 0) + 1;
+  });
+  return Object.keys(grupos).map(function(id) {
+    const grupo = grupos[id];
+    const tipos = Object.keys(grupo.tipos).map(function(clave) { return { clave:clave, n:grupo.tipos[clave] }; }).sort(visitasOrdenClave);
+    return {
+      id:id, nombre:visitasNombreSocio(nombres, id), visitas:grupo.visitas,
+      duracionMedianaMin:visitasPercentil(grupo.duraciones, 0.5), acciones:grupo.acciones,
+      tipo:tipos.length ? tipos[0].clave : 'otro'
+    };
+  }).sort(function(a, b) {
+    if (b.visitas !== a.visitas) return b.visitas - a.visitas;
+    return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+  });
+}
+
+function visitasInfEsGestion(acciones) {
+  return visitasInfValorContador(acciones, ['reserva','cancelar_reserva','voto','incidencia','anuncio','cuenta_guardada']) > 0;
+}
+
+function visitasInfEsInteraccion(acciones) {
+  const excluidas = { login:true, login_error:true, pin_admin:true, error_api:true };
+  return visitasInfSumaContadores(acciones, excluidas) > 0;
+}
+
+function visitasInfEmbudo(sesiones) {
+  const total = sesiones.length;
+  let identificadas = 0;
+  let navegaron = 0;
+  let interactuaron = 0;
+  let gestionaron = 0;
+  sesiones.forEach(function(sesion) {
+    if (!visitasId(sesion && sesion.socioId)) return;
+    identificadas++;
+    if (visitasInfSumaContadores(sesion && sesion.pantallas) < 2) return;
+    navegaron++;
+    if (!visitasInfEsInteraccion(sesion && sesion.acciones)) return;
+    interactuaron++;
+    if (visitasInfEsGestion(sesion && sesion.acciones)) gestionaron++;
+  });
+  const datos = [
+    ['abrieron','Abrieron la app',total],
+    ['identificaron','Se identificaron',identificadas],
+    ['navegaron','Navegaron',navegaron],
+    ['interactuaron','Interactuaron',interactuaron],
+    ['gestionaron','Hicieron una gestión',gestionaron]
+  ];
+  return datos.map(function(fila, indice) {
+    const anterior = indice ? datos[indice - 1][2] : total;
+    return {
+      clave:fila[0], etiqueta:fila[1], n:fila[2],
+      pctDelTotal:visitasInfPct(fila[2], total),
+      pctDeLaAnterior:indice === 0 ? (total ? 100 : 0) : visitasInfPct(fila[2], anterior)
+    };
+  });
+}
+
+function visitasInfRetencion(historial, hoy) {
+  const visitantes = Object.create(null);
+  historial.forEach(function(sesion) {
+    const inicio = visitasTexto(sesion && sesion.inicio);
+    const partes = visitasFecha(inicio);
+    if (!partes.fecha || (visitasPartesYmd(hoy) && partes.fecha > hoy)) return;
+    const socio = visitasId(sesion && sesion.socioId);
+    const dispositivo = visitasTexto(sesion && sesion.dispositivoId).trim();
+    const clave = socio || (dispositivo ? 'd:' + dispositivo : '');
+    if (!clave) return;
+    if (!visitantes[clave]) visitantes[clave] = [];
+    visitantes[clave].push({ inicio:inicio, fecha:partes.fecha, semana:visitasLunes(partes.fecha) });
+  });
+  const cohortesMapa = Object.create(null);
+  Object.keys(visitantes).forEach(function(clave) {
+    visitantes[clave].sort(function(a, b) { return visitasTimestamp(a.inicio) - visitasTimestamp(b.inicio); });
+    const primeraSemana = visitantes[clave][0].semana;
+    if (!cohortesMapa[primeraSemana]) cohortesMapa[primeraSemana] = [];
+    cohortesMapa[primeraSemana].push(clave);
+  });
+  const semanaHoy = visitasPartesYmd(hoy) ? visitasLunes(hoy) : '';
+  let cohortes = Object.keys(cohortesMapa).sort().map(function(semana) {
+    const miembros = cohortesMapa[semana];
+    const activos = [];
+    let k;
+    for (k = 0; k <= 8; k++) {
+      const objetivo = visitasMoverDias(semana, k * 7);
+      if (semanaHoy && objetivo > semanaHoy) {
+        activos.push(null);
+      } else {
+        let numero = 0;
+        miembros.forEach(function(clave) {
+          if (visitantes[clave].some(function(visita) { return visita.semana === objetivo; })) numero++;
+        });
+        activos.push(visitasInfPct(numero, miembros.length));
+      }
+    }
+    return { semana:semana, tamano:miembros.length, activos:activos };
+  });
+  if (cohortes.length > 8) cohortes = cohortes.slice(cohortes.length - 8);
+  let elegibles = 0;
+  let retornaron = 0;
+  Object.keys(visitantes).forEach(function(clave) {
+    const visitas = visitantes[clave];
+    if (!visitasPartesYmd(hoy) || visitasInfDiasEntre(visitas[0].fecha, hoy) < 7) return;
+    elegibles++;
+    if (visitas.length >= 2 && visitasInfDiasEntre(visitas[0].fecha, visitas[1].fecha) <= 7) retornaron++;
+  });
+  return { cohortes:cohortes, retorno7d:elegibles ? visitasInfPct(retornaron, elegibles) : null };
+}
+
+function visitasInfCapitalizar(texto) {
+  const valor = visitasTexto(texto).trim();
+  return valor ? valor.charAt(0).toUpperCase() + valor.slice(1) : 'Sin dato';
+}
+
+function visitasInfAluvial(sesiones) {
+  const origenes = visitasDistribucion(sesiones, 'origen');
+  const principales = Object.create(null);
+  origenes.slice(0, 5).forEach(function(fila) { principales[fila.clave] = true; });
+  const nodosMapa = Object.create(null);
+  const nodos = [];
+  const enlacesMapa = Object.create(null);
+  function nodo(nombre, etapa) {
+    if (!nodosMapa[nombre]) {
+      nodosMapa[nombre] = true;
+      nodos.push({ name:nombre, etapa:etapa });
+    }
+  }
+  function enlace(source, target) {
+    const clave = source + '\u0001' + target;
+    if (!enlacesMapa[clave]) enlacesMapa[clave] = { source:source, target:target, value:0 };
+    enlacesMapa[clave].value++;
+  }
+  sesiones.forEach(function(sesion) {
+    const origenBruto = visitasTexto(sesion && sesion.origen).trim() || '(sin dato)';
+    let origen = principales[origenBruto] ? (origenBruto === 'directo' ? 'Directo' : visitasInfCapitalizar(origenBruto)) : 'Otros';
+    if (origenBruto === '(sin dato)' && principales[origenBruto]) origen = 'Sin dato';
+    const tipoBruto = visitasTexto(sesion && sesion.tipoDisp).trim().toLowerCase();
+    const aparato = tipoBruto === 'movil' ? 'Móvil' : (tipoBruto === 'tablet' ? 'Tablet' : (tipoBruto === 'escritorio' ? 'Escritorio' : 'Otro'));
+    const identificacion = visitasId(sesion && sesion.socioId) ? 'Con nº de socio' : 'Sin identificar';
+    const pantallas = visitasInfSumaContadores(sesion && sesion.pantallas);
+    const gestion = visitasInfEsGestion(sesion && sesion.acciones);
+    const uso = visitasInfEsInteraccion(sesion && sesion.acciones);
+    const resultado = gestion ? 'Hizo una gestión' : ((uso || pantallas >= 2) ? 'Solo consultó' : 'Solo abrió');
+    const nombres = ['1·' + origen, '2·' + aparato, '3·' + identificacion, '4·' + resultado];
+    nodo(nombres[0], 1); nodo(nombres[1], 2); nodo(nombres[2], 3); nodo(nombres[3], 4);
+    enlace(nombres[0], nombres[1]); enlace(nombres[1], nombres[2]); enlace(nombres[2], nombres[3]);
+  });
+  return { nodos:nodos, enlaces:Object.keys(enlacesMapa).map(function(clave) { return enlacesMapa[clave]; }) };
+}
+
+function visitasInfCompararVersion(a, b) {
+  const pa = visitasTexto(a).split('.').map(function(valor) { return Number(valor) || 0; });
+  const pb = visitasTexto(b).split('.').map(function(valor) { return Number(valor) || 0; });
+  const longitud = Math.max(pa.length, pb.length);
+  let i;
+  for (i = 0; i < longitud; i++) {
+    const va = pa[i] || 0;
+    const vb = pb[i] || 0;
+    if (va !== vb) return vb - va;
+  }
+  return visitasTexto(a) < visitasTexto(b) ? 1 : (visitasTexto(a) > visitasTexto(b) ? -1 : 0);
+}
+
+function visitasInfVersionesSerie(sesiones, opciones) {
+  const semanas = visitasInfSemanasPeriodo(sesiones, opciones);
+  const indice = Object.create(null);
+  semanas.forEach(function(semana, posicion) { indice[semana] = posicion; });
+  const totales = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const version = visitasTexto(sesion && sesion.version).trim() || '(sin dato)';
+    totales[version] = (totales[version] || 0) + 1;
+  });
+  const candidatas = Object.keys(totales).sort(function(a, b) {
+    if (totales[b] !== totales[a]) return totales[b] - totales[a];
+    return a < b ? -1 : (a > b ? 1 : 0);
+  });
+  const elegidas = candidatas.slice(0, 4);
+  const esElegida = Object.create(null);
+  elegidas.forEach(function(version) { esElegida[version] = true; });
+  elegidas.sort(visitasInfCompararVersion);
+  const mapas = Object.create(null);
+  elegidas.forEach(function(version) { mapas[version] = semanas.map(function() { return 0; }); });
+  const hayOtras = candidatas.length > 4;
+  if (hayOtras) mapas.Otras = semanas.map(function() { return 0; });
+  sesiones.forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    const semana = fecha ? visitasLunes(fecha) : '';
+    if (!Object.prototype.hasOwnProperty.call(indice, semana)) return;
+    const version = visitasTexto(sesion && sesion.version).trim() || '(sin dato)';
+    const clave = esElegida[version] ? version : 'Otras';
+    if (mapas[clave]) mapas[clave][indice[semana]]++;
+  });
+  const orden = elegidas.slice();
+  if (hayOtras) orden.push('Otras');
+  return { semanas:semanas, series:orden.map(function(version) { return { version:version, n:mapas[version] }; }) };
+}
+
+function visitasInfNodo(nombre, valor, hijos) {
+  const nodo = { name:nombre, value:valor };
+  if (hijos && hijos.length) nodo.children = hijos;
+  return nodo;
+}
+
+function visitasInfPantallasArbol(totales) {
+  function valor(clave) { return totales[clave] || 0; }
+  function hoja(nombre, clave) {
+    const n = valor(clave);
+    return n > 0 ? visitasInfNodo(nombre, n, null) : null;
+  }
+  function grupo(nombre, hijos) {
+    const validos = hijos.filter(function(hijo) { return !!hijo; });
+    const suma = validos.reduce(function(total, hijo) { return total + hijo.value; }, 0);
+    return suma > 0 ? visitasInfNodo(nombre, suma, validos) : null;
+  }
+  const verReservas = grupo('Ver reservas', [
+    hoja('Activas', 'mr_activas'), hoja('Historial', 'mr_historial'), hoja('Sin detalle (v2.6)', 'misreservas')
+  ]);
+  const reservas = grupo('Reservas', [hoja('Nueva reserva', 'reserva'), verReservas]);
+  const comunidad = grupo('Comunidad', [
+    hoja('Todo', 'com_todo'), hoja('Avisos', 'com_avisos'), hoja('Votaciones', 'com_votos'),
+    hoja('Incidencias', 'com_incid'), hoja('Tablón', 'com_tablon'), hoja('Sin detalle (v2.6)', 'avisos')
+  ]);
+  const normas = grupo('Normas', [
+    hoja('Normas', 'nor_normas'), hoja('Documentos', 'nor_docs'), hoja('Sin detalle (v2.6)', 'normas')
+  ]);
+  const admin = grupo('Admin', [
+    hoja('Reservas', 'adm_reservas'), hoja('Días', 'adm_dias'), hoja('Avisos', 'adm_avisos'),
+    hoja('Votos', 'adm_votos'), hoja('Incidencias', 'adm_incid'), hoja('Tablón', 'adm_tablon'),
+    hoja('Socios', 'adm_socios'), hoja('Informe', 'adm_informe'), hoja('Visitas', 'adm_visitas'),
+    hoja('Sin detalle', 'admin')
+  ]);
+  const hijos = [hoja('Calendario', 'calendario'), reservas, comunidad, normas, hoja('Calculadora', 'calc'), admin].filter(function(nodo) { return !!nodo; });
+  const total = hijos.reduce(function(suma, nodo) { return suma + nodo.value; }, 0);
+  return visitasInfNodo('Uso de la app', total, hijos);
+}
+
+function visitasInfTotalesPantallas(sesiones) {
+  const totales = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const mapa = visitasContadores(sesion && sesion.pantallas);
+    Object.keys(mapa).forEach(function(clave) {
+      const numero = visitasNumero(mapa[clave], false);
+      if (numero > 0) totales[clave] = (totales[clave] || 0) + numero;
+    });
+  });
+  return totales;
+}
+
+function visitasInfPerfilPantallas(sesiones) {
+  const totales = visitasInfTotalesPantallas(sesiones);
+  const grupos = [
+    ['calendario'],
+    ['reserva'],
+    ['mr_activas','mr_historial','misreservas'],
+    ['com_todo','com_avisos','com_votos','com_incid','com_tablon','avisos'],
+    ['nor_normas','nor_docs','normas'],
+    ['calc'],
+    ['adm_reservas','adm_dias','adm_avisos','adm_votos','adm_incid','adm_tablon','adm_socios','adm_informe','adm_visitas','admin']
+  ];
+  let total = 0;
+  Object.keys(totales).forEach(function(clave) { total += totales[clave]; });
+  return grupos.map(function(claves) {
+    const suma = claves.reduce(function(acumulado, clave) { return acumulado + (totales[clave] || 0); }, 0);
+    return visitasInfPct(suma, total);
+  });
+}
+
+function visitasInfEtiquetaAccion(clave) {
+  const etiquetas = {
+    login:'inició sesión', login_error:'falló al entrar', reserva:'reservó',
+    cancelar_reserva:'canceló una reserva', voto:'votó', incidencia:'avisó de una incidencia',
+    anuncio:'publicó un anuncio', cuenta_guardada:'guardó una cuenta',
+    cambio_password:'cambió la contraseña', idioma:'cambió el idioma',
+    documento:'abrió un documento', pin_admin:'entró en Admin',
+    error_api:'tuvo un fallo de red/servidor', dia_detalle:'abrió el detalle de un día',
+    calc_con_reserva:'usó la calculadora con reserva'
+  };
+  return Object.prototype.hasOwnProperty.call(etiquetas, clave) ? etiquetas[clave] : visitasInfCapitalizar(clave.replace(/_/g, ' '));
+}
+
+function visitasInfActividad(sesiones, anteriores, anteriorExiste) {
+  const totales = visitasInfTotalesPantallas(sesiones);
+  const nombres = ['Calendario','Nueva reserva','Ver reservas','Comunidad','Normas','Calculadora','Admin'];
+  return {
+    pantallasArbol:visitasInfPantallasArbol(totales),
+    radar:{
+      ejes:nombres.map(function(nombre) { return { nombre:nombre }; }),
+      actual:visitasInfPerfilPantallas(sesiones),
+      anterior:anteriorExiste ? visitasInfPerfilPantallas(anteriores) : null
+    },
+    acciones:visitasTotalesContadores(sesiones, 'acciones').map(function(fila) {
+      return { clave:fila.clave, etiqueta:visitasInfEtiquetaAccion(fila.clave), n:fila.n };
+    })
+  };
+}
+
+function visitasInfGeo(sesiones) {
+  const paisesNombres = { ES:'España', FR:'Francia', PT:'Portugal', DE:'Alemania', GB:'Reino Unido', US:'Estados Unidos', IT:'Italia' };
+  const mapa = Object.create(null);
+  const redesMapa = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const codigo = visitasTexto(sesion && sesion.pais).trim().toUpperCase();
+    const pais = codigo ? (paisesNombres[codigo] || codigo) : '(sin dato)';
+    const region = visitasTexto(sesion && sesion.region).trim() || '(sin dato)';
+    const ciudad = visitasTexto(sesion && sesion.ciudad).trim() || '(sin dato)';
+    if (!mapa[pais]) mapa[pais] = Object.create(null);
+    if (!mapa[pais][region]) mapa[pais][region] = Object.create(null);
+    mapa[pais][region][ciudad] = (mapa[pais][region][ciudad] || 0) + 1;
+    const red = visitasTexto(sesion && sesion.red).trim() || '(sin dato)';
+    redesMapa[red] = (redesMapa[red] || 0) + 1;
+  });
+  function ordenar(a, b) {
+    if (b.value !== a.value) return b.value - a.value;
+    return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0);
+  }
+  const paises = Object.keys(mapa).map(function(pais) {
+    const regiones = Object.keys(mapa[pais]).map(function(region) {
+      const ciudades = Object.keys(mapa[pais][region]).map(function(ciudad) {
+        return visitasInfNodo(ciudad, mapa[pais][region][ciudad], null);
+      }).sort(ordenar);
+      const totalRegion = ciudades.reduce(function(total, ciudad) { return total + ciudad.value; }, 0);
+      return visitasInfNodo(region, totalRegion, ciudades);
+    }).sort(ordenar);
+    const totalPais = regiones.reduce(function(total, region) { return total + region.value; }, 0);
+    return visitasInfNodo(pais, totalPais, regiones);
+  }).sort(ordenar);
+  const total = paises.reduce(function(suma, pais) { return suma + pais.value; }, 0);
+  const redesOrdenadas = Object.keys(redesMapa).map(function(red) { return { red:red, n:redesMapa[red] }; }).sort(function(a, b) {
+    if (b.n !== a.n) return b.n - a.n;
+    return a.red < b.red ? -1 : (a.red > b.red ? 1 : 0);
+  });
+  const redes = redesOrdenadas.slice(0, 8);
+  if (redesOrdenadas.length > 8) {
+    redes.push({ red:'Otras', n:redesOrdenadas.slice(8).reduce(function(suma, fila) { return suma + fila.n; }, 0) });
+  }
+  return { geo:visitasInfNodo('Ubicaciones', total, paises), redes:redes };
+}
+
+function visitasInfEstado(valor, bienHasta, malDesde, textos, hayDatos) {
+  if (!hayDatos) return { clave:'atencion', texto:textos[3] };
+  if (valor < bienHasta) return { clave:'bien', texto:textos[0] };
+  if (valor > malDesde) return { clave:'mal', texto:textos[2] };
+  return { clave:'atencion', texto:textos[1] };
+}
+
+function visitasInfCalidad(sesiones) {
+  const definiciones = [
+    ['0–1 s',0,1000], ['1–2 s',1000,2000], ['2–3 s',2000,3000],
+    ['3–5 s',3000,5000], ['5–8 s',5000,8000], ['8–15 s',8000,15000], ['> 15 s',15000,null]
+  ];
+  const bins = definiciones.map(function(fila) { return { etiqueta:fila[0], desdeMs:fila[1], hastaMs:fila[2], n:0 }; });
+  const cargas = [];
+  const duraciones = { movil:[], escritorio:[], otro:[] };
+  let erroresTotal = 0;
+  let sesionesConError = 0;
+  let errorApi = 0;
+  let loginError = 0;
+  sesiones.forEach(function(sesion) {
+    const carga = visitasNumero(sesion && sesion.cargaMs, true);
+    if (carga !== null) {
+      cargas.push(carga);
+      let i;
+      for (i = 0; i < definiciones.length; i++) {
+        if (carga >= definiciones[i][1] && (definiciones[i][2] === null || carga < definiciones[i][2])) {
+          bins[i].n++;
+          break;
+        }
+      }
+    }
+    const duracion = visitasNumero(sesion && sesion.duracionS, false);
+    if (duracion > 0) duraciones[visitasInfTipo(sesion && sesion.tipoDisp)].push(duracion / 60);
+    const errores = visitasNumero(sesion && sesion.errores, false);
+    erroresTotal += errores;
+    if (errores > 0) sesionesConError++;
+    errorApi += visitasInfValorContador(sesion && sesion.acciones, ['error_api']);
+    loginError += visitasInfValorContador(sesion && sesion.acciones, ['login_error']);
+  });
+  const cargaP50 = visitasPercentil(cargas, 0.5);
+  const cargaP90 = visitasPercentil(cargas, 0.9);
+  const carga = {
+    bins:bins, p50:cargaP50, p90:cargaP90,
+    pctBajo3s:visitasInfPct(cargas.filter(function(valor) { return valor < 3000; }).length, cargas.length),
+    n:cargas.length
+  };
+  const etiquetasTipo = { movil:'Móvil', escritorio:'Escritorio', otro:'Otro' };
+  const cajas = Object.keys(duraciones).filter(function(tipo) { return duraciones[tipo].length >= 5; }).map(function(tipo) {
+    const valores = duraciones[tipo].slice().sort(function(a, b) { return a - b; });
+    const q1 = visitasPercentil(valores, 0.25);
+    const mediana = visitasPercentil(valores, 0.5);
+    const q3 = visitasPercentil(valores, 0.75);
+    const iqr = q3 - q1;
+    const inferior = q1 - 1.5 * iqr;
+    const superior = q3 + 1.5 * iqr;
+    const normales = valores.filter(function(valor) { return valor >= inferior && valor <= superior; });
+    const atipicos = valores.filter(function(valor) { return valor < inferior || valor > superior; });
+    return {
+      tipo:etiquetasTipo[tipo], n:valores.length,
+      min:normales.length ? normales[0] : valores[0], q1:q1, mediana:mediana, q3:q3,
+      max:normales.length ? normales[normales.length - 1] : valores[valores.length - 1], atipicos:atipicos
+    };
+  });
+  const pctErrores = visitasInfPct(sesionesConError, sesiones.length);
+  const pctConexion = visitasInfPct(errorApi, sesiones.length);
+  return {
+    carga:carga,
+    duracion:cajas,
+    errores:{ sesionesConError:sesionesConError, pct:pctErrores, erroresTotal:erroresTotal, errorApi:errorApi, loginError:loginError },
+    estado:{
+      carga:visitasInfEstado(cargaP50, 3000, 6000, ['La carga es rápida.','La carga puede mejorar.','La carga es lenta.','No hay datos de carga.'], cargas.length > 0),
+      errores:visitasInfEstado(pctErrores, 2, 10, ['Hay pocos errores.','Conviene vigilar los errores.','Hay demasiadas visitas con errores.','No hay visitas para medir errores.'], sesiones.length > 0),
+      conexion:visitasInfEstado(pctConexion, 5, 15, ['Hay pocos fallos de conexión.','Conviene vigilar la conexión.','Hay demasiados fallos de conexión.','No hay visitas para medir la conexión.'], sesiones.length > 0)
+    }
+  };
+}
+
+function visitasInfNumeroEs(valor) {
+  const numero = isFinite(Number(valor)) ? Number(valor) : 0;
+  const redondeado = Math.round(numero * 10) / 10;
+  return (Math.abs(redondeado - Math.round(redondeado)) < 1e-9 ? String(Math.round(redondeado)) : redondeado.toFixed(1)).replace('.', ',');
+}
+
+function visitasInfFechaNatural(fecha) {
+  const partes = visitasPartesYmd(fecha);
+  if (!partes) return fecha;
+  const dias = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return dias[visitasDiaSemanaYmd(fecha)] + ' ' + partes.dia + ' de ' + meses[partes.mes - 1];
+}
+
+function visitasInfHallazgos(datos, sesiones, historial, sociosActivos, opciones) {
+  if (sesiones.length < 5) return ['Todavía hay pocas visitas para sacar conclusiones fiables; estas cifras son orientativas.'];
+  const hallazgos = [];
+  function anadir(texto) { if (texto && hallazgos.length < 10) hallazgos.push(texto); }
+  const adopcion = datos.adopcion;
+  const ultimo = adopcion.puntos.length ? adopcion.puntos[adopcion.puntos.length - 1].socios : 0;
+  if (adopcion.totalSocios > 0) {
+    anadir(ultimo + ' de ' + adopcion.totalSocios + ' socios han entrado (' + visitasInfNumeroEs(adopcion.pct) + ' %).');
+    const nombres = visitasInfMapaSocios(sociosActivos);
+    const vistos = Object.create(null);
+    historial.forEach(function(sesion) {
+      const id = visitasId(sesion && sesion.socioId);
+      const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+      if (id && fecha && (!visitasPartesYmd(opciones.hoy) || fecha <= opciones.hoy)) vistos[id] = true;
+    });
+    const pendientes = Object.keys(nombres).sort().filter(function(id) { return !vistos[id]; }).map(function(id) { return nombres[id] || ('Nº ' + id); });
+    if (pendientes.length) {
+      const visibles = pendientes.slice(0, 6).join(', ');
+      const resto = pendientes.length > 6 ? ' y ' + (pendientes.length - 6) + ' más' : '';
+      anadir('Aún no han entrado: ' + visibles + resto + '.');
+    }
+  }
+  if (datos.evolucion.pico.n > 0) anadir('El día con más visitas fue el ' + visitasInfFechaNatural(datos.evolucion.pico.fecha) + ' (' + datos.evolucion.pico.n + ').');
+  const momento = datos.mapaSemanaHora.momentos.slice().sort(function(a, b) { return b.n - a.n; })[0];
+  if (momento && momento.n > 0) anadir('La franja con más visitas fue la ' + momento.etiqueta.toLowerCase() + ', de ' + momento.rango + ' (' + momento.n + ').');
+  const moviles = sesiones.filter(function(sesion) { return visitasTexto(sesion && sesion.tipoDisp).trim().toLowerCase() === 'movil'; }).length;
+  anadir('El ' + visitasInfNumeroEs(visitasInfPct(moviles, sesiones.length)) + ' % de las visitas son desde el móvil.');
+  const instaladas = sesiones.filter(function(sesion) { return visitasTexto(sesion && sesion.modo).trim().toLowerCase() === 'instalada'; }).length;
+  const pctInstaladas = visitasInfPct(instaladas, sesiones.length);
+  if (pctInstaladas < 30) anadir('Solo el ' + visitasInfNumeroEs(pctInstaladas) + ' % usa la app instalada en la pantalla de inicio.');
+  const antiguas = datos.resumen.desfasadas;
+  if (antiguas > 0) {
+    const versiones = datos.resumen.version.filter(function(fila) {
+      return fila.clave !== '(sin dato)' && fila.clave !== visitasTexto(opciones.versionActual);
+    }).map(function(fila) { return 'v' + fila.clave; });
+    anadir(antiguas + (antiguas === 1 ? ' visita sigue' : ' visitas siguen') + ' en una versión anterior' + (versiones.length ? ' (' + versiones.join(', ') + ')' : '') + '.');
+  }
+  if (datos.resumen.kpis.visitas.anterior !== null) {
+    const delta = datos.resumen.kpis.visitas.delta;
+    if (delta > 0) anadir('Hubo ' + delta + (delta === 1 ? ' visita más' : ' visitas más') + ' que en el periodo anterior.');
+    else if (delta < 0) anadir('Hubo ' + Math.abs(delta) + (delta === -1 ? ' visita menos' : ' visitas menos') + ' que en el periodo anterior.');
+    else anadir('Hubo las mismas visitas que en el periodo anterior.');
+  }
+  if (datos.retencion.retorno7d !== null) anadir('El ' + visitasInfNumeroEs(datos.retencion.retorno7d) + ' % de quienes entran vuelven en los 7 días siguientes.');
+  let cuello = null;
+  datos.embudo.forEach(function(etapa, indice) {
+    if (indice > 0) {
+      const perdida = 100 - etapa.pctDeLaAnterior;
+      if (!cuello || perdida > cuello.perdida) cuello = { perdida:perdida, etapa:etapa };
+    }
+  });
+  if (cuello && cuello.perdida > 0) anadir('La mayor pérdida ocurre antes de «' + cuello.etapa.etiqueta.toLowerCase() + '»: continúa el ' + visitasInfNumeroEs(cuello.etapa.pctDeLaAnterior) + ' %.');
+  if (datos.calidad.carga.n > 0) {
+    anadir('La carga habitual fue de ' + visitasInfNumeroEs(datos.calidad.carga.p50 / 1000) + ' s; 9 de cada 10 visitas cargaron en ' + visitasInfNumeroEs(datos.calidad.carga.p90 / 1000) + ' s o menos.');
+  }
+  if (datos.calidad.errores.sesionesConError > 0) anadir('El ' + visitasInfNumeroEs(datos.calidad.errores.pct) + ' % de las visitas tuvo algún error.');
+  if (datos.resumen.origen.length) {
+    const origen = datos.resumen.origen[0];
+    const nombre = origen.clave === 'directo' ? 'acceso directo' : origen.clave;
+    anadir('La vía de entrada más habitual fue ' + nombre + ' (' + origen.n + (origen.n === 1 ? ' visita' : ' visitas') + ').');
+  }
+  return hallazgos;
+}
+
+function visitasInfUltimas(sesiones, sociosActivos) {
+  const nombres = visitasInfMapaSocios(sociosActivos);
+  return sesiones.slice().sort(function(a, b) {
+    const diferencia = visitasTimestamp(b && b.inicio) - visitasTimestamp(a && a.inicio);
+    if (diferencia) return diferencia;
+    const ta = visitasTexto(a && a.inicio);
+    const tb = visitasTexto(b && b.inicio);
+    return ta < tb ? 1 : (ta > tb ? -1 : 0);
+  }).slice(0, 40).map(function(sesion) {
+    const partes = visitasFecha(sesion && sesion.inicio);
+    const id = visitasId(sesion && sesion.socioId);
+    return {
+      inicio:visitasTexto(sesion && sesion.inicio), fecha:partes.fecha, hora:partes.hora,
+      socioId:id, nombre:visitasNombreSocio(nombres, id), tipoDisp:visitasTexto(sesion && sesion.tipoDisp),
+      so:visitasTexto(sesion && sesion.so), navegador:visitasTexto(sesion && sesion.navegador),
+      modo:visitasTexto(sesion && sesion.modo), ciudad:visitasTexto(sesion && sesion.ciudad),
+      pais:visitasTexto(sesion && sesion.pais), red:visitasTexto(sesion && sesion.red),
+      origen:visitasTexto(sesion && sesion.origen), version:visitasTexto(sesion && sesion.version),
+      duracionS:visitasNumero(sesion && sesion.duracionS, false), cargaMs:visitasNumero(sesion && sesion.cargaMs, true),
+      pantallas:visitasContadores(sesion && sesion.pantallas), acciones:visitasContadores(sesion && sesion.acciones),
+      errores:visitasNumero(sesion && sesion.errores, false), primeraVez:visitasTexto(sesion && sesion.primeraVez)
+    };
+  });
+}
+
+function visitasInfMeta(opciones, sociosActivos) {
+  const opts = opciones || {};
+  const nombres = visitasInfMapaSocios(sociosActivos);
+  const excluidos = [];
+  const idExcluido = visitasId(opts.excluirSocio);
+  if (idExcluido) excluidos.push({ id:idExcluido, nombre:visitasNombreSocio(nombres, idExcluido) });
+  (Array.isArray(opts.excluirSocios) ? opts.excluirSocios : []).forEach(function(id) {
+    const limpio = visitasId(id);
+    if (limpio && limpio !== idExcluido) excluidos.push({ id:limpio, nombre:visitasNombreSocio(nombres, limpio) });
+  });
+  const filtros = [opts.incluirAdmin ? 'Incluye los aparatos de Junta' : 'Excluye los aparatos de Junta'];
+  excluidos.forEach(function(socio) {
+    filtros.push('Socio excluido: nº ' + socio.id + (socio.nombre ? ' – ' + socio.nombre : ''));
+  });
+  return {
+    periodoEtiqueta:visitasTexto(opts.periodoEtiqueta),
+    desde:visitasPartesYmd(opts.desde) ? opts.desde : '',
+    hasta:visitasPartesYmd(opts.hasta) ? opts.hasta : '',
+    generado:visitasTexto(opts.generado), filtros:filtros,
+    incluyeJunta:!!opts.incluirAdmin, sociosExcluidos:excluidos
+  };
+}
+
+/* Minigráficos de la portada: una cifra por día del periodo (null = sin datos ese día). */
+function visitasInfSparks(sesiones, porDia) {
+  const dias = (Array.isArray(porDia) ? porDia : []).map(function(fila) { return fila.fecha; });
+  const indice = Object.create(null);
+  dias.forEach(function(fecha, i) { indice[fecha] = i; });
+  const aparatos = dias.map(function() { return Object.create(null); });
+  const socios = dias.map(function() { return Object.create(null); });
+  const duraciones = dias.map(function() { return []; });
+  const cargas = dias.map(function() { return []; });
+  const conError = dias.map(function() { return 0; });
+  const totales = dias.map(function() { return 0; });
+  (Array.isArray(sesiones) ? sesiones : []).forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    if (!Object.prototype.hasOwnProperty.call(indice, fecha)) return;
+    const i = indice[fecha];
+    totales[i]++;
+    const dispositivo = visitasTexto(sesion && sesion.dispositivoId).trim();
+    if (dispositivo) aparatos[i][dispositivo] = true;
+    const socio = visitasId(sesion && sesion.socioId);
+    if (socio) socios[i][socio] = true;
+    const duracion = visitasNumero(sesion && sesion.duracionS, false);
+    if (duracion > 0) duraciones[i].push(duracion);
+    const carga = visitasNumero(sesion && sesion.cargaMs, true);
+    if (carga !== null) cargas[i].push(carga);
+    if (visitasNumero(sesion && sesion.errores, false) > 0) conError[i]++;
+  });
+  return {
+    visitas:totales,
+    aparatos:aparatos.map(function(mapa) { return Object.keys(mapa).length; }),
+    socios:socios.map(function(mapa) { return Object.keys(mapa).length; }),
+    duracion:duraciones.map(function(lista) { return lista.length ? visitasPercentil(lista, 0.5) : null; }),
+    carga:cargas.map(function(lista) { return lista.length ? visitasPercentil(lista, 0.5) : null; }),
+    errores:totales.map(function(total, i) { return total ? visitasInfPct(conError[i], total) : 0; })
+  };
+}
+
+function visitasInformeCalcular(sesiones, sociosActivos, opciones) {
+  const todas = Array.isArray(sesiones) ? sesiones : [];
+  const activos = Array.isArray(sociosActivos) ? sociosActivos : [];
+  const opts = opciones && typeof opciones === 'object' ? opciones : {};
+  const actuales = visitasFiltrar(todas, opts);
+  const historial = visitasFiltrar(todas, {
+    incluirAdmin:!!opts.incluirAdmin,
+    excluirSocio:opts.excluirSocio
+  });
+  const resumen = visitasResumen(todas, activos, opts);
+  const resumenAnterior = visitasInfResumenAnterior(todas, activos, opts);
+  const anteriorExiste = resumenAnterior !== null;
+  const anteriores = anteriorExiste ? visitasFiltrar(todas, visitasInfOpcionesPeriodo(opts, opts.anteriorDesde, opts.anteriorHasta)) : [];
+  resumen.kpis = visitasInfKpis(resumen, resumenAnterior);
+  resumen.spark = resumen.porDia.map(function(fila) { return { fecha:fila.fecha, n:fila.n }; });
+  resumen.sparks = visitasInfSparks(actuales, resumen.porDia);
+  const geo = visitasInfGeo(actuales);
+  const resultado = {
+    resumen:resumen,
+    evolucion:visitasInfEvolucion(actuales, historial, resumen, opts, anteriorExiste),
+    calendario:visitasInfCalendario(historial, opts.hoy),
+    adopcion:visitasInfAdopcion(historial, activos, opts.hoy),
+    mapaSemanaHora:visitasInfSemanaHora(actuales),
+    matrizSocios:visitasInfMatrizSocios(actuales, activos, opts),
+    burbujas:visitasInfBurbujas(actuales, activos),
+    embudo:visitasInfEmbudo(actuales),
+    retencion:visitasInfRetencion(historial, opts.hoy),
+    aluvial:visitasInfAluvial(actuales),
+    versionesSerie:visitasInfVersionesSerie(actuales, opts),
+    pantallasArbol:null,
+    radar:null,
+    acciones:[],
+    geo:geo.geo,
+    redes:geo.redes,
+    calidad:visitasInfCalidad(actuales),
+    hallazgos:[],
+    ultimas:visitasInfUltimas(actuales, activos),
+    meta:visitasInfMeta(opts, activos)
+  };
+  const actividad = visitasInfActividad(actuales, anteriores, anteriorExiste);
+  resultado.pantallasArbol = actividad.pantallasArbol;
+  resultado.radar = actividad.radar;
+  resultado.acciones = actividad.acciones;
+  resultado.hallazgos = visitasInfHallazgos(resultado, actuales, historial, activos, opts);
+  return resultado;
+}
+/* >>> VISITAS INFORME DATOS (fin) */
 
 /* Comprime una imagen en el propio navegador (redimensiona + JPEG) antes de subirla.
    Devuelve un data URL "data:image/jpeg;base64,...." */
@@ -10194,12 +11233,15 @@ function generarInforme() {
   }
 }
 
-function informeAbrirVista(html, orientacion) {
+let informeAlCerrar = null;
+
+function informeAbrirVista(html, orientacion, opciones) {
+  const opts = opciones && typeof opciones === 'object' ? opciones : {};
   informeCerrarVista();
   try {
     const vista = document.createElement('div');
     vista.id = 'informe-vista';
-    const titulo = informeTituloInforme(informeEstadoUI);
+    const titulo = typeof opts.titulo === 'string' ? opts.titulo : informeTituloInforme(informeEstadoUI);
     vista.innerHTML = '<div class="inf-barra">' +
       '<button type="button" class="inf-barra-cerrar" id="informe-cerrar">← Cerrar</button>' +
       '<div class="inf-barra-titulo">' + informeEsc(titulo) + '</div>' +
@@ -10207,6 +11249,7 @@ function informeAbrirVista(html, orientacion) {
         '<button type="button" data-inf-orientacion="v" aria-pressed="false">Vertical</button>' +
         '<button type="button" data-inf-orientacion="h" aria-pressed="false">Horizontal</button>' +
       '</div>' +
+      (typeof opts.extraBarraHtml === 'string' ? opts.extraBarraHtml : '') +
       '<button type="button" class="inf-imprimir" id="informe-imprimir">🖨️ Imprimir / Guardar PDF</button>' +
       '</div><main class="inf-hoja">' + html + '</main>';
     document.body.appendChild(vista);
@@ -10221,6 +11264,8 @@ function informeAbrirVista(html, orientacion) {
     };
     document.addEventListener('keydown', informeEscapeHandler);
     informeSetOrientacion(orientacion);
+    informeAlCerrar = typeof opts.alCerrar === 'function' ? opts.alCerrar : null;
+    if (typeof opts.alMontar === 'function') opts.alMontar(vista);
   } catch (error) {
     informeCerrarVista();
     throw error;
@@ -10228,6 +11273,11 @@ function informeAbrirVista(html, orientacion) {
 }
 
 function informeCerrarVista() {
+  if (informeAlCerrar) {
+    const alCerrar = informeAlCerrar;
+    informeAlCerrar = null;
+    try { alCerrar(); } catch (error) {}
+  }
   const vista = document.getElementById('informe-vista');
   if (vista && vista.parentNode) vista.parentNode.removeChild(vista);
   const estilo = document.getElementById('informe-page-style');
@@ -10921,6 +11971,7 @@ function visitasPintarControles(sociosActivos, estado, aparatoApagado) {
     '</div><div class="vis-botones">' +
       '<button type="button" class="btn btn-primary" onclick="visitasActualizar()">🔄 Actualizar</button>' +
       '<button type="button" class="btn btn-outline" onclick="visitasDescargarCsv()">⬇ CSV</button>' +
+      '<button type="button" class="btn btn-outline" onclick="visitasInformeAbrir()">📄 Informe</button>' +
     '</div>' + (hora ? '<div class="vis-actualizado">Datos actualizados a las ' + visitasEsc(hora) + ' (Madrid)</div>' : '') + '</div>';
 }
 
@@ -11256,6 +12307,950 @@ function visitasDescargarCsv() {
   }
 }
 /* >>> VISITAS PANTALLA (fin) */
+
+/* >>> VISITAS INFORME (inicio) */
+/*
+ * Informe de estudio de uso de la web: gráficos avanzados con Apache ECharts 5.6.0 (cargado bajo demanda).
+ * Las funciones visitasOpcion<Nombre>(datos) son PURAS: devuelven el objeto option de ECharts (o null si no hay datos).
+ * Reglas de la guía de visualización: ver _visitas/ESPECIFICACION_INFORME_VISITAS.md §0.
+ */
+var VREP_ECHARTS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js';
+var VREP_ECHARTS_SRI = 'sha512-XSmbX3mhrD2ix5fXPTRQb2FwK22sRMVQTpBP2ac8hX7Dh/605hA2QDegVWiAvZPiXIxOV0CbkmUjGionDpbCmw==';
+var VREP_FUENTE = 'system-ui, -apple-system, "Segoe UI", sans-serif';
+var VREP_COLOR = {
+  cat:['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'],
+  seq:['#f6e3e5','#ecc3c9','#dd9aa5','#c9687a','#ae3f55','#8c2a3a','#6b1a1a'],
+  cero:'#f1efe9', otros:'#898781', azul:'#2a78d6', rojo:'#e34948', medio:'#f0efec',
+  bien:'#0ca30c', atencion:'#fab219', mal:'#d03b3b',
+  tinta:'#0b0b0b', tinta2:'#52514e', apagada:'#898781', rejilla:'#e1e0d9', base:'#c3c2b7', fondo:'#ffffff', marca:'#6b1a1a'
+};
+var VREP_MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+var VREP_DIAS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+var _vrepEchartsPromesa = null;
+var _vrepGraficos = [];
+var _vrepObservador = null;
+var _vrepTexturas = false;
+var _vrepDatos = null;
+
+/* ---------- Carga de la librería (bajo demanda, con integridad SRI) ---------- */
+function visitasCargarEcharts() {
+  if (typeof window !== 'undefined' && window.echarts && typeof window.echarts.init === 'function') return Promise.resolve(window.echarts);
+  if (_vrepEchartsPromesa) return _vrepEchartsPromesa;
+  _vrepEchartsPromesa = new Promise(function(resolve, reject) {
+    var script = document.createElement('script');
+    var terminado = false;
+    var temporizador = null;
+    function limpiar() {
+      if (temporizador) clearTimeout(temporizador);
+      script.onload = null;
+      script.onerror = null;
+    }
+    function fallo(mensaje) {
+      if (terminado) return;
+      terminado = true;
+      limpiar();
+      if (script.parentNode) script.parentNode.removeChild(script);
+      _vrepEchartsPromesa = null;
+      reject(new Error(mensaje));
+    }
+    script.src = VREP_ECHARTS_URL;
+    script.integrity = VREP_ECHARTS_SRI;
+    script.crossOrigin = 'anonymous';
+    script.referrerPolicy = 'no-referrer';
+    script.async = true;
+    script.onload = function() {
+      if (terminado) return;
+      if (window.echarts && typeof window.echarts.init === 'function') {
+        terminado = true;
+        limpiar();
+        resolve(window.echarts);
+      } else {
+        fallo('La librería de gráficos no se ha iniciado.');
+      }
+    };
+    script.onerror = function() { fallo('No se ha podido cargar la librería de gráficos.'); };
+    temporizador = setTimeout(function() { fallo('La librería de gráficos tarda demasiado en cargar.'); }, 20000);
+    document.head.appendChild(script);
+  });
+  return _vrepEchartsPromesa;
+}
+
+/* ---------- Formatos en castellano ---------- */
+function vrepFechaCorta(fecha) {
+  var partes = visitasPartesYmd(fecha);
+  return partes ? partes.dia + ' ' + VREP_MESES[partes.mes - 1] : String(fecha || '');
+}
+function vrepFechaLarga(fecha) {
+  var partes = visitasPartesYmd(fecha);
+  return partes ? partes.dia + ' ' + VREP_MESES[partes.mes - 1] + ' ' + partes.anio : String(fecha || '');
+}
+function vrepNum(valor, decimales) {
+  var n = Number(valor);
+  if (!isFinite(n)) n = 0;
+  var d = decimales === undefined ? 0 : decimales;
+  var texto = n.toFixed(d);
+  if (d > 0) texto = texto.replace(/0+$/, '').replace(/\.$/, '');
+  return texto.replace('.', ',');
+}
+function vrepMin(minutos) {
+  var n = Number(minutos);
+  if (!isFinite(n) || n <= 0) return '0 s';
+  if (n < 1) return Math.round(n * 60) + ' s';
+  return vrepNum(n, 1) + ' min';
+}
+function vrepPct(valor) { return vrepNum(valor, 1) + ' %'; }
+function vrepMaximo(lista) {
+  var m = 0;
+  lista.forEach(function(v) { if (typeof v === 'number' && isFinite(v) && v > m) m = v; });
+  return m;
+}
+function vrepEjeBase(extra) {
+  var eje = {
+    axisLine:{ lineStyle:{ color:VREP_COLOR.base } },
+    axisTick:{ show:false },
+    axisLabel:{ color:VREP_COLOR.apagada, fontSize:12, fontFamily:VREP_FUENTE },
+    splitLine:{ show:false }
+  };
+  Object.keys(extra || {}).forEach(function(k) { eje[k] = extra[k]; });
+  return eje;
+}
+function vrepEjeValor(extra) {
+  var eje = vrepEjeBase({ axisLine:{ show:false }, splitLine:{ show:true, lineStyle:{ color:VREP_COLOR.rejilla } }, minInterval:1 });
+  Object.keys(extra || {}).forEach(function(k) { eje[k] = extra[k]; });
+  return eje;
+}
+function vrepBase(extra) {
+  var opcion = {
+    animation:false,
+    backgroundColor:VREP_COLOR.fondo,
+    textStyle:{ fontFamily:VREP_FUENTE, color:VREP_COLOR.tinta2, fontSize:12 },
+    aria:{ enabled:true, decal:{ show:false } },
+    tooltip:{ confine:true, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base }
+  };
+  Object.keys(extra || {}).forEach(function(k) { opcion[k] = extra[k]; });
+  return opcion;
+}
+function vrepLeyenda(extra) {
+  var l = { top:0, itemWidth:14, itemHeight:8, itemGap:14, textStyle:{ color:VREP_COLOR.tinta2, fontSize:12, fontFamily:VREP_FUENTE } };
+  Object.keys(extra || {}).forEach(function(k) { l[k] = extra[k]; });
+  return l;
+}
+/* Color estable por entidad: el mismo aparato lleva siempre el mismo color en todos los gráficos. */
+function vrepColorAparato(tipo) {
+  var t = String(tipo || '').toLowerCase();
+  if (t === 'movil' || t === 'móvil') return VREP_COLOR.cat[0];
+  if (t === 'escritorio') return VREP_COLOR.cat[1];
+  if (t === 'tablet') return VREP_COLOR.cat[2];
+  return VREP_COLOR.otros;
+}
+function vrepTonoSeq(i) { return VREP_COLOR.seq[Math.max(0, Math.min(6, i))]; }
+function vrepEscala(max) {
+  return [VREP_COLOR.cero, VREP_COLOR.seq[1], VREP_COLOR.seq[2], VREP_COLOR.seq[3], VREP_COLOR.seq[4], VREP_COLOR.seq[5], VREP_COLOR.seq[6]];
+}
+function vrepVisualMap(max, extra) {
+  var v = {
+    type:'continuous', min:0, max:Math.max(1, max), calculable:false, orient:'horizontal', left:'center', bottom:0,
+    itemWidth:12, itemHeight:140, text:['más', 'menos'], textStyle:{ color:VREP_COLOR.apagada, fontSize:12 },
+    inRange:{ color:vrepEscala(max) }
+  };
+  Object.keys(extra || {}).forEach(function(k) { v[k] = extra[k]; });
+  return v;
+}
+
+/* ================= 0. Minigráfico de las tarjetas ================= */
+function visitasOpcionSpark(valores, color) {
+  var lista = (Array.isArray(valores) ? valores : []).map(function(v) { return typeof v === 'number' && isFinite(v) ? v : null; });
+  if (lista.length < 2 || lista.every(function(v) { return v === null; })) return null;
+  return vrepBase({
+    aria:{ enabled:false },
+    tooltip:{ show:false },
+    grid:{ left:0, right:0, top:2, bottom:2 },
+    xAxis:{ type:'category', show:false, data:lista.map(function(v, i) { return i; }), boundaryGap:false },
+    yAxis:{ type:'value', show:false, min:0 },
+    series:[{ type:'line', data:lista, symbol:'none', connectNulls:true, silent:true,
+      lineStyle:{ width:2, color:color || VREP_COLOR.seq[5] }, areaStyle:{ color:color || VREP_COLOR.seq[5], opacity:0.16 } }]
+  });
+}
+
+/* ================= 1. Evolución ================= */
+function visitasOpcionEvolucion(d) {
+  var e = d && d.evolucion;
+  if (!e || !e.serie || !e.serie.length) return null;
+  var fechas = e.serie.map(function(x) { return x.fecha; });
+  var series = [];
+  var marcasVersion = (e.versionesAparicion || []).map(function(v) {
+    return { xAxis:v.fecha, label:{ formatter:'v' + v.version, color:VREP_COLOR.tinta2, fontSize:12, position:'insideEndTop' } };
+  });
+  series.push({
+    name:'Visitas', type:'line', data:e.serie.map(function(x) { return x.n; }), symbol:'circle', symbolSize:8,
+    showSymbol:e.serie.length <= 31, z:3,
+    lineStyle:{ width:2, color:VREP_COLOR.seq[5] }, itemStyle:{ color:VREP_COLOR.seq[5], borderColor:VREP_COLOR.fondo, borderWidth:2 },
+    areaStyle:{ color:VREP_COLOR.seq[3], opacity:0.22 },
+    markPoint:e.pico && e.pico.n > 0 ? {
+      symbol:'pin', symbolSize:42, itemStyle:{ color:VREP_COLOR.seq[6] },
+      label:{ color:VREP_COLOR.fondo, fontSize:12, formatter:function(p) { return String(p.value); } },
+      data:[{ name:'Pico', coord:[e.pico.fecha, e.pico.n], value:e.pico.n }]
+    } : undefined,
+    markLine:marcasVersion.length ? { symbol:'none', silent:true, lineStyle:{ color:VREP_COLOR.base, type:'dashed', width:1 }, data:marcasVersion } : undefined
+  });
+  series.push({
+    name:'Media de 7 días', type:'line', data:e.mediaMovil7.map(function(x) { return Math.round(x.v * 100) / 100; }),
+    symbol:'none', z:2, lineStyle:{ width:2, color:VREP_COLOR.tinta2 }, itemStyle:{ color:VREP_COLOR.tinta2 }
+  });
+  if (e.anteriorAlineada) {
+    series.push({
+      name:'Periodo anterior', type:'line', data:e.anteriorAlineada.map(function(x) { return x.n; }),
+      symbol:'none', z:1, lineStyle:{ width:2, color:VREP_COLOR.otros, type:'dashed' }, itemStyle:{ color:VREP_COLOR.otros }
+    });
+  }
+  var maximo = vrepMaximo(series[0].data.concat(series[1].data, e.anteriorAlineada ? series[2].data : []));
+  return vrepBase({
+    legend:vrepLeyenda({ data:series.map(function(s) { return s.name; }) }),
+    grid:{ left:34, right:14, top:36, bottom:28 },
+    tooltip:{ trigger:'axis', confine:true, formatter:function(p) {
+      var lista = Array.isArray(p) ? p : [p];
+      return '<b>' + vrepFechaLarga(lista[0].axisValue) + '</b><br>' + lista.map(function(x) {
+        return x.marker + ' ' + x.seriesName + ': <b>' + vrepNum(x.value, x.seriesName === 'Media de 7 días' ? 1 : 0) + '</b>';
+      }).join('<br>');
+    }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    xAxis:vrepEjeBase({ type:'category', data:fechas, boundaryGap:false, axisLabel:{ color:VREP_COLOR.apagada, fontSize:12, hideOverlap:true, formatter:function(v) { return vrepFechaCorta(v); } } }),
+    yAxis:vrepEjeValor({ type:'value', min:0, max:Math.max(2, Math.ceil(maximo * 1.15)) }),
+    series:series
+  });
+}
+
+function visitasOpcionCalendario(d) {
+  var c = d && d.calendario;
+  if (!c || !c.dias || !c.dias.length) return null;
+  var max = vrepMaximo(c.dias.map(function(x) { return x.n; }));
+  var topes = [];
+  if (max <= 4) { var t; for (t = 1; t <= max; t++) topes.push(t); }
+  else { topes = [1, Math.ceil(max / 3), Math.ceil(max * 2 / 3), max].filter(function(v, i, a) { return i === 0 || v > a[i - 1]; }); }
+  var colores = [VREP_COLOR.seq[2], VREP_COLOR.seq[3], VREP_COLOR.seq[5], VREP_COLOR.seq[6]].slice(-Math.max(1, topes.length));
+  var piezas = [{ value:0, color:VREP_COLOR.cero, label:'0' }];
+  topes.forEach(function(tope, i) {
+    var desde = i === 0 ? 1 : topes[i - 1] + 1;
+    piezas.push({ min:desde, max:tope, color:colores[i], label:desde === tope ? String(tope) : desde + '–' + tope });
+  });
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + vrepFechaLarga(p.value[0]) + '</b><br>' + p.value[1] + (p.value[1] === 1 ? ' visita' : ' visitas'); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    visualMap:{ type:'piecewise', pieces:piezas, orient:'horizontal', left:'center', bottom:0, itemWidth:14, itemHeight:10, itemGap:10, textStyle:{ color:VREP_COLOR.tinta2, fontSize:12 }, show:max > 0 },
+    calendar:{
+      top:34, left:30, right:12, bottom:34, range:[c.desde, c.hasta], cellSize:['auto', 14], orient:'horizontal',
+      yearLabel:{ show:false }, splitLine:{ show:false },
+      dayLabel:{ firstDay:1, nameMap:['D','L','M','X','J','V','S'], color:VREP_COLOR.apagada, fontSize:12 },
+      monthLabel:{ nameMap:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'], color:VREP_COLOR.tinta2, fontSize:12 },
+      itemStyle:{ color:VREP_COLOR.cero, borderColor:VREP_COLOR.fondo, borderWidth:2 }
+    },
+    series:[{ type:'heatmap', coordinateSystem:'calendar', data:c.dias.map(function(x) { return [x.fecha, x.n]; }), itemStyle:{ borderRadius:2 } }]
+  });
+}
+
+function visitasOpcionAdopcion(d) {
+  var a = d && d.adopcion;
+  if (!a || !a.puntos || !a.puntos.length) return null;
+  var fechas = a.puntos.map(function(p) { return p.fecha; });
+  var socios = a.puntos.map(function(p) { return p.socios; });
+  var aparatos = a.puntos.map(function(p) { return p.aparatos; });
+  var ultimo = a.puntos[a.puntos.length - 1];
+  return vrepBase({
+    legend:vrepLeyenda({ data:['Socios que han entrado', 'Aparatos distintos'] }),
+    grid:{ left:34, right:70, top:36, bottom:28 },
+    tooltip:{ trigger:'axis', confine:true, formatter:function(p) {
+      var lista = Array.isArray(p) ? p : [p];
+      return '<b>' + vrepFechaLarga(lista[0].axisValue) + '</b><br>' + lista.map(function(x) { return x.marker + ' ' + x.seriesName + ': <b>' + x.value + '</b>'; }).join('<br>');
+    }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    xAxis:vrepEjeBase({ type:'category', data:fechas, boundaryGap:false, axisLabel:{ color:VREP_COLOR.apagada, fontSize:12, hideOverlap:true, formatter:function(v) { return vrepFechaCorta(v); } } }),
+    yAxis:vrepEjeValor({ type:'value', min:0, max:Math.max(a.totalSocios, vrepMaximo(aparatos), 1) + 1 }),
+    series:[
+      { name:'Socios que han entrado', type:'line', step:'end', data:socios, symbol:'none', z:3, lineStyle:{ width:2, color:VREP_COLOR.seq[5] }, itemStyle:{ color:VREP_COLOR.seq[5] }, areaStyle:{ color:VREP_COLOR.seq[3], opacity:0.22 },
+        markLine:a.totalSocios > 0 ? { symbol:'none', silent:true, lineStyle:{ color:VREP_COLOR.tinta2, type:'dashed', width:1 }, label:{ formatter:'Total: ' + a.totalSocios + ' socios', position:'insideEndTop', color:VREP_COLOR.tinta2, fontSize:12 }, data:[{ yAxis:a.totalSocios }] } : undefined,
+        markPoint:{ symbol:'circle', symbolSize:10, itemStyle:{ color:VREP_COLOR.seq[6], borderColor:VREP_COLOR.fondo, borderWidth:2 }, label:{ show:true, position:'right', color:VREP_COLOR.tinta, fontSize:12, fontWeight:'bold', formatter:function() { return vrepNum(a.pct, 0) + ' %'; } }, data:[{ coord:[ultimo.fecha, ultimo.socios], value:ultimo.socios }] } },
+      { name:'Aparatos distintos', type:'line', step:'end', data:aparatos, symbol:'none', z:2, lineStyle:{ width:2, color:VREP_COLOR.otros }, itemStyle:{ color:VREP_COLOR.otros } }
+    ]
+  });
+}
+
+/* ================= 2. Cuándo ================= */
+function visitasOpcionSemanaHora(d) {
+  var m = d && d.mapaSemanaHora;
+  if (!m || !m.matriz || !m.matriz.length || m.max <= 0) return null;
+  var datos = [];
+  m.matriz.forEach(function(fila, dia) { fila.forEach(function(n, hora) { datos.push([hora, dia, n]); }); });
+  var horas = [];
+  var h;
+  for (h = 0; h < 24; h++) horas.push(h + 'h');
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + VREP_DIAS[p.value[1]] + ' ' + p.value[0] + ' h</b><br>' + p.value[2] + (p.value[2] === 1 ? ' visita' : ' visitas'); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    grid:{ left:42, right:12, top:8, bottom:56 },
+    xAxis:vrepEjeBase({ type:'category', data:horas, splitArea:{ show:false }, axisLabel:{ color:VREP_COLOR.apagada, fontSize:12, interval:1 } }),
+    yAxis:vrepEjeBase({ type:'category', data:VREP_DIAS, inverse:true, axisLabel:{ color:VREP_COLOR.tinta2, fontSize:12 } }),
+    visualMap:vrepVisualMap(m.max, { precision:0 }),
+    series:[{ type:'heatmap', data:datos, itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:2 } }]
+  });
+}
+
+function visitasOpcionMomentos(d) {
+  var m = d && d.mapaSemanaHora && d.mapaSemanaHora.momentos;
+  if (!m || !m.length) return null;
+  var total = m.reduce(function(s, x) { return s + x.n; }, 0);
+  if (total <= 0) return null;
+  return vrepBase({
+    tooltip:{ confine:true, formatter:'{b}: <b>{c}</b> ({d} %)', textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    graphic:[{ type:'text', left:'center', top:'42%', style:{ text:String(total), fill:VREP_COLOR.tinta, font:'bold 26px ' + VREP_FUENTE, textAlign:'center' } },
+             { type:'text', left:'center', top:'54%', style:{ text:'visitas', fill:VREP_COLOR.apagada, font:'12px ' + VREP_FUENTE, textAlign:'center' } }],
+    series:[{
+      type:'pie', radius:['46%', '70%'], center:['50%', '52%'], avoidLabelOverlap:true,
+      itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:4 },
+      label:{ color:VREP_COLOR.tinta, fontSize:12, formatter:function(p) { return p.name + '\n' + p.data.rango + ' · ' + vrepNum(p.percent, 0) + ' %'; } },
+      labelLine:{ lineStyle:{ color:VREP_COLOR.base } },
+      data:m.filter(function(x) { return x.n > 0; }).map(function(x, i) { return { name:x.etiqueta, value:x.n, rango:x.rango, itemStyle:{ color:VREP_COLOR.cat[['madrugada','manana','tarde','noche'].indexOf(x.clave)] } }; })
+    }]
+  });
+}
+
+/* ================= 3. Quiénes ================= */
+function visitasOpcionMatrizSocios(d) {
+  var m = d && d.matrizSocios;
+  if (!m || !m.filas || !m.filas.length || !m.semanas || !m.semanas.length) return null;
+  var etiquetasY = m.filas.map(function(f) { return 'Nº ' + f.id + (f.nombre ? ' · ' + f.nombre : '') + (f.total === 0 ? ' (sin entrar)' : ''); });
+  var datos = [];
+  var max = 0;
+  m.filas.forEach(function(f, y) {
+    f.porSemana.forEach(function(n, x) { if (n > max) max = n; });
+  });
+  m.filas.forEach(function(f, y) {
+    f.porSemana.forEach(function(n, x) { datos.push({ value:[x, y, n], label:{ color:max > 0 && n / max >= 0.55 ? VREP_COLOR.fondo : VREP_COLOR.tinta } }); });
+  });
+  var mostrarNumeros = m.semanas.length <= 12;
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + etiquetasY[p.value[1]] + '</b><br>Semana del ' + vrepFechaCorta(m.semanas[p.value[0]].desde) + ': ' + p.value[2] + (p.value[2] === 1 ? ' visita' : ' visitas'); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    grid:{ left:150, right:12, top:6, bottom:58 },
+    xAxis:vrepEjeBase({ type:'category', data:m.semanas.map(function(s) { return vrepFechaCorta(s.desde); }), axisLabel:{ color:VREP_COLOR.apagada, fontSize:12, hideOverlap:true } }),
+    yAxis:vrepEjeBase({ type:'category', data:etiquetasY, inverse:true, axisLabel:{ color:VREP_COLOR.tinta2, fontSize:12, width:140, overflow:'truncate' } }),
+    visualMap:vrepVisualMap(max, { precision:0 }),
+    series:[{ type:'heatmap', data:datos, itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:2 },
+      label:{ show:mostrarNumeros, color:VREP_COLOR.tinta, fontSize:11, formatter:function(p) { return p.value[2] > 0 ? String(p.value[2]) : ''; } } }]
+  });
+}
+
+function visitasOpcionBurbujas(d) {
+  var b = d && d.burbujas;
+  if (!b || !b.length) return null;
+  var tipos = [['movil', 'Móvil'], ['escritorio', 'Escritorio'], ['otro', 'Otro']];
+  var maxAcc = vrepMaximo(b.map(function(x) { return x.acciones; }));
+  var principales = {};
+  b.slice(0, 5).forEach(function(x) { principales[x.id] = true; });
+  var series = tipos.map(function(t) {
+    var items = b.filter(function(x) { return x.tipo === t[0]; });
+    return { name:t[1], type:'scatter', itemStyle:{ color:vrepColorAparato(t[0]), borderColor:VREP_COLOR.fondo, borderWidth:2, opacity:0.9 },
+      symbolSize:function(v) { return 12 + (maxAcc > 0 ? Math.sqrt(v[2] / maxAcc) * 30 : 0); },
+      label:{ show:false }, labelLayout:{ hideOverlap:true },
+      data:items.map(function(x) {
+        return { value:[x.visitas, Math.round(x.duracionMedianaMin * 100) / 100, x.acciones, x.nombre || ('Nº ' + x.id), x.id],
+          label:principales[x.id] ? { show:true, position:'top', color:VREP_COLOR.tinta, fontSize:12, formatter:function(p) { return p.value[3]; } } : { show:false } };
+      }) };
+  }).filter(function(s) { return s.data.length > 0; });
+  return vrepBase({
+    legend:vrepLeyenda({ data:series.map(function(s) { return s.name; }) }),
+    grid:{ left:44, right:20, top:40, bottom:44 },
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + p.value[3] + '</b><br>Visitas: ' + p.value[0] + '<br>Duración mediana: ' + vrepMin(p.value[1]) + '<br>Acciones: ' + p.value[2]; }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    xAxis:vrepEjeValor({ type:'value', name:'Visitas', nameLocation:'middle', nameGap:26, nameTextStyle:{ color:VREP_COLOR.tinta2, fontSize:12 }, min:0, max:Math.max(2, vrepMaximo(b.map(function(x) { return x.visitas; })) + 1), splitLine:{ show:false } }),
+    yAxis:vrepEjeValor({ type:'value', name:'Duración mediana (min)', nameTextStyle:{ color:VREP_COLOR.tinta2, fontSize:12, align:'left' }, minInterval:0, min:0 }),
+    series:series
+  });
+}
+
+function visitasOpcionEmbudo(d) {
+  var e = d && d.embudo;
+  if (!e || !e.length || !e[0].n) return null;
+  var colores = [VREP_COLOR.seq[2], VREP_COLOR.seq[3], VREP_COLOR.seq[4], VREP_COLOR.seq[5], VREP_COLOR.seq[6]];
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { var it = e[p.dataIndex]; return '<b>' + it.etiqueta + '</b><br>' + it.n + ' visitas<br>' + vrepNum(it.pctDelTotal, 1) + ' % del total · ' + vrepNum(it.pctDeLaAnterior, 1) + ' % de la etapa anterior'; }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    series:[{
+      type:'funnel', left:'8%', right:'8%', top:8, bottom:8, sort:'none', gap:3, minSize:'8%', maxSize:'100%',
+      itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2 },
+      label:{ show:true, position:'inside', fontSize:12, fontWeight:'bold', lineHeight:16,
+        formatter:function(p) { var it = e[p.dataIndex]; return it.etiqueta + '\n' + it.n + ' · ' + vrepNum(it.pctDelTotal, 0) + ' %'; } },
+      data:e.map(function(it, i) { return { name:it.etiqueta, value:Math.max(it.n, 0.0001), itemStyle:{ color:colores[i] }, label:{ color:i < 2 ? VREP_COLOR.tinta : VREP_COLOR.fondo } }; })
+    }]
+  });
+}
+
+function visitasOpcionRetencion(d) {
+  var r = d && d.retencion;
+  if (!r || !r.cohortes || !r.cohortes.length) return null;
+  var datos = [];
+  var vacias = [];
+  r.cohortes.forEach(function(c, y) {
+    c.activos.forEach(function(v, x) {
+      if (v === null) vacias.push([x, y, 0]); else datos.push({ value:[x, y, Math.round(v * 10) / 10], label:{ color:v >= 55 ? VREP_COLOR.fondo : VREP_COLOR.tinta } });
+    });
+  });
+  var etiquetasY = r.cohortes.map(function(c) { return 'Sem. ' + vrepFechaCorta(c.semana) + ' (' + c.tamano + ')'; });
+  var etiquetasX = [];
+  var k;
+  for (k = 0; k <= 8; k++) etiquetasX.push('Sem ' + k);
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + etiquetasY[p.value[1]] + '</b><br>Semana ' + p.value[0] + ': ' + (p.seriesIndex === 1 ? 'aún no alcanzada' : vrepNum(p.value[2], 1) + ' % de la cohorte'); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    grid:{ left:112, right:12, top:6, bottom:58 },
+    xAxis:vrepEjeBase({ type:'category', data:etiquetasX, axisLabel:{ color:VREP_COLOR.apagada, fontSize:12 } }),
+    yAxis:vrepEjeBase({ type:'category', data:etiquetasY, inverse:true, axisLabel:{ color:VREP_COLOR.tinta2, fontSize:12 } }),
+    visualMap:vrepVisualMap(100, { seriesIndex:[0], precision:0, text:['100 %', '0 %'] }),
+    series:[
+      { type:'heatmap', data:datos, itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:2 },
+        label:{ show:true, fontSize:12, color:VREP_COLOR.tinta, formatter:function(p) { return vrepNum(p.value[2], 0) + '%'; } } },
+      { type:'heatmap', data:vacias, silent:false, itemStyle:{ color:VREP_COLOR.medio, borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:2 },
+        label:{ show:true, fontSize:12, color:VREP_COLOR.apagada, formatter:'–' } }
+    ]
+  });
+}
+
+/* ================= 4. Cómo llegan y con qué ================= */
+function visitasOpcionAluvial(d, ancho) {
+  var a = d && d.aluvial;
+  if (!a || !a.enlaces || !a.enlaces.length) return null;
+  var estrecho = typeof ancho === 'number' && ancho > 0 && ancho < 520;
+  return vrepBase({
+    tooltip:{ confine:true, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base,
+      formatter:function(p) {
+        if (p.dataType === 'edge') return p.data.source.replace(/^\d·/, '') + ' → ' + p.data.target.replace(/^\d·/, '') + ': <b>' + p.data.value + '</b>';
+        return '<b>' + p.name.replace(/^\d·/, '') + '</b>: ' + p.value;
+      } },
+    series:[{
+      type:'sankey', left:8, right:estrecho ? '40%' : '20%', top:8, bottom:8, nodeAlign:'justify', nodeGap:10, nodeWidth:14, draggable:false,
+      emphasis:{ focus:'adjacency' },
+      lineStyle:{ color:VREP_COLOR.seq[5], opacity:0.28, curveness:0.5 },
+      itemStyle:{ color:VREP_COLOR.base, borderColor:VREP_COLOR.apagada, borderWidth:1 },
+      label:{ color:VREP_COLOR.tinta, fontSize:12, fontFamily:VREP_FUENTE, formatter:function(p) { return p.name.replace(/^\d·/, '') + (estrecho ? '' : ' (' + p.value + ')'); } },
+      data:a.nodos.map(function(n) { return { name:n.name }; }),
+      links:a.enlaces.map(function(e) { return { source:e.source, target:e.target, value:e.value }; })
+    }]
+  });
+}
+
+function vrepFilasDonut(filas, mapaEtiquetas) {
+  var lista = (Array.isArray(filas) ? filas : []).filter(function(f) { return f.n > 0; });
+  var tope = lista.slice(0, 4);
+  var resto = lista.slice(4).reduce(function(s, f) { return s + f.n; }, 0);
+  var salida = tope.map(function(f) { return { clave:f.clave, nombre:(mapaEtiquetas && mapaEtiquetas[f.clave]) || f.clave, n:f.n }; });
+  if (resto > 0) salida.push({ clave:'Otros', nombre:'Otros', n:resto });
+  return salida;
+}
+var VREP_NOMBRE_APARATO = { movil:'Móvil', escritorio:'Escritorio', tablet:'Tablet', otro:'Otro', '(sin dato)':'Sin dato' };
+
+function visitasOpcionAparato(d) {
+  var filas = vrepFilasDonut(d && d.resumen && d.resumen.tipoDisp, VREP_NOMBRE_APARATO);
+  var total = filas.reduce(function(s, f) { return s + f.n; }, 0);
+  if (total <= 0) return null;
+  var indiceColor = 0;
+  return vrepBase({
+    tooltip:{ confine:true, formatter:'{b}: <b>{c}</b> ({d} %)', textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    graphic:[{ type:'text', left:'center', top:'42%', style:{ text:String(total), fill:VREP_COLOR.tinta, font:'bold 26px ' + VREP_FUENTE, textAlign:'center' } },
+             { type:'text', left:'center', top:'55%', style:{ text:'visitas', fill:VREP_COLOR.apagada, font:'12px ' + VREP_FUENTE, textAlign:'center' } }],
+    series:[{
+      type:'pie', radius:['46%', '70%'], center:['50%', '52%'], itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:4 },
+      label:{ color:VREP_COLOR.tinta, fontSize:12, formatter:function(p) { return p.name + '\n' + vrepNum(p.percent, 0) + ' %'; } }, labelLine:{ lineStyle:{ color:VREP_COLOR.base } },
+      data:filas.map(function(f) { return { name:f.nombre, value:f.n, itemStyle:{ color:f.clave === 'Otros' || f.clave === '(sin dato)' ? VREP_COLOR.otros : (['movil','escritorio','tablet','otro'].indexOf(f.clave) !== -1 ? vrepColorAparato(f.clave) : VREP_COLOR.cat[indiceColor++ % 4]) } }; })
+    }]
+  });
+}
+
+/* Barra horizontal 100 % apilada (una sola fila) para sistema, navegador, instalada o navegador, idioma */
+function visitasOpcionBarra100(titulo, filas, mapaEtiquetas) {
+  var lista = vrepFilasDonut(filas, mapaEtiquetas);
+  var total = lista.reduce(function(s, f) { return s + f.n; }, 0);
+  if (total <= 0) return null;
+  var series = lista.map(function(f, i) {
+    return { name:f.nombre, type:'bar', stack:'total', barWidth:18, data:[f.n],
+      itemStyle:{ color:f.clave === 'Otros' || f.clave === '(sin dato)' ? VREP_COLOR.otros : VREP_COLOR.cat[i % 4], borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:i === 0 ? [4, 0, 0, 4] : (i === lista.length - 1 ? [0, 4, 4, 0] : 0) },
+      label:{ show:f.n * 100 / total >= 14, position:'inside', color:VREP_COLOR.fondo, fontSize:12, fontWeight:'bold', formatter:function() { return vrepNum(f.n * 100 / total, 0) + ' %'; } } };
+  });
+  return vrepBase({
+    title:{ text:titulo, left:0, top:0, textStyle:{ fontSize:12, fontWeight:'bold', color:VREP_COLOR.tinta, fontFamily:VREP_FUENTE } },
+    legend:vrepLeyenda({ data:series.map(function(s) { return s.name; }), top:20, left:0 }),
+    grid:{ left:6, right:6, top:48, bottom:4 },
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + p.seriesName + '</b>: ' + p.value + ' (' + vrepNum(p.value * 100 / total, 1) + ' %)'; }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    xAxis:{ type:'value', show:false, max:total },
+    yAxis:{ type:'category', show:false, data:[titulo] },
+    series:series
+  });
+}
+
+function visitasOpcionVersiones(d) {
+  var v = d && d.versionesSerie;
+  if (!v || !v.semanas || !v.semanas.length || !v.series || !v.series.length) return null;
+  var total = v.series.reduce(function(s, x) { return s + x.n.reduce(function(a, b) { return a + b; }, 0); }, 0);
+  if (total <= 0) return null;
+  var series = v.series.map(function(s, i) {
+    var color = s.version === 'Otras' || s.version === '(sin dato)' ? VREP_COLOR.otros : VREP_COLOR.cat[i % 4];
+    return { name:s.version === 'Otras' || s.version === '(sin dato)' ? s.version : 'v' + s.version, type:'line', stack:'versiones', data:s.n, symbol:'none',
+      lineStyle:{ width:1.5, color:color }, itemStyle:{ color:color }, areaStyle:{ color:color, opacity:0.85 } };
+  });
+  return vrepBase({
+    legend:vrepLeyenda({ data:series.map(function(s) { return s.name; }) }),
+    grid:{ left:34, right:14, top:36, bottom:28 },
+    tooltip:{ trigger:'axis', confine:true, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    xAxis:vrepEjeBase({ type:'category', data:v.semanas.map(function(s) { return vrepFechaCorta(s); }), boundaryGap:false, axisLabel:{ color:VREP_COLOR.apagada, fontSize:12, hideOverlap:true } }),
+    yAxis:vrepEjeValor({ type:'value', min:0 }),
+    series:series
+  });
+}
+
+/* ================= 5. Qué hacen ================= */
+function visitasOpcionSunburst(d) {
+  var t = d && d.pantallasArbol;
+  if (!t || !t.children || !t.children.length || !t.value) return null;
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + p.name + '</b>: ' + p.value + (p.value === 1 ? ' vez' : ' veces'); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    series:[{
+      type:'sunburst', radius:['12%', '96%'], center:['50%', '50%'], sort:null, nodeClick:false, data:t.children,
+      itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, borderRadius:3 },
+      levels:[
+        {},
+        { r0:'12%', r:'48%', itemStyle:{ color:VREP_COLOR.seq[6] }, label:{ rotate:'tangential', color:VREP_COLOR.fondo, fontSize:12, fontWeight:'bold', minAngle:12 } },
+        { r0:'48%', r:'96%', itemStyle:{ color:VREP_COLOR.seq[3] }, label:{ rotate:'radial', color:VREP_COLOR.tinta, fontSize:12, minAngle:8 } }
+      ]
+    }]
+  });
+}
+
+function visitasOpcionRadar(d) {
+  var r = d && d.radar;
+  if (!r || !r.ejes || !r.actual || !r.actual.length) return null;
+  var total = r.actual.reduce(function(s, x) { return s + x; }, 0);
+  if (total <= 0) return null;
+  var max = Math.max(10, Math.ceil(vrepMaximo(r.actual.concat(r.anterior || [])) / 10) * 10);
+  var series = [{ name:'Este periodo', value:r.actual.map(function(x) { return Math.round(x * 10) / 10; }), lineStyle:{ width:2, color:VREP_COLOR.azul }, itemStyle:{ color:VREP_COLOR.azul }, areaStyle:{ color:VREP_COLOR.azul, opacity:0.18 }, symbolSize:8 }];
+  if (r.anterior) series.push({ name:'Periodo anterior', value:r.anterior.map(function(x) { return Math.round(x * 10) / 10; }), lineStyle:{ width:2, color:VREP_COLOR.otros, type:'dashed' }, itemStyle:{ color:VREP_COLOR.otros }, areaStyle:{ color:VREP_COLOR.otros, opacity:0.08 }, symbolSize:8 });
+  var opcion = {
+    tooltip:{ confine:true, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    radar:{ radius:'62%', center:['50%', '54%'], splitNumber:4, indicator:r.ejes.map(function(e) { return { name:e.nombre, max:max }; }),
+      axisName:{ color:VREP_COLOR.tinta2, fontSize:12 }, axisLine:{ lineStyle:{ color:VREP_COLOR.rejilla } }, splitLine:{ lineStyle:{ color:VREP_COLOR.rejilla } }, splitArea:{ show:false } },
+    series:[{ type:'radar', data:series, emphasis:{ lineStyle:{ width:3 } } }]
+  };
+  if (series.length > 1) opcion.legend = vrepLeyenda({ data:series.map(function(s) { return s.name; }) });
+  return vrepBase(opcion);
+}
+
+function vrepBarrasHorizontales(filas, nombreCampo, valorCampo, color, etiquetaValor) {
+  var lista = (Array.isArray(filas) ? filas : []).filter(function(f) { return f[valorCampo] > 0; });
+  if (!lista.length) return null;
+  var ordenadas = lista.slice().reverse();
+  return vrepBase({
+    tooltip:{ trigger:'item', confine:true, formatter:function(p) { return '<b>' + p.name + '</b>: ' + p.value + (etiquetaValor || ''); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    grid:{ left:8, right:34, top:6, bottom:6, containLabel:true },
+    xAxis:vrepEjeValor({ type:'value', show:false, max:function(v) { return Math.ceil(v.max * 1.12); } }),
+    yAxis:vrepEjeBase({ type:'category', data:ordenadas.map(function(f) { return f[nombreCampo]; }), axisLabel:{ color:VREP_COLOR.tinta2, fontSize:12, width:170, overflow:'truncate' } }),
+    series:[{ type:'bar', barWidth:14, data:ordenadas.map(function(f) { return f[valorCampo]; }), itemStyle:{ color:color, borderRadius:[0, 4, 4, 0] },
+      label:{ show:true, position:'right', color:VREP_COLOR.tinta, fontSize:12, fontWeight:'bold' } }]
+  });
+}
+var VREP_ETIQUETA_ACCION = {
+  login:'Entrar con su nº de socio', login_error:'Fallos al entrar', reserva:'Reservas hechas', cancelar_reserva:'Reservas canceladas', voto:'Votos',
+  incidencia:'Incidencias avisadas', anuncio:'Anuncios publicados', cuenta_guardada:'Cuentas guardadas', cambio_password:'Cambios de contraseña',
+  idioma:'Cambios de idioma', documento:'Documentos abiertos', pin_admin:'Entradas en Admin', error_api:'Fallos de red o servidor',
+  dia_detalle:'Detalles de un día abiertos', calc_con_reserva:'Calculadora «con reserva»'
+};
+function vrepAccionesFilas(d) {
+  return ((d && d.acciones) || []).map(function(a) { return { nombre:VREP_ETIQUETA_ACCION[a.clave] || a.etiqueta || a.clave, n:a.n }; });
+}
+function visitasOpcionAcciones(d) {
+  return vrepBarrasHorizontales(vrepAccionesFilas(d), 'nombre', 'n', VREP_COLOR.seq[5], '');
+}
+
+/* ================= 6. Dónde ================= */
+function visitasOpcionGeo(d) {
+  var g = d && d.geo;
+  if (!g || !g.children || !g.children.length || !g.value) return null;
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + p.name + '</b>: ' + p.value + (p.value === 1 ? ' visita' : ' visitas'); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    series:[{
+      type:'treemap', data:g.children, left:0, right:0, top:0, bottom:0, roam:false, nodeClick:false, breadcrumb:{ show:false },
+      label:{ show:true, color:VREP_COLOR.tinta, fontSize:12, formatter:'{b}\n{c}', overflow:'truncate' },
+      upperLabel:{ show:true, height:22, color:VREP_COLOR.tinta, fontSize:12, fontWeight:'bold' },
+      itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, gapWidth:2 },
+      levels:[
+        { itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:3, gapWidth:3 }, upperLabel:{ show:true, color:VREP_COLOR.tinta } },
+        { color:[VREP_COLOR.seq[0], VREP_COLOR.seq[1]], colorMappingBy:'value', itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, gapWidth:2 }, upperLabel:{ show:true, color:VREP_COLOR.tinta } },
+        { color:[VREP_COLOR.seq[1], VREP_COLOR.seq[2], VREP_COLOR.seq[3]], colorMappingBy:'value', itemStyle:{ borderColor:VREP_COLOR.fondo, borderWidth:2, gapWidth:2 } }
+      ]
+    }]
+  });
+}
+function visitasOpcionRedes(d) {
+  return vrepBarrasHorizontales(((d && d.redes) || []).map(function(r) { return { nombre:r.red === '(sin dato)' ? 'Sin dato' : r.red, n:r.n }; }), 'nombre', 'n', VREP_COLOR.seq[5], '');
+}
+
+/* ================= 7. Calidad técnica ================= */
+function visitasOpcionCarga(d) {
+  var c = d && d.calidad && d.calidad.carga;
+  if (!c || !c.n || !c.bins) return null;
+  function indiceBin(ms) {
+    var i;
+    for (i = 0; i < c.bins.length; i++) {
+      if (ms >= c.bins[i].desdeMs && (c.bins[i].hastaMs === null || ms < c.bins[i].hastaMs)) return i;
+    }
+    return c.bins.length - 1;
+  }
+  var segundos = function(ms) { return vrepNum(ms / 1000, 1) + ' s'; };
+  var lineas = [
+    { xAxis:c.bins[indiceBin(c.p50)].etiqueta, name:'p50', label:{ formatter:'Mediana ' + segundos(c.p50), position:'end', rotate:0, align:'center', color:VREP_COLOR.tinta, fontSize:12, fontWeight:'bold' } }
+  ];
+  if (indiceBin(c.p90) !== indiceBin(c.p50)) lineas.push({ xAxis:c.bins[indiceBin(c.p90)].etiqueta, name:'p90', label:{ formatter:'9 de cada 10: ' + segundos(c.p90), position:'end', rotate:0, align:'center', offset:[0, -17], color:VREP_COLOR.tinta, fontSize:12, fontWeight:'bold' } });
+  return vrepBase({
+    tooltip:{ confine:true, formatter:function(p) { return '<b>' + p.name + '</b>: ' + p.value + (p.value === 1 ? ' visita' : ' visitas'); }, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base },
+    grid:{ left:34, right:14, top:50, bottom:28 },
+    xAxis:vrepEjeBase({ type:'category', data:c.bins.map(function(b) { return b.etiqueta; }) }),
+    yAxis:vrepEjeValor({ type:'value', min:0, max:Math.ceil(vrepMaximo(c.bins.map(function(b) { return b.n; })) * 1.35) || 1 }),
+    series:[{ type:'bar', barWidth:26, data:c.bins.map(function(b, i) { return { value:b.n, itemStyle:{ color:i < 3 ? VREP_COLOR.seq[5] : VREP_COLOR.base, borderRadius:[4, 4, 0, 0] } }; }),
+      label:{ show:true, position:'top', color:VREP_COLOR.tinta2, fontSize:12, formatter:function(p) { return p.value > 0 ? String(p.value) : ''; } },
+      markLine:{ symbol:'none', silent:true, lineStyle:{ color:VREP_COLOR.tinta, type:'dashed', width:1 }, data:lineas } }]
+  });
+}
+
+function visitasOpcionCajas(d) {
+  var cajas = d && d.calidad && d.calidad.duracion;
+  if (!cajas || !cajas.length) return null;
+  var atipicos = [];
+  cajas.forEach(function(c, i) { c.atipicos.forEach(function(v) { atipicos.push([i, Math.round(v * 100) / 100]); }); });
+  var series = [{
+    name:'Duración', type:'boxplot', boxWidth:[18, 34], data:cajas.map(function(c) { return [c.min, c.q1, c.mediana, c.q3, c.max].map(function(v) { return Math.round(v * 100) / 100; }); }),
+    itemStyle:{ color:VREP_COLOR.seq[1], borderColor:VREP_COLOR.seq[6], borderWidth:2 }
+  }];
+  if (atipicos.length) series.push({ name:'Atípicas', type:'scatter', data:atipicos, symbolSize:8, itemStyle:{ color:VREP_COLOR.seq[6], borderColor:VREP_COLOR.fondo, borderWidth:2 } });
+  return vrepBase({
+    tooltip:{ confine:true, textStyle:{ fontFamily:VREP_FUENTE, fontSize:12, color:VREP_COLOR.tinta }, backgroundColor:VREP_COLOR.fondo, borderColor:VREP_COLOR.base,
+      formatter:function(p) {
+        if (p.seriesType === 'scatter') return 'Visita atípica: <b>' + vrepMin(p.value[1]) + '</b>';
+        var c = cajas[p.dataIndex];
+        return '<b>' + c.tipo + '</b> (' + c.n + ' visitas)<br>Mediana: ' + vrepMin(c.mediana) + '<br>Mitad central: ' + vrepMin(c.q1) + ' a ' + vrepMin(c.q3) + '<br>Rango habitual: ' + vrepMin(c.min) + ' a ' + vrepMin(c.max);
+      } },
+    grid:{ left:50, right:14, top:14, bottom:30 },
+    xAxis:vrepEjeBase({ type:'category', data:cajas.map(function(c) { return c.tipo + ' (' + c.n + ')'; }) }),
+    yAxis:vrepEjeValor({ type:'value', name:'minutos', nameTextStyle:{ color:VREP_COLOR.tinta2, fontSize:12, align:'left' }, minInterval:0, min:0 }),
+    series:series
+  });
+}
+
+/* ---------- Registro de gráficos: id → función y alto (px en pantalla) ---------- */
+var VREP_GRAFICOS = {
+  evolucion:{ opcion:function(d) { return visitasOpcionEvolucion(d); }, alto:262 },
+  calendario:{ opcion:function(d) { return visitasOpcionCalendario(d); }, alto:172 },
+  adopcion:{ opcion:function(d) { return visitasOpcionAdopcion(d); }, alto:226 },
+  semanahora:{ opcion:function(d) { return visitasOpcionSemanaHora(d); }, alto:300 },
+  momentos:{ opcion:function(d) { return visitasOpcionMomentos(d); }, alto:260 },
+  socios:{ opcion:function(d) { return visitasOpcionMatrizSocios(d); }, altoFn:function(d) { return 90 + 21 * ((d.matrizSocios && d.matrizSocios.filas.length) || 1); } },
+  burbujas:{ opcion:function(d) { return visitasOpcionBurbujas(d); }, alto:340 },
+  embudo:{ opcion:function(d) { return visitasOpcionEmbudo(d); }, alto:300 },
+  retencion:{ opcion:function(d) { return visitasOpcionRetencion(d); }, altoFn:function(d) { return 86 + 30 * ((d.retencion && d.retencion.cohortes.length) || 1); } },
+  aluvial:{ opcion:function(d, ancho) { return visitasOpcionAluvial(d, ancho); }, alto:340 },
+  aparato:{ opcion:function(d) { return visitasOpcionAparato(d); }, alto:250 },
+  sistema:{ opcion:function(d) { return visitasOpcionBarra100('Sistema', d.resumen.so, null); }, alto:100 },
+  navegador:{ opcion:function(d) { return visitasOpcionBarra100('Navegador', d.resumen.navegador, null); }, alto:100 },
+  modo:{ opcion:function(d) { return visitasOpcionBarra100('Instalada o navegador', d.resumen.modo, { instalada:'Instalada', navegador:'En el navegador' }); }, alto:100 },
+  idioma:{ opcion:function(d) { return visitasOpcionBarra100('Idioma', d.resumen.idioma, { es:'Castellano', eu:'Euskera' }); }, alto:100 },
+  versiones:{ opcion:function(d) { return visitasOpcionVersiones(d); }, alto:260 },
+  sunburst:{ opcion:function(d) { return visitasOpcionSunburst(d); }, alto:420 },
+  radar:{ opcion:function(d) { return visitasOpcionRadar(d); }, alto:320 },
+  acciones:{ opcion:function(d) { return visitasOpcionAcciones(d); }, altoFn:function(d) { return 30 + 26 * (vrepAccionesFilas(d).length || 1); } },
+  geo:{ opcion:function(d) { return visitasOpcionGeo(d); }, alto:340 },
+  redes:{ opcion:function(d) { return visitasOpcionRedes(d); }, altoFn:function(d) { return 30 + 26 * ((d.redes && d.redes.length) || 1); } },
+  carga:{ opcion:function(d) { return visitasOpcionCarga(d); }, alto:260 },
+  cajas:{ opcion:function(d) { return visitasOpcionCajas(d); }, alto:280 }
+};
+
+/* ================= HTML del informe ================= */
+function vrepTabla(cabeceras, filas) {
+  if (!filas || !filas.length) return '<div class="vrep-nota">Sin filas.</div>';
+  return '<div class="vrep-tabla-wrap"><table class="vrep-tabla"><thead><tr>' + cabeceras.map(function(c) { return '<th>' + visitasEsc(c) + '</th>'; }).join('') +
+    '</tr></thead><tbody>' + filas.map(function(f) { return '<tr>' + f.map(function(c) { return '<td>' + visitasEsc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+}
+function vrepDatos(tablaHtml) {
+  return '<details class="vrep-datos"><summary>Ver los datos</summary>' + tablaHtml + '</details>';
+}
+function vrepSinDatos() {
+  return '<div class="vrep-sindatos">Sin datos en este periodo</div>';
+}
+function vrepTarjeta(id, titulo, pregunta, lectura, datos, tablaHtml, extraAntes, claseExtra) {
+  var def = VREP_GRAFICOS[id];
+  var tieneOpcion = def ? def.opcion(datos) !== null : false;
+  var alto = def ? (def.altoFn ? def.altoFn(datos) : def.alto) : 200;
+  var cuerpo = tieneOpcion
+    ? (extraAntes || '') + '<div class="vrep-grafico" data-id="' + visitasEsc(id) + '" style="height:' + visitasEsc(alto) + 'px"></div>'
+    : vrepSinDatos();
+  return '<div class="vrep-tarjeta' + (claseExtra ? ' ' + claseExtra : '') + '"><h3>' + visitasEsc(titulo) + '</h3><p class="vrep-pregunta">' + visitasEsc(pregunta) + '</p>' +
+    cuerpo + (lectura ? '<p class="vrep-lectura"><b>Cómo leerlo:</b> ' + visitasEsc(lectura) + '</p>' : '') + (tablaHtml ? vrepDatos(tablaHtml) : '') + '</div>';
+}
+function vrepSeccion(numero, titulo, intro, contenido, clase) {
+  return '<section class="vrep-seccion' + (clase ? ' ' + clase : '') + '"><h2><span class="vrep-num">' + visitasEsc(numero) + '</span>' + visitasEsc(titulo) + '</h2>' +
+    (intro ? '<p class="vrep-intro">' + visitasEsc(intro) + '</p>' : '') + contenido + '</section>';
+}
+function vrepDeltaHtml(delta, texto, neutro) {
+  if (delta === null || delta === undefined) return '<span class="vrep-delta vrep-delta-na">sin periodo anterior</span>';
+  if (delta === 0) return '<span class="vrep-delta"><span class="vrep-flecha vrep-f-neutra">=</span> igual que antes</span>';
+  var sube = delta > 0;
+  var clase = neutro ? 'vrep-f-neutra' : (sube ? 'vrep-f-sube' : 'vrep-f-baja');
+  return '<span class="vrep-delta"><span class="vrep-flecha ' + clase + '">' + (sube ? '▲' : '▼') + '</span> ' + (sube ? '+' : '−') + visitasEsc(texto) + ' que antes</span>';
+}
+function vrepPortada(d) {
+  var k = d.resumen.kpis;
+  var m = d.meta;
+  var sp = d.resumen.sparks || {};
+  function tarjeta(idSpark, etiqueta, valor, delta, deltaTexto, neutro) {
+    return '<div class="vrep-kpi"><div class="vrep-kpi-valor">' + visitasEsc(valor) + '</div><div class="vrep-kpi-etiqueta">' + visitasEsc(etiqueta) + '</div>' +
+      '<div class="vrep-grafico vrep-spark" data-id="spark-' + visitasEsc(idSpark) + '" style="height:38px"></div>' + vrepDeltaHtml(delta, deltaTexto, neutro) + '</div>';
+  }
+  var abs = function(x) { return Math.abs(x === null ? 0 : x); };
+  var tarjetas = '<div class="vrep-kpis">' +
+    tarjeta('visitas', 'Visitas', k.visitas.valor, k.visitas.delta, String(abs(k.visitas.delta))) +
+    tarjeta('aparatos', 'Aparatos distintos', k.aparatos.valor, k.aparatos.delta, String(abs(k.aparatos.delta))) +
+    tarjeta('socios', 'Socios que han entrado', k.socios.valor + ' de ' + k.sociosActivosTotal.valor, k.socios.delta, String(abs(k.socios.delta))) +
+    tarjeta('duracion', 'Duración mediana', visitasFormatoDuracion(k.duracionMedianaS.valor), k.duracionMedianaS.delta, visitasFormatoDuracion(abs(k.duracionMedianaS.delta)), true) +
+    tarjeta('carga', 'Carga mediana', visitasFormatoCarga(k.cargaMedianaMs.valor), k.cargaMedianaMs.delta, visitasFormatoCarga(abs(k.cargaMedianaMs.delta)), true) +
+    tarjeta('errores', 'Visitas con errores', vrepNum(k.pctConError.valor, 1) + ' %', k.pctConError.delta === null ? null : Math.round(k.pctConError.delta * 10) / 10, vrepNum(abs(k.pctConError.delta), 1) + ' puntos', true) +
+    '</div>';
+  var hallazgos = '<div class="vrep-hallazgos"><h3>Lo más importante</h3><ul>' + d.hallazgos.map(function(h) { return '<li>' + visitasEsc(h) + '</li>'; }).join('') + '</ul></div>';
+  var logo = typeof LOGO_SRC === 'string' ? '<img class="vrep-logo" alt="" src="' + visitasEsc(LOGO_SRC) + '">' : '';
+  return '<div class="vrep-portada">' + logo + '<div class="vrep-portada-texto"><h1>Estudio de uso de la app</h1><div class="vrep-sub">Txoko Azkena · Libro Dietario Digital v' + visitasEsc(APP_VERSION) + '</div>' +
+    '<div class="vrep-periodo">' + visitasEsc(m.periodoEtiqueta) + (m.desde ? ' (' + visitasEsc(vrepFechaLarga(m.desde)) + ' – ' + visitasEsc(vrepFechaLarga(m.hasta)) + ')' : '') + '</div>' +
+    '<div class="vrep-filtros">' + m.filtros.map(visitasEsc).join(' · ') + '</div><div class="vrep-generado">Generado el ' + visitasEsc(m.generado) + ' (hora de Madrid)</div></div></div>' + tarjetas + hallazgos;
+}
+function vrepPantallasTexto(mapa) {
+  var claves = Object.keys(mapa || {});
+  return claves.map(function(c) { return (VISITAS_NOMBRES_PANTALLAS[c] || c) + (mapa[c] > 1 ? ' ×' + mapa[c] : ''); }).join(', ');
+}
+function vrepAccionesTexto(mapa) {
+  return Object.keys(mapa || {}).map(function(c) { return (VREP_ETIQUETA_ACCION[c] || c) + (mapa[c] > 1 ? ' ×' + mapa[c] : ''); }).join(', ');
+}
+function vrepHoraMadrid(inicio) {
+  var f = new Date(inicio);
+  if (isNaN(f.getTime())) return '';
+  try {
+    return new Intl.DateTimeFormat('es-ES', { timeZone:'Europe/Madrid', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit', hourCycle:'h23' }).format(f);
+  } catch (e) { return ''; }
+}
+function vrepApendice(d) {
+  var ultimas = vrepTabla(['Fecha y hora', 'Socio', 'Aparato', 'Ciudad', 'Origen', 'Duración', 'Carga', 'Pantallas y acciones', 'Err.'],
+    d.ultimas.map(function(u) {
+      return [vrepHoraMadrid(u.inicio), u.socioId ? 'Nº ' + u.socioId + (u.nombre ? ' ' + u.nombre : '') : 'Sin identificar',
+        [u.tipoDisp, u.so, u.navegador].filter(function(x) { return x; }).join(' · '), [u.ciudad, u.pais].filter(function(x) { return x; }).join(', '),
+        u.origen, visitasFormatoDuracion(u.duracionS), u.cargaMs === null ? '–' : visitasFormatoCarga(u.cargaMs),
+        [vrepPantallasTexto(u.pantallas), vrepAccionesTexto(u.acciones)].filter(function(x) { return x; }).join(' | '), String(u.errores)];
+    }));
+  var tipoPorSocio = {};
+  d.burbujas.forEach(function(b) { tipoPorSocio[b.id] = VREP_NOMBRE_APARATO[b.tipo] || b.tipo; });
+  var socios = vrepTabla(['Nº', 'Nombre', 'Visitas', 'Última visita', 'Aparato habitual'],
+    d.matrizSocios.filas.map(function(f) { return [f.id, f.nombre, String(f.total), f.ultima ? vrepHoraMadrid(f.ultima) : 'Aún no ha entrado', tipoPorSocio[f.id] || '–']; }));
+  var definiciones = '<ul class="vrep-definiciones">' +
+    '<li><b>Visita:</b> cada vez que se abre la app, o se vuelve a ella tras más de 30 minutos sin usarla.</li>' +
+    '<li><b>Aparato:</b> un móvil u ordenador concreto, no una persona: si un socio entra desde dos aparatos cuenta como dos aparatos.</li>' +
+    '<li><b>Periodo anterior:</b> el tramo inmediatamente anterior de la misma duración, para comparar.</li>' +
+    '<li><b>Filtros:</b> ' + visitasEsc(d.meta.filtros.join('; ')) + '.</li>' +
+    '<li><b>Horas y días:</b> siempre en hora de Madrid, con el cambio horario de verano e invierno.</li>' +
+    '<li><b>Ubicación:</b> aproximada, deducida de la conexión a internet; con datos móviles suele salir la ciudad de la operadora, no la del socio. No se guarda la dirección IP.</li>' +
+    '<li><b>Límites:</b> el contador empezó a funcionar con la versión 2.6; los submenús se cuentan desde la 2.7. Las visitas de los aparatos que se han apagado a propósito no aparecen.</li>' +
+    '<li><b>Pocas visitas:</b> con muy pocas visitas los porcentajes y las comparaciones son orientativos.</li></ul>';
+  return vrepSeccion('9', 'Apéndice', 'Datos de detalle y cómo se han calculado.',
+    '<div class="vrep-tarjeta vrep-ancha"><h3>Las 40 últimas visitas</h3>' + ultimas + '</div>' +
+    '<div class="vrep-tarjeta vrep-ancha"><h3>Socios</h3>' + socios + '</div>' +
+    '<div class="vrep-tarjeta vrep-ancha"><h3>Cómo se han calculado estos datos</h3>' + definiciones + '</div>', 'vrep-apendice');
+}
+function vrepIndicadorEstado(titulo, valorTexto, estado, umbral) {
+  var icono = estado.clave === 'bien' ? '✔' : (estado.clave === 'atencion' ? '⚠' : '✖');
+  var rotulo = estado.clave === 'bien' ? 'Bien' : (estado.clave === 'atencion' ? 'Atención' : 'Mal');
+  return '<div class="vrep-estado vrep-estado-' + visitasEsc(estado.clave) + '"><div class="vrep-estado-icono" aria-hidden="true">' + icono + '</div><div><div class="vrep-estado-titulo">' + visitasEsc(titulo) +
+    '</div><div class="vrep-estado-valor">' + visitasEsc(valorTexto) + ' · <b>' + rotulo + '</b></div><div class="vrep-estado-texto">' + visitasEsc(estado.texto) + '</div><div class="vrep-estado-umbral">' + visitasEsc(umbral) + '</div></div></div>';
+}
+function visitasInformeHtml(d) {
+  var r = d.resumen;
+  var partes = [];
+  partes.push(vrepPortada(d));
+  partes.push(vrepSeccion('1', 'Evolución', 'Cómo ha ido creciendo (o no) el uso de la app.',
+    vrepTarjeta('evolucion', 'Visitas por día', '¿Cuánta gente entra cada día y cómo se compara con el periodo anterior?',
+      'El área es el nº de visitas de cada día; la línea gris, la media de los 7 días que terminan ese día (suaviza los altibajos); la discontinua, el periodo anterior; las rayas verticales, el día en que aparece cada versión de la app.', d,
+      vrepTabla(['Día', 'Visitas', 'Media 7 días'], d.evolucion.serie.map(function(x, i) { return [vrepFechaLarga(x.fecha), String(x.n), vrepNum(d.evolucion.mediaMovil7[i].v, 1)]; }))) +
+    vrepTarjeta('calendario', 'Calendario de actividad', '¿Qué días se usa la app? (últimas semanas)', 'Cada cuadrito es un día; cuanto más oscuro, más visitas. Las filas son los días de la semana, de lunes (L) a domingo (D).', d,
+      vrepTabla(['Día', 'Visitas'], d.calendario.dias.filter(function(x) { return x.n > 0; }).map(function(x) { return [vrepFechaLarga(x.fecha), String(x.n)]; }))) +
+    vrepTarjeta('adopcion', 'Adopción de la app', '¿Cuántos socios la han usado ya, y cómo ha crecido eso con el tiempo?', 'La línea oscura sube cada vez que entra por primera vez un socio nuevo; la raya discontinua es el total de socios. La línea gris cuenta aparatos distintos.', d,
+      vrepTabla(['Día', 'Socios acumulados', 'Aparatos acumulados'], d.adopcion.puntos.filter(function(p, i, a) { return i === 0 || i === a.length - 1 || p.socios !== a[i - 1].socios || p.aparatos !== a[i - 1].aparatos; }).map(function(p) { return [vrepFechaLarga(p.fecha), String(p.socios), String(p.aparatos)]; })))));
+  partes.push(vrepSeccion('2', 'Cuándo', 'En qué momentos se usa la app.',
+    vrepTarjeta('semanahora', 'Día de la semana y hora', '¿A qué horas de qué días entran más?', 'Filas: días de la semana; columnas: horas del día (0 h = medianoche). Cuanto más oscuro el cuadro, más visitas en esa franja.', d,
+      vrepTabla(['Día', 'Hora', 'Visitas'], (function() { var f = []; d.mapaSemanaHora.matriz.forEach(function(fila, dia) { fila.forEach(function(n, hora) { if (n) f.push([VREP_DIAS[dia], hora + ' h', String(n)]); }); }); return f; })())) +
+    vrepTarjeta('momentos', 'Momentos del día', '¿Entran más por la mañana, por la tarde o por la noche?', 'Cada porción es el reparto de visitas por franjas: madrugada (0–6 h), mañana (6–12), tarde (12–20) y noche (20–24).', d,
+      vrepTabla(['Franja', 'Visitas'], d.mapaSemanaHora.momentos.map(function(x) { return [x.etiqueta + ' ' + x.rango, String(x.n)]; })))));
+  partes.push(vrepSeccion('3', 'Quiénes', 'Qué socios usan la app y con qué constancia.',
+    vrepTarjeta('socios', 'Actividad de cada socio', '¿Quién entra y quién no, semana a semana?', 'Cada fila es un socio y cada columna una semana; cuanto más oscuro, más visitas. Los que nunca han entrado salen al final, en gris.', d,
+      vrepTabla(['Nº', 'Socio', 'Visitas'], d.matrizSocios.filas.map(function(f) { return [f.id, f.nombre, String(f.total)]; }))) +
+    vrepTarjeta('burbujas', 'Visitas, duración y acciones por socio', '¿Quiénes la usan más, durante más tiempo y haciendo más cosas?', 'Cada burbuja es un socio: a la derecha, más visitas; arriba, visitas más largas; más grande, más acciones (reservar, votar…). El color es el aparato que más usa.', d,
+      vrepTabla(['Socio', 'Visitas', 'Duración mediana', 'Acciones', 'Aparato'], d.burbujas.map(function(b) { return [(b.nombre || 'Nº ' + b.id), String(b.visitas), vrepMin(b.duracionMedianaMin), String(b.acciones), VREP_NOMBRE_APARATO[b.tipo] || b.tipo]; }))) +
+    vrepTarjeta('embudo', 'Del primer vistazo a la gestión', '¿Cuántos de los que abren la app llegan a hacer algo en ella?', 'De arriba abajo, cada franja exige además cumplir la anterior: abrir la app, identificarse, ver al menos 2 pantallas, interactuar y, por último, hacer una gestión (reservar, votar, avisar de una incidencia…).', d,
+      vrepTabla(['Etapa', 'Visitas', '% del total', '% de la etapa anterior'], d.embudo.map(function(e) { return [e.etiqueta, String(e.n), vrepPct(e.pctDelTotal), vrepPct(e.pctDeLaAnterior)]; }))) +
+    vrepTarjeta('retencion', 'Fidelidad: ¿vuelven?', '¿Los que entran una semana vuelven en las siguientes?', 'Cada fila agrupa a quienes entraron por primera vez esa semana (entre paréntesis, cuántos). Cada columna dice qué % de ellos volvió 1, 2, 3… semanas después. Una raya (–) es una semana que aún no ha llegado.', d,
+      vrepTabla(['Cohorte', 'Personas'].concat([0, 1, 2, 3, 4, 5, 6, 7, 8].map(function(k) { return 'Sem ' + k; })), d.retencion.cohortes.map(function(c) { return ['Sem. ' + vrepFechaCorta(c.semana), String(c.tamano)].concat(c.activos.map(function(v) { return v === null ? '–' : vrepNum(v, 0) + ' %'; })); })),
+      '<div class="vrep-retorno"><div class="vrep-retorno-valor">' + (d.retencion.retorno7d === null ? '–' : vrepNum(d.retencion.retorno7d, 0) + ' %') + '</div><div class="vrep-retorno-texto">vuelven en los 7 días siguientes a su primera visita</div></div>')));
+  var etapas = '<div class="vrep-etapas"><span>Origen</span><span>Aparato</span><span>Identificación</span><span>Resultado</span></div>';
+  partes.push(vrepSeccion('4', 'Cómo llegan y con qué', 'De dónde vienen, desde qué aparato y qué hacen al llegar.',
+    vrepTarjeta('aluvial', 'El recorrido de las visitas', '¿Por dónde llegan, con qué aparato y en qué acaba la visita?', 'Cada banda es un grupo de visitas y su anchura es cuántas son. Se lee de izquierda a derecha: origen → aparato → si se identificó → qué hizo. Pasa el cursor por una banda para resaltar su recorrido.', d,
+      vrepTabla(['De', 'A', 'Visitas'], d.aluvial.enlaces.map(function(e) { return [e.source.replace(/^\d·/, ''), e.target.replace(/^\d·/, ''), String(e.value)]; })), etapas) +
+    '<div class="vrep-grupo"><div class="vrep-tarjeta"><h3>Aparato</h3><p class="vrep-pregunta">¿Móvil u ordenador?</p>' + (VREP_GRAFICOS.aparato.opcion(d) ? '<div class="vrep-grafico" data-id="aparato" style="height:250px"></div>' : vrepSinDatos()) +
+      '<p class="vrep-lectura"><b>Cómo leerlo:</b> cada porción es un tipo de aparato; en el centro, el total de visitas.</p></div>' +
+    '<div class="vrep-tarjeta"><h3>Sistema, navegador, instalación e idioma</h3><p class="vrep-pregunta">¿Con qué entran?</p>' +
+      ['sistema', 'navegador', 'modo', 'idioma'].map(function(id) { return VREP_GRAFICOS[id].opcion(d) ? '<div class="vrep-grafico" data-id="' + id + '" style="height:100px"></div>' : ''; }).join('') +
+      '<p class="vrep-lectura"><b>Cómo leerlo:</b> cada barra reparte el 100 % de las visitas entre sus categorías.</p>' +
+      vrepDatos(vrepTabla(['Dato', 'Valor', 'Visitas'], [].concat(
+        (r.so || []).map(function(x) { return ['Sistema', x.clave, String(x.n)]; }), (r.navegador || []).map(function(x) { return ['Navegador', x.clave, String(x.n)]; }),
+        (r.modo || []).map(function(x) { return ['Instalación', x.clave, String(x.n)]; }), (r.idioma || []).map(function(x) { return ['Idioma', x.clave, String(x.n)]; })))) + '</div></div>' +
+    vrepTarjeta('versiones', 'Versiones de la app en uso', '¿Quién ya tiene la última versión y quién se ha quedado atrás?', 'Áreas apiladas: cada color es una versión de la app y la altura total es el nº de visitas de cada semana.', d,
+      vrepTabla(['Semana'].concat(d.versionesSerie.series.map(function(s) { return s.version; })), d.versionesSerie.semanas.map(function(sem, i) { return [vrepFechaCorta(sem)].concat(d.versionesSerie.series.map(function(s) { return String(s.n[i]); })); })))));
+  partes.push(vrepSeccion('5', 'Qué hacen', 'Qué miran y qué hacen dentro de la app.',
+    vrepTarjeta('sunburst', 'Pantallas y submenús más vistos', '¿Qué partes de la app interesan más?', 'El círculo interior son las secciones (Calendario, Reservas, Comunidad…) y el anillo exterior sus submenús. Cuanto más ancho el trozo, más veces se ha visto.', d,
+      vrepTabla(['Sección', 'Submenú', 'Veces'], (function() { var f = []; ((d.pantallasArbol && d.pantallasArbol.children) || []).forEach(function(s) { if (s.children) s.children.forEach(function(h) { f.push([s.name, h.name, String(h.value)]); }); else f.push([s.name, '–', String(s.value)]); }); return f; })())) +
+    vrepTarjeta('radar', 'Perfil de uso', '¿Se reparte el interés igual que en el periodo anterior?', 'Cada punta es una sección y su distancia al centro, el % de pantallas vistas que le corresponde. La figura azul es este periodo; la gris discontinua, el anterior.', d,
+      vrepTabla(['Sección', 'Este periodo', 'Periodo anterior'], d.radar.ejes.map(function(e, i) { return [e.nombre, vrepPct(d.radar.actual[i]), d.radar.anterior ? vrepPct(d.radar.anterior[i]) : '–']; }))) +
+    vrepTarjeta('acciones', 'Qué hacen', '¿Qué acciones realizan?', 'Cada barra cuenta cuántas veces se ha hecho esa acción.', d,
+      vrepTabla(['Acción', 'Veces'], vrepAccionesFilas(d).map(function(a) { return [a.nombre, String(a.n)]; })))));
+  partes.push(vrepSeccion('6', 'Dónde', 'Desde qué lugares y redes se conectan (ubicación aproximada).',
+    vrepTarjeta('geo', 'Países, regiones y ciudades', '¿Desde dónde entran?', 'Cada rectángulo es una ubicación y su tamaño, el nº de visitas; dentro de cada país están sus regiones y ciudades. Es una ubicación aproximada.', d,
+      vrepTabla(['País', 'Región', 'Ciudad', 'Visitas'], (function() { var f = []; ((d.geo && d.geo.children) || []).forEach(function(p) { (p.children || []).forEach(function(rg) { (rg.children || []).forEach(function(c) { f.push([p.name, rg.name, c.name, String(c.value)]); }); }); }); return f; })())) +
+    vrepTarjeta('redes', 'Operadoras de conexión', '¿Con qué compañías se conectan?', 'Cada barra es una compañía de internet (la de datos móviles o la del wifi).', d, vrepTabla(['Operadora', 'Visitas'], (d.redes || []).map(function(x) { return [x.red, String(x.n)]; })))));
+  var c = d.calidad;
+  partes.push(vrepSeccion('7', 'Calidad técnica', 'Si la app va bien en los móviles de los socios.',
+    vrepTarjeta('carga', 'Tiempo de carga', '¿Cuánto tarda en aparecer la información al abrir la app?', 'Cada barra cuenta visitas por tiempo de carga; en burdeos, las que cargaron en menos de 3 segundos. Las rayas marcan la mediana y el valor por debajo del cual está el 90 % de las visitas. ' + (c.carga.n ? vrepNum(c.carga.pctBajo3s, 0) + ' % cargó en menos de 3 s.' : ''), d,
+      vrepTabla(['Tiempo', 'Visitas'], c.carga.bins.map(function(b) { return [b.etiqueta, String(b.n)]; }))) +
+    vrepTarjeta('cajas', 'Duración de las visitas por aparato', '¿Cuánto dura una visita según el aparato?', 'La caja contiene a la mitad central de las visitas, la raya del interior es la mediana y los bigotes marcan el rango habitual; los puntos son visitas atípicas. Solo se comparan aparatos con 5 o más visitas.', d,
+      vrepTabla(['Aparato', 'Visitas', 'Mediana', 'Mitad central', 'Rango habitual'], c.duracion.map(function(x) { return [x.tipo, String(x.n), vrepMin(x.mediana), vrepMin(x.q1) + ' – ' + vrepMin(x.q3), vrepMin(x.min) + ' – ' + vrepMin(x.max)]; }))) +
+    '<div class="vrep-estados">' +
+      vrepIndicadorEstado('Carga mediana', c.carga.n ? vrepNum(c.carga.p50 / 1000, 1) + ' s' : 'sin datos', c.estado.carga, 'Bien: menos de 3 s · Atención: de 3 a 6 s · Mal: más de 6 s') +
+      vrepIndicadorEstado('Visitas con errores', vrepNum(c.errores.pct, 1) + ' %', c.estado.errores, 'Bien: menos del 2 % · Atención: del 2 al 10 % · Mal: más del 10 %') +
+      vrepIndicadorEstado('Fallos de conexión con Google', String(c.errores.errorApi) + (c.errores.errorApi === 1 ? ' fallo' : ' fallos'), c.estado.conexion, 'Bien: menos del 5 % de las visitas · Atención: 5–15 % · Mal: más del 15 %') + '</div>'));
+  partes.push(vrepApendice(d));
+  return partes.join('');
+}
+
+/* ================= Vista: montaje de los gráficos ================= */
+function vrepDestruirGraficos() {
+  if (_vrepObservador) { try { _vrepObservador.disconnect(); } catch (e) {} _vrepObservador = null; }
+  _vrepGraficos.forEach(function(g) { try { g.dispose(); } catch (e) {} });
+  _vrepGraficos = [];
+  window.removeEventListener('resize', vrepRedimensionar);
+}
+function vrepFijarViewBox(nodo) {
+  var svg = nodo && nodo.querySelector ? nodo.querySelector('svg') : null;
+  if (!svg) return;
+  var w = svg.getAttribute('width');
+  var h = svg.getAttribute('height');
+  if (w && h) svg.setAttribute('viewBox', '0 0 ' + parseFloat(w) + ' ' + parseFloat(h));
+}
+function vrepRedimensionar() {
+  _vrepGraficos.forEach(function(g) { try { g.resize(); vrepFijarViewBox(g.getDom()); } catch (e) {} });
+}
+function vrepAplicarTexturas(activas) {
+  _vrepTexturas = !!activas;
+  _vrepGraficos.forEach(function(g) { try { g.setOption({ aria:{ enabled:true, decal:{ show:_vrepTexturas } } }); } catch (e) {} });
+}
+function vrepSparkDe(id, datos) {
+  var s = (datos.resumen && datos.resumen.sparks) || {};
+  var clave = id.replace(/^spark-/, '');
+  var mapa = { visitas:s.visitas, aparatos:s.aparatos, socios:s.socios, duracion:s.duracion, carga:s.carga, errores:s.errores };
+  return mapa[clave];
+}
+function vrepMontarGraficos(vista, datos) {
+  vrepDestruirGraficos();
+  var nodos = vista.querySelectorAll('.vrep-grafico[data-id]');
+  if (!window.echarts) {
+    var raiz = vista.querySelector('.vrep');
+    if (raiz) raiz.className += ' vrep-sin-lib';
+    var j;
+    for (j = 0; j < nodos.length; j++) nodos[j].className += ' vrep-vacio';
+    var detalles = vista.querySelectorAll('.vrep-datos');
+    for (j = 0; j < detalles.length; j++) detalles[j].open = true;
+    return;
+  }
+  var i;
+  for (i = 0; i < nodos.length; i++) {
+    var nodo = nodos[i];
+    var id = nodo.getAttribute('data-id');
+    var opcion = null;
+    try {
+      if (id.indexOf('spark-') === 0) opcion = visitasOpcionSpark(vrepSparkDe(id, datos));
+      else if (VREP_GRAFICOS[id]) opcion = VREP_GRAFICOS[id].opcion(datos, nodo.clientWidth);
+    } catch (error) {
+      if (typeof console !== 'undefined' && console.warn) console.warn('Gráfico del informe', id, error);
+    }
+    if (!opcion) { nodo.className += ' vrep-vacio'; continue; }
+    try {
+      var grafico = window.echarts.init(nodo, null, { renderer:'svg' });
+      grafico.setOption(opcion);
+      vrepFijarViewBox(nodo);
+      grafico.on('finished', (function(destino) { return function() { vrepFijarViewBox(destino); }; })(nodo));
+      _vrepGraficos.push(grafico);
+      nodo.setAttribute('data-listo', '1');
+    } catch (error2) {
+      if (typeof console !== 'undefined' && console.warn) console.warn('Gráfico del informe', id, error2);
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    _vrepObservador = new ResizeObserver(function() { vrepRedimensionar(); });
+    var hoja = vista.querySelector('.inf-hoja');
+    if (hoja) _vrepObservador.observe(hoja);
+  }
+  window.addEventListener('resize', vrepRedimensionar);
+  if (_vrepTexturas) vrepAplicarTexturas(true);
+}
+
+function visitasInformeConstruirDatos() {
+  var estado = visitasEstadoUI;
+  var sesiones = visitasLista(estado && estado.datos && estado.datos.sesiones);
+  var socios = visitasSociosActivosUI();
+  var hoy = todayStr();
+  var ids = visitasIdsExcluidos(estado.excluirSocio);
+  var opciones = visitasOpcionesFiltro(estado.periodo, hoy, !estado.incluirAdmin, APP_VERSION);
+  var sinExcluidos = visitasExcluirSociosMultiples(sesiones, ids);
+  opciones.excluirSocios = ids;
+  opciones.periodoEtiqueta = opciones.etiqueta;
+  opciones.generado = vrepHoraMadrid(new Date().toISOString()) + ' · ' + vrepFechaLarga(hoy);
+  return visitasInformeCalcular(sinExcluidos, socios, opciones);
+}
+
+function visitasInformeAbrir() {
+  if (!visitasEstadoUI.datos) { showToast('Primero hay que cargar las visitas', 'err'); return Promise.resolve(false); }
+  var espera = Espera.iniciar({ texto:'Preparando el informe…', bloqueante:true });
+  var avisoLibreria = '';
+  return visitasCargarEcharts().catch(function(error) {
+    avisoLibreria = error && error.message ? error.message : 'No se ha podido cargar la librería de gráficos.';
+    return null;
+  }).then(function() {
+    var datos = visitasInformeConstruirDatos();
+    _vrepDatos = datos;
+    var html = '';
+    if (avisoLibreria) {
+      html += '<div class="vrep-aviso-lib" role="alert">⚠ ' + visitasEsc(avisoLibreria) + ' Se muestra el informe sin gráficos. ' +
+        '<button type="button" class="vrep-reintentar" id="vrep-reintentar">Reintentar</button></div>';
+    }
+    html += visitasInformeHtml(datos);
+    informeAbrirVista('<div class="vrep">' + html + '</div>', 'v', {
+      titulo:'Estudio de uso de la app',
+      extraBarraHtml:'<label class="vrep-tex"><input type="checkbox" id="vrep-texturas"' + (_vrepTexturas ? ' checked' : '') + '> Texturas (accesible / blanco y negro)</label>',
+      alMontar:function(vista) {
+        vrepMontarGraficos(vista, datos);
+        var casilla = vista.querySelector('#vrep-texturas');
+        if (casilla) casilla.addEventListener('change', function() { vrepAplicarTexturas(casilla.checked); });
+        var boton = vista.querySelector('#vrep-reintentar');
+        if (boton) boton.addEventListener('click', function() { informeCerrarVista(); visitasInformeAbrir(); });
+      },
+      alCerrar:function() { vrepDestruirGraficos(); _vrepDatos = null; }
+    });
+    return true;
+  }).catch(function(error) {
+    showToast('❌ ' + (error && error.message ? error.message : 'No se ha podido generar el informe'), 'err', 4000);
+    return false;
+  }).then(function(resultado) {
+    Espera.terminar(espera);
+    return resultado;
+  });
+}
+/* >>> VISITAS INFORME (fin) */
 
 /* =========================================================
    INIT
