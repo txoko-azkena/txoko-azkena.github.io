@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6B1A1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Azkena v2.6</title>
+  <title>Azkena v2.7</title>
   <!-- Abre ya la conexión con Google (los dos saltos de cada llamada) mientras se carga la página -->
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -1676,8 +1676,8 @@
     .vis-control-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
     .vis-periodo-label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 800; }
     .vis-periodo-label select {
-      width: 100%; min-height: 44px; margin-top: 5px; padding: 9px 10px;
-      border: 1.5px solid var(--border); border-radius: 8px; background: var(--card);
+      width: 100%; min-height: 44px; margin-top: 5px; padding: 9px 36px 9px 10px;
+      border: 1.5px solid var(--border); border-radius: 8px; background-color: var(--card);
       color: var(--text); font: inherit; font-size: 14px;
     }
     .vis-check {
@@ -1690,7 +1690,16 @@
     .vis-excluir summary {
       min-height: 44px; display: flex; align-items: center; padding: 9px 11px;
       color: var(--text); font-size: 12px; font-weight: 800; cursor: pointer;
+      justify-content: space-between; gap: 8px;
     }
+    .vis-excluir summary::-webkit-details-marker { display: none; }
+    .vis-excluir summary::after,
+    .vis-detalles summary::after {
+      content: ''; width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.2s;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B1A1A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center / 16px no-repeat;
+    }
+    .vis-excluir[open] > summary::after,
+    .vis-detalles[open] > summary::after { transform: rotate(180deg); }
     .vis-excluir-lista { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 0 8px 8px; }
     .vis-excluir-lista .vis-check { min-height: 38px; padding: 7px 9px; }
     .vis-aparato-estado { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
@@ -1771,7 +1780,8 @@
     .vis-socio-nombre { color: var(--text); font-size: 12px; font-weight: 800; overflow-wrap: anywhere; }
     .vis-socio-meta { margin-top: 3px; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
     .vis-detalles { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 9px; color: var(--text-muted); font-size: 12px; }
-    .vis-detalles summary { color: var(--primary); font-weight: 800; cursor: pointer; }
+    .vis-detalles summary { color: var(--primary); font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; list-style: none; }
+    .vis-detalles summary::-webkit-details-marker { display: none; }
     .vis-detalles-contenido { padding-top: 8px; line-height: 1.55; overflow-wrap: anywhere; }
     .vis-sin-entrar { margin: 0; padding-left: 18px; }
     .vis-sin-entrar li { margin-bottom: 3px; }
@@ -1834,7 +1844,7 @@
     <img class="logo-img" src="data:image/webp;base64,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" alt="Txoko Azkena" onerror="this.style.display='none'">
     <div class="logo-txt">
       <span class="title">Txoko Azkena</span>
-      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.6</span></span>
+      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.7</span></span>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -2521,7 +2531,7 @@ function toggleLang() {
 }
 
 // Subir este número con CADA actualización que se suba a GitHub (así se ve si el móvil tiene la versión nueva)
-const APP_VERSION = '2.6';
+const APP_VERSION = '2.7';
 
 function applyTR() {
   const sub = document.getElementById('h-subtitle');
@@ -3703,9 +3713,14 @@ function visitasPrepararSesion(forzarNueva) {
     _visitasNVisita = estado ? Math.max(1, Math.floor(Number(estado.nVisita) || 1)) : Math.max(1, Math.floor(Number(visitasAlmacenLeer('local', 'azk_visitas_n') || 1)));
     _visitasPrimeraVez = estado && estado.primeraVez === 'si' ? 'si' : 'no';
     _visitasCargaMs = estado && typeof estado.cargaMs === 'number' ? Math.max(0, Math.floor(estado.cargaMs)) : '';
-    _visitasPantallas = visitasMapaSeguro(estado && estado.pantallas, ['calendario','reserva','misreservas','avisos','normas','calc','admin']);
+    _visitasPantallas = visitasMapaSeguro(estado && estado.pantallas, [
+      'calendario','reserva','misreservas','avisos','normas','calc','admin',
+      'com_todo','com_avisos','com_votos','com_incid','com_tablon',
+      'adm_reservas','adm_dias','adm_avisos','adm_votos','adm_incid','adm_tablon','adm_socios','adm_informe','adm_visitas',
+      'nor_normas','nor_docs','mr_activas','mr_historial'
+    ]);
     if (Object.keys(_visitasPantallas).length === 0) _visitasPantallas.calendario = 1;
-    _visitasAcciones = visitasMapaSeguro(estado && estado.acciones, ['login','login_error','reserva','cancelar_reserva','voto','incidencia','anuncio','cuenta_guardada','cambio_password','idioma','documento','pin_admin','error_api']);
+    _visitasAcciones = visitasMapaSeguro(estado && estado.acciones, ['login','login_error','reserva','cancelar_reserva','voto','incidencia','anuncio','cuenta_guardada','cambio_password','idioma','documento','pin_admin','error_api','dia_detalle','calc_con_reserva']);
     _visitasErrores = estado ? Math.max(0, Math.floor(Number(estado.errores) || 0)) : 0;
     _visitasPrimerAvisoSolicitado = !!(estado && estado.primerAviso);
     _visitasUltimoAvisoMs = estado && typeof estado.ultimoAviso === 'number' ? estado.ultimoAviso : null;
@@ -3775,7 +3790,7 @@ function visitasPayload() {
       nVisita:_visitasNVisita,
       duracionS:visitasDuracionS(),
       cargaMs:typeof _visitasCargaMs === 'number' ? Math.min(300000, Math.max(0, Math.floor(_visitasCargaMs))) : '',
-      pantallas:visitasCopiarMapa(_visitasPantallas, 12),
+      pantallas:visitasCopiarMapa(_visitasPantallas, 40),
       acciones:visitasCopiarMapa(_visitasAcciones, 20),
       errores:Math.min(9999, Math.max(0, Math.floor(_visitasErrores)))
     };
@@ -3786,7 +3801,7 @@ function visitasDireccion(payload) {
   var copia = {};
   var clavesPayload = Object.keys(payload || {});
   for (var i = 0; i < clavesPayload.length; i++) copia[clavesPayload[i]] = payload[clavesPayload[i]];
-  copia.pantallas = visitasCopiarMapa(payload && payload.pantallas, 12);
+  copia.pantallas = visitasCopiarMapa(payload && payload.pantallas, 40);
   copia.acciones = visitasCopiarMapa(payload && payload.acciones, 20);
   var base = visitasTexto(typeof API_URL !== 'undefined' ? API_URL : '', 1000);
   var separador = base.indexOf('?') === -1 ? '?' : '&';
@@ -3880,11 +3895,12 @@ function visitasAccion(nombre) {
   try {
     if (!visitasPermitido()) return;
     visitasAsegurarSesion();
-    var permitidas = ['login','login_error','reserva','cancelar_reserva','voto','incidencia','anuncio','cuenta_guardada','cambio_password','idioma','documento','pin_admin','error_api'];
+    var permitidas = ['login','login_error','reserva','cancelar_reserva','voto','incidencia','anuncio','cuenta_guardada','cambio_password','idioma','documento','pin_admin','error_api','dia_detalle','calc_con_reserva'];
     if (permitidas.indexOf(nombre) === -1) return;
     _visitasAcciones[nombre] = Math.min(9999, Math.max(0, Math.floor(Number(_visitasAcciones[nombre]) || 0)) + 1);
     _visitasUltimaActividadMs = visitasAhora();
     visitasGuardarEstado();
+    if (_visitasUltimoAvisoMs !== null && typeof visitasAviso === 'function') visitasAviso('cambio');
   } catch(e) {}
 }
 
@@ -3892,11 +3908,18 @@ function visitasPantalla(nombre) {
   try {
     if (!visitasPermitido()) return;
     visitasAsegurarSesion();
-    var permitidas = ['calendario','reserva','misreservas','avisos','normas','calc','admin'];
+    var permitidas = [
+      'calendario','reserva','misreservas','avisos','normas','calc','admin',
+      'com_todo','com_avisos','com_votos','com_incid','com_tablon',
+      'adm_reservas','adm_dias','adm_avisos','adm_votos','adm_incid','adm_tablon','adm_socios','adm_informe','adm_visitas',
+      'nor_normas','nor_docs','mr_activas','mr_historial'
+    ];
     if (permitidas.indexOf(nombre) === -1) return;
+    if (nombre === 'avisos') return;
     _visitasPantallas[nombre] = Math.min(9999, Math.max(0, Math.floor(Number(_visitasPantallas[nombre]) || 0)) + 1);
     _visitasUltimaActividadMs = visitasAhora();
     visitasGuardarEstado();
+    if (_visitasUltimoAvisoMs !== null && typeof visitasAviso === 'function') visitasAviso('cambio');
   } catch(e) {}
 }
 
@@ -4759,6 +4782,7 @@ const TABLON_TX = {
 function comunidadTab(tab) {
   const veniaDeOtra = _comunidadTab !== tab;
   _comunidadTab = tab;
+  try { if (typeof visitasPantalla === 'function') visitasPantalla('com_' + tab); } catch(e) {}
   ['todo','avisos','votos','incid','tablon'].forEach(t => {
     document.getElementById('com-'+t)?.classList.toggle('hidden', t !== tab);
     document.getElementById('ctab-'+t)?.classList.toggle('active', t === tab);
@@ -5780,9 +5804,15 @@ function navigate(screen) {
     if (_comDatosCargados) { _calMarcarVisto(); checkNovedadesApp(); }
   }
   if (screen === 'reserva')     initReservaForm();
-  if (screen === 'misreservas') { populateMRSocioSelect(); renderMisReservas(); }
+  if (screen === 'misreservas') {
+    populateMRSocioSelect(); renderMisReservas();
+    try { if (typeof visitasPantalla === 'function') visitasPantalla('mr_' + mrFilter); } catch(e) {}
+  }
   if (screen === 'avisos')      { _comunidadTab=''; comunidadTab('todo'); markAvisosRead(); }
-  if (screen === 'normas')      { renderNormas(); normasMarcarVistaActual(); }
+  if (screen === 'normas')      {
+    renderNormas(); normasMarcarVistaActual();
+    try { if (typeof visitasPantalla === 'function') visitasPantalla('nor_' + normasCurrentTab); } catch(e) {}
+  }
   if (screen === 'calc')        { initCalc(); calcMostrarBotonGuardar(); }
   if (screen === 'admin')       renderAdminScreen();
 
@@ -5954,6 +5984,7 @@ function renderCalendar() {
 }
 
 function showDayDetail(ds) {
+  try { if (typeof visitasAccion === 'function') visitasAccion('dia_detalle'); } catch(e) {}
   const reservas = getReservas().filter(r => r.fechaReservada === ds && r.estado !== 'cancelada');
   const bloqs    = getBloq().filter(b => b.fecha === ds);
   const isBloq   = bloqs.length > 0;
@@ -7240,6 +7271,7 @@ let mrFilter = 'activas';
 
 function filterMR(f) {
   mrFilter = f;
+  try { if (typeof visitasPantalla === 'function') visitasPantalla('mr_' + f); } catch(e) {}
   document.getElementById('tab-activas').classList.toggle('active', f === 'activas');
   document.getElementById('tab-historial').classList.toggle('active', f === 'historial');
   renderMisReservas();
@@ -7436,7 +7468,11 @@ async function confirmarCancelacion(id) {
 /* =========================================================
    NORMAS + DOCUMENTOS
 ========================================================= */
+let normasCurrentTab = 'normas';
+
 function normasTab(tab) {
+  normasCurrentTab = tab;
+  try { if (typeof visitasPantalla === 'function') visitasPantalla('nor_' + tab); } catch(e) {}
   document.getElementById('normas-content').classList.toggle('hidden', tab !== 'normas');
   document.getElementById('docs-content').classList.toggle('hidden', tab !== 'docs');
   document.getElementById('ntab-normas').classList.toggle('active', tab === 'normas');
@@ -7492,6 +7528,7 @@ function pinOK() {
     document.getElementById('pin-error').classList.add('hidden');
     document.getElementById('admin-pin-view').classList.add('hidden');
     document.getElementById('admin-content').classList.remove('hidden');
+    try { if (typeof visitasPantalla === 'function') visitasPantalla('adm_' + ({ reservas:'reservas', bloquear:'dias', 'avisos-admin':'avisos', 'votos-admin':'votos', 'incid-admin':'incid', 'tablon-admin':'tablon', socios:'socios', informe:'informe', visitas:'visitas' }[adminCurrentTab] || adminCurrentTab)); } catch(e) {}
     renderAdminContent();
   } else {
     pinBuf = ''; updatePinDisplay();
@@ -7501,6 +7538,7 @@ function pinOK() {
   }
 }
 function adminLogout() {
+  try { if (typeof visitasCerrarClaveWeb === 'function') visitasCerrarClaveWeb(); } catch(e) {}
   adminMode = false; pinBuf = ''; adminCurrentTab = 'reservas'; updatePinDisplay();
   document.getElementById('admin-pin-view').classList.remove('hidden');
   document.getElementById('admin-content').classList.add('hidden');
@@ -7509,6 +7547,7 @@ function renderAdminScreen() {
   if (adminMode) {
     document.getElementById('admin-pin-view').classList.add('hidden');
     document.getElementById('admin-content').classList.remove('hidden');
+    try { if (typeof visitasPantalla === 'function') visitasPantalla('adm_' + ({ reservas:'reservas', bloquear:'dias', 'avisos-admin':'avisos', 'votos-admin':'votos', 'incid-admin':'incid', 'tablon-admin':'tablon', socios:'socios', informe:'informe', visitas:'visitas' }[adminCurrentTab] || adminCurrentTab)); } catch(e) {}
     renderAdminContent();
   } else {
     document.getElementById('admin-pin-view').classList.remove('hidden');
@@ -7523,6 +7562,7 @@ let adminCurrentTab = 'reservas';
 
 function adminTab(tab) {
   adminCurrentTab = tab;
+  try { if (typeof visitasPantalla === 'function') visitasPantalla('adm_' + ({ reservas:'reservas', bloquear:'dias', 'avisos-admin':'avisos', 'votos-admin':'votos', 'incid-admin':'incid', 'tablon-admin':'tablon', socios:'socios', informe:'informe', visitas:'visitas' }[tab] || tab)); } catch(e) {}
   ['reservas','bloquear','avisos-admin','votos-admin','incid-admin','tablon-admin','socios','informe','visitas'].forEach(t => {
     document.getElementById('at-' + t).classList.toggle('active', t === tab);
   });
@@ -10238,11 +10278,25 @@ var visitasEstadoUI = {
   error:'',
   ultimasVisibles:10,
   exclusionesLeidas:false,
-  exclusionesAbiertas:false
+  exclusionesAbiertas:false,
+  claveEstadoComprobado:false,
+  puerta:'comprobando',
+  puertaError:'',
+  puertaCargando:false,
+  puertaEpoca:0
 };
 
+var _visitasClaveWebMemoria = '';
+
 var VISITAS_NOMBRES_PANTALLAS = {
-  calendario:'Calendario', reserva:'Reservas', misreservas:'Mis reservas', avisos:'Comunidad',
+  calendario:'Calendario', reserva:'Nueva reserva', misreservas:'Ver reservas', avisos:'Comunidad',
+  com_todo:'Comunidad › Todo', com_avisos:'Comunidad › Avisos', com_votos:'Comunidad › Votaciones',
+  com_incid:'Comunidad › Incidencias', com_tablon:'Comunidad › Tablón',
+  adm_reservas:'Admin › Reservas', adm_dias:'Admin › Días', adm_avisos:'Admin › Avisos',
+  adm_votos:'Admin › Votos', adm_incid:'Admin › Incidencias', adm_tablon:'Admin › Tablón',
+  adm_socios:'Admin › Socios', adm_informe:'Admin › Informe', adm_visitas:'Admin › Visitas',
+  nor_normas:'Normas › Normas', nor_docs:'Normas › Documentos',
+  mr_activas:'Ver reservas › Activas', mr_historial:'Ver reservas › Historial',
   normas:'Normas y documentos', calc:'Calculadora', admin:'Administración'
 };
 
@@ -10252,7 +10306,8 @@ var VISITAS_NOMBRES_ACCIONES = {
   anuncio:'publicó un anuncio', cuenta_guardada:'guardó una cuenta',
   cambio_password:'cambió la contraseña', idioma:'cambió el idioma',
   documento:'abrió un documento', pin_admin:'entró en Admin',
-  error_api:'tuvo un fallo de red/servidor'
+  error_api:'tuvo un fallo de red/servidor', dia_detalle:'Abrir el detalle de un día',
+  calc_con_reserva:'Calculadora con reserva'
 };
 
 function visitasEsc(valor) {
@@ -10266,6 +10321,88 @@ function visitasLista(valor) {
 function visitasNum(valor) {
   var numero = Number(valor);
   return isFinite(numero) ? numero : 0;
+}
+
+function visitasClaveWebValida(valor) {
+  return /^[a-f0-9]{64}$/i.test(String(valor || ''));
+}
+
+function visitasClaveWebLeer() {
+  var guardada = '';
+  try { guardada = sessionStorage.getItem('azk_clave_web') || ''; } catch(e) { guardada = ''; }
+  if (visitasClaveWebValida(guardada)) _visitasClaveWebMemoria = guardada;
+  return visitasClaveWebValida(_visitasClaveWebMemoria) ? _visitasClaveWebMemoria : '';
+}
+
+function visitasClaveWebGuardar(clave) {
+  _visitasClaveWebMemoria = visitasClaveWebValida(clave) ? String(clave) : '';
+  try {
+    if (_visitasClaveWebMemoria) sessionStorage.setItem('azk_clave_web', _visitasClaveWebMemoria);
+    else sessionStorage.removeItem('azk_clave_web');
+  } catch(e) {}
+}
+
+function visitasClaveWebBorrar() {
+  _visitasClaveWebMemoria = '';
+  try { sessionStorage.removeItem('azk_clave_web'); } catch(e) {}
+}
+
+function visitasCodigoErrorClave(error) {
+  return error && error.respuesta && error.respuesta.error ? String(error.respuesta.error) : '';
+}
+
+function visitasMensajeErrorClave(error) {
+  var codigo = visitasCodigoErrorClave(error);
+  if (codigo === 'clave_web_incorrecta') return 'Contraseña incorrecta';
+  if (codigo === 'clave_web_bloqueada') return 'Demasiados intentos. Espera 10 minutos.';
+  if (error && error.message) return String(error.message);
+  return 'No se ha podido conectar con el servidor. Inténtalo de nuevo.';
+}
+
+function visitasPintarPuerta(estado) {
+  var e = estado || {};
+  var puerta = e.puerta || 'comprobando';
+  var error = e.puertaError
+    ? '<div class="alert alert-error vis-error" role="alert">' + visitasEsc(e.puertaError) + '</div>'
+    : '';
+  if (puerta === 'comprobando') {
+    return '<div class="vis-panel"><div class="card vis-vacio">⏳ Comprobando la contraseña de administrador web…</div></div>';
+  }
+  if (puerta === 'estado_error') {
+    return '<div class="vis-panel"><div class="card vis-seccion"><div class="card-title">📊 Visitas</div>' + error +
+      '<button type="button" class="btn btn-primary" onclick="visitasComprobarClaveWeb()">Reintentar</button></div></div>';
+  }
+  if (puerta === 'validando') {
+    return '<div class="vis-panel"><div class="card vis-vacio">⏳ Comprobando la contraseña…</div></div>';
+  }
+  var crear = puerta === 'crear';
+  var titulo = crear ? 'Crea tu contraseña de administrador web' : 'Contraseña de administrador web';
+  var explicacion = crear
+    ? '<div class="notice warning">Solo tú verás las visitas. La Junta, con su PIN, no podrá. Apúntala: si la pierdes hay que reiniciarla desde Apps Script.</div>'
+    : '';
+  var campos = crear
+    ? '<div class="form-group"><label for="vis-clave-nueva">Nueva contraseña</label><input id="vis-clave-nueva" type="password" minlength="6" required autocomplete="new-password"></div>' +
+      '<div class="form-group"><label for="vis-clave-repetir">Repetir contraseña</label><input id="vis-clave-repetir" type="password" minlength="6" required autocomplete="new-password"></div>'
+    : '<div class="form-group"><label for="vis-clave">Contraseña</label><div style="display:flex;gap:6px;align-items:center;">' +
+      '<input id="vis-clave" type="password" required autocomplete="current-password" style="flex:1;min-width:0;">' +
+      '<button type="button" class="btn btn-outline btn-sm" aria-label="Mostrar u ocultar contraseña" onclick="visitasToggleClave(\'vis-clave\',this)">👁️</button></div></div>';
+  var olvido = crear ? '' : '<details class="vis-detalles"><summary>He olvidado la contraseña</summary>' +
+    '<div class="vis-detalles-contenido">Entra en script.google.com → Txoko Azkena Backend → elige la función reiniciarClaveWebmaster → Ejecutar. Después vuelve aquí y crea una nueva.</div></details>';
+  return '<div class="vis-panel"><section class="card vis-seccion"><div class="card-title">' + visitasEsc(titulo) + '</div>' +
+    explicacion + error + '<form onsubmit="' + (crear ? 'visitasCrearClaveWeb(event)' : 'visitasEntrarClaveWeb(event)') + '">' + campos +
+    '<button type="submit" class="btn btn-primary">' + (crear ? 'Crear contraseña' : 'Entrar') + '</button></form>' + olvido + '</section></div>';
+}
+
+function visitasToggleClave(id, boton) {
+  var campo = document.getElementById(id);
+  if (!campo) return;
+  if (campo.type === 'password') {
+    campo.type = 'text';
+    if (boton) boton.textContent = '🙈';
+  } else {
+    campo.type = 'password';
+    if (boton) boton.textContent = '👁️';
+  }
 }
 
 function visitasIdsExcluidos(valor) {
@@ -10770,7 +10907,8 @@ function visitasPintarControles(sociosActivos, estado, aparatoApagado) {
       (ids.indexOf(id) !== -1 ? ' checked' : '') + '><span>Nº ' + visitasEsc(id) + (socio && socio.nombre ? ' – ' + visitasEsc(socio.nombre) : '') + '</span></label>';
   }).join('');
   var hora = visitasHoraActualizacion(e.horaCarga);
-  return '<div class="card vis-controles"><div class="vis-control-titulo">📊 Visitas</div><div class="vis-control-grid">' +
+  return '<div class="card vis-controles"><div class="vis-control-titulo" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">📊 Visitas' +
+    '<button type="button" class="btn btn-outline btn-sm" onclick="visitasCerrarClaveWeb()">🔒 Cerrar</button></div><div class="vis-control-grid">' +
     '<label class="vis-periodo-label">Periodo<select onchange="visitasCambiarPeriodo(this.value)">' + opciones + '</select></label>' +
     '<label class="vis-check"><input type="checkbox" onchange="visitasCambiarAdmin(this.checked)"' + (!e.incluirAdmin ? ' checked' : '') +
       '><span>Ocultar aparatos que han entrado en Admin (Junta)</span></label>' +
@@ -10794,6 +10932,10 @@ function visitasEstaApagado() {
 function visitasPintarAdminDom() {
   var root = document.getElementById('admin-tab');
   if (!root || adminCurrentTab !== 'visitas') return;
+  if (visitasEstadoUI.puerta !== 'abierta') {
+    root.innerHTML = visitasPintarPuerta(visitasEstadoUI);
+    return;
+  }
   var socios = visitasSociosActivosUI();
   var html = '<div class="vis-panel">' + visitasPintarControles(socios, visitasEstadoUI, visitasEstaApagado());
   if (visitasEstadoUI.cargando && !visitasEstadoUI.datos) {
@@ -10826,13 +10968,64 @@ function visitasPintarAdminDom() {
   root.innerHTML = html;
 }
 
-async function visitasCargar() {
+function visitasVaciarDatosClaveWeb() {
+  visitasEstadoUI.datos = null;
+  visitasEstadoUI.horaCarga = null;
+  visitasEstadoUI.error = '';
+  visitasEstadoUI.cargando = false;
+  visitasEstadoUI.ultimasVisibles = 10;
+}
+
+function visitasAplicarErrorClave(error, puertaGenerica) {
+  var codigo = visitasCodigoErrorClave(error);
+  if (codigo === 'clave_web_no_creada') {
+    visitasClaveWebBorrar();
+    visitasVaciarDatosClaveWeb();
+    visitasEstadoUI.claveEstadoComprobado = true;
+    visitasEstadoUI.puerta = 'crear';
+    visitasEstadoUI.puertaError = '';
+    return true;
+  }
+  if (codigo === 'clave_web_incorrecta') {
+    visitasClaveWebBorrar();
+    visitasVaciarDatosClaveWeb();
+    visitasEstadoUI.claveEstadoComprobado = true;
+    visitasEstadoUI.puerta = 'login';
+    visitasEstadoUI.puertaError = 'Contraseña incorrecta';
+    return true;
+  }
+  if (codigo === 'clave_web_bloqueada') {
+    visitasVaciarDatosClaveWeb();
+    visitasEstadoUI.claveEstadoComprobado = true;
+    visitasEstadoUI.puerta = 'login';
+    visitasEstadoUI.puertaError = 'Demasiados intentos. Espera 10 minutos.';
+    return true;
+  }
+  visitasEstadoUI.puerta = puertaGenerica || 'login';
+  visitasEstadoUI.puertaError = visitasMensajeErrorClave(error);
+  return false;
+}
+
+async function visitasCargar(clave, guardarAlValidar) {
   if (visitasEstadoUI.cargando) return;
+  var epoca = visitasEstadoUI.puertaEpoca;
+  var claveUsada = visitasClaveWebValida(clave) ? String(clave) : visitasClaveWebLeer();
+  if (!claveUsada) {
+    visitasVaciarDatosClaveWeb();
+    visitasEstadoUI.puerta = 'login';
+    visitasEstadoUI.puertaError = '';
+    visitasPintarAdminDom();
+    return;
+  }
+  var teniaDatos = !!visitasEstadoUI.datos;
   visitasEstadoUI.cargando = true;
   visitasEstadoUI.error = '';
+  visitasEstadoUI.puertaError = '';
+  if (!teniaDatos) visitasEstadoUI.puerta = 'validando';
   visitasPintarAdminDom();
   try {
-    var respuesta = await apiCall({ action:'getVisitas', dias:400 });
+    var respuesta = await apiCall({ action:'getVisitas', dias:400, clave:claveUsada });
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
     visitasEstadoUI.datos = {
       sesiones:visitasNormalizar(respuesta),
       truncado:!!(respuesta && respuesta.truncado),
@@ -10841,12 +11034,139 @@ async function visitasCargar() {
     };
     visitasEstadoUI.horaCarga = new Date();
     visitasEstadoUI.ultimasVisibles = 10;
+    visitasEstadoUI.claveEstadoComprobado = true;
+    visitasEstadoUI.puerta = 'abierta';
+    visitasEstadoUI.puertaError = '';
+    if (guardarAlValidar !== false) visitasClaveWebGuardar(claveUsada);
   } catch(error) {
-    visitasEstadoUI.error = error && error.message ? String(error.message) : 'Error de conexión';
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    var eraClave = visitasAplicarErrorClave(error, teniaDatos ? 'abierta' : 'login');
+    if (!eraClave && teniaDatos) visitasEstadoUI.error = visitasMensajeErrorClave(error);
   } finally {
-    visitasEstadoUI.cargando = false;
+    if (epoca === visitasEstadoUI.puertaEpoca) {
+      visitasEstadoUI.cargando = false;
+      visitasPintarAdminDom();
+    }
+  }
+}
+
+async function visitasComprobarClaveWeb() {
+  if (visitasEstadoUI.puertaCargando) return;
+  var epoca = ++visitasEstadoUI.puertaEpoca;
+  visitasEstadoUI.puertaCargando = true;
+  visitasEstadoUI.puerta = 'comprobando';
+  visitasEstadoUI.puertaError = '';
+  visitasVaciarDatosClaveWeb();
+  visitasPintarAdminDom();
+  var hashGuardado = '';
+  try {
+    var estado = await apiCall({ action:'getClaveWebEstado' });
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    visitasEstadoUI.claveEstadoComprobado = true;
+    if (estado && estado.configurada === true) {
+      hashGuardado = visitasClaveWebLeer();
+      visitasEstadoUI.puerta = hashGuardado ? 'validando' : 'login';
+    } else {
+      visitasClaveWebBorrar();
+      visitasEstadoUI.puerta = 'crear';
+    }
+  } catch(error) {
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    visitasEstadoUI.claveEstadoComprobado = false;
+    visitasAplicarErrorClave(error, 'estado_error');
+  } finally {
+    if (epoca === visitasEstadoUI.puertaEpoca) visitasEstadoUI.puertaCargando = false;
+  }
+  if (epoca !== visitasEstadoUI.puertaEpoca) return;
+  if (hashGuardado) visitasCargar(hashGuardado, true);
+  else visitasPintarAdminDom();
+}
+
+async function visitasCrearClaveWeb(evento) {
+  if (evento && typeof evento.preventDefault === 'function') evento.preventDefault();
+  if (visitasEstadoUI.puertaCargando) return;
+  var nueva = document.getElementById('vis-clave-nueva');
+  var repetir = document.getElementById('vis-clave-repetir');
+  var claveNueva = nueva ? nueva.value : '';
+  var claveRepetida = repetir ? repetir.value : '';
+  if (claveNueva.length < 6) {
+    visitasEstadoUI.puertaError = 'La contraseña debe tener al menos 6 caracteres.';
+    visitasPintarAdminDom();
+    return;
+  }
+  if (claveNueva !== claveRepetida) {
+    visitasEstadoUI.puertaError = 'Las contraseñas no coinciden.';
+    visitasPintarAdminDom();
+    return;
+  }
+  visitasEstadoUI.puertaCargando = true;
+  var epoca = visitasEstadoUI.puertaEpoca;
+  visitasEstadoUI.puerta = 'validando';
+  visitasEstadoUI.puertaError = '';
+  visitasPintarAdminDom();
+  try {
+    var hash = await hashPassword(claveNueva);
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    await apiCall({ action:'claveWebCrear', data:{ clave:hash } });
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    visitasEstadoUI.claveEstadoComprobado = true;
+    visitasClaveWebGuardar(hash);
+    visitasEstadoUI.puertaCargando = false;
+    await visitasCargar(hash, true);
+    return;
+  } catch(error) {
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    var codigo = visitasCodigoErrorClave(error);
+    visitasEstadoUI.claveEstadoComprobado = codigo === 'clave_web_ya_creada';
+    if (codigo === 'clave_web_ya_creada') {
+      visitasEstadoUI.puerta = 'login';
+      visitasEstadoUI.puertaError = 'Ya existe una contraseña. Escríbela para entrar.';
+    } else visitasAplicarErrorClave(error, 'crear');
+  } finally {
+    if (epoca === visitasEstadoUI.puertaEpoca) {
+      visitasEstadoUI.puertaCargando = false;
+      visitasPintarAdminDom();
+    }
+  }
+}
+
+async function visitasEntrarClaveWeb(evento) {
+  if (evento && typeof evento.preventDefault === 'function') evento.preventDefault();
+  if (visitasEstadoUI.puertaCargando || visitasEstadoUI.cargando) return;
+  var campo = document.getElementById('vis-clave');
+  var texto = campo ? campo.value : '';
+  if (!texto) {
+    visitasEstadoUI.puertaError = 'Escribe la contraseña.';
+    visitasPintarAdminDom();
+    return;
+  }
+  visitasEstadoUI.puerta = 'validando';
+  visitasEstadoUI.puertaError = '';
+  visitasPintarAdminDom();
+  var epoca = visitasEstadoUI.puertaEpoca;
+  try {
+    var hash = await hashPassword(texto);
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    await visitasCargar(hash, true);
+  } catch(error) {
+    if (epoca !== visitasEstadoUI.puertaEpoca) return;
+    visitasEstadoUI.puerta = 'login';
+    visitasEstadoUI.puertaError = visitasMensajeErrorClave(error);
     visitasPintarAdminDom();
   }
+}
+
+function visitasCerrarClaveWeb() {
+  var estadoConocido = !!visitasEstadoUI.claveEstadoComprobado;
+  var sinCrear = estadoConocido && visitasEstadoUI.puerta === 'crear';
+  visitasClaveWebBorrar();
+  visitasVaciarDatosClaveWeb();
+  visitasEstadoUI.claveEstadoComprobado = estadoConocido;
+  visitasEstadoUI.puerta = estadoConocido ? (sinCrear ? 'crear' : 'login') : 'comprobando';
+  visitasEstadoUI.puertaError = '';
+  visitasEstadoUI.puertaCargando = false;
+  visitasEstadoUI.puertaEpoca++;
+  visitasPintarAdminDom();
 }
 
 function visitasRenderAdmin() {
@@ -10854,15 +11174,15 @@ function visitasRenderAdmin() {
     visitasEstadoUI.excluirSocio = visitasExclusionesLeer();
     visitasEstadoUI.exclusionesLeidas = true;
   }
-  if (!visitasEstadoUI.datos && !visitasEstadoUI.cargando && !visitasEstadoUI.error) {
-    visitasCargar();
+  if (!visitasEstadoUI.claveEstadoComprobado && !visitasEstadoUI.puertaCargando) {
+    visitasComprobarClaveWeb();
     return;
   }
   visitasPintarAdminDom();
 }
 
 function visitasActualizar() {
-  visitasCargar();
+  visitasCargar(visitasClaveWebLeer(), false);
 }
 
 function visitasCambiarPeriodo(periodo) {
@@ -11090,7 +11410,11 @@ function calcAdj(field, delta) {
 }
 
 function calcSetReserva(val) {
+  const contarConReserva = val === true && calcState.conReserva !== true;
   calcState.conReserva = val;
+  if (contarConReserva) {
+    try { if (typeof visitasAccion === 'function') visitasAccion('calc_con_reserva'); } catch(e) {}
+  }
   document.getElementById('ctog-sinres').classList.toggle('active', !val);
   document.getElementById('ctog-conres').classList.toggle('active',  val);
   document.getElementById('calc-mesas-row').style.display = val ? '' : 'none';
