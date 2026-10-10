@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6B1A1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Azkena v2.5</title>
+  <title>Azkena v2.6</title>
   <!-- Abre ya la conexión con Google (los dos saltos de cada llamada) mientras se carga la página -->
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -1666,6 +1666,125 @@
       .inf-asamblea-resumen { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
 
+    /* Visitas */
+    .vis-panel,
+    .vis-panel * { min-width: 0; }
+    .vis-controles { margin-bottom: 10px; }
+    .vis-control-titulo {
+      color: var(--primary); font-size: 18px; font-weight: 800; margin-bottom: 12px;
+    }
+    .vis-control-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .vis-periodo-label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 800; }
+    .vis-periodo-label select {
+      width: 100%; min-height: 44px; margin-top: 5px; padding: 9px 10px;
+      border: 1.5px solid var(--border); border-radius: 8px; background: var(--card);
+      color: var(--text); font: inherit; font-size: 14px;
+    }
+    .vis-check {
+      min-height: 44px; display: flex; align-items: center; gap: 9px;
+      border: 1px solid var(--border); border-radius: 9px; padding: 9px 11px;
+      background: var(--card); color: var(--text); font-size: 12px; font-weight: 700;
+    }
+    .vis-check input { width: 19px; height: 19px; flex: 0 0 19px; accent-color: var(--primary); }
+    .vis-excluir { border: 1px solid var(--border); border-radius: 9px; background: var(--card); }
+    .vis-excluir summary {
+      min-height: 44px; display: flex; align-items: center; padding: 9px 11px;
+      color: var(--text); font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+    .vis-excluir-lista { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 0 8px 8px; }
+    .vis-excluir-lista .vis-check { min-height: 38px; padding: 7px 9px; }
+    .vis-aparato-estado { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
+    .vis-aparato-estado strong { color: var(--text); }
+    .vis-botones { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .vis-botones .btn { flex: 1 1 130px; }
+    .vis-actualizado { margin-top: 8px; color: var(--text-muted); font-size: 11px; text-align: right; }
+    .vis-aviso {
+      margin: 10px 0; padding: 11px 12px; border: 1px solid var(--border); border-radius: 9px;
+      background: rgba(117,117,117,0.08); color: var(--text-muted); font-size: 12px; line-height: 1.55;
+    }
+    .vis-aviso strong { color: var(--text); }
+    .stats-grid.vis-stats { grid-template-columns: 1fr; }
+    .vis-stat-comparacion { min-height: 16px; margin-top: 5px; color: var(--text-muted); font-size: 10px; line-height: 1.3; }
+    .vis-seccion { margin-top: 10px; }
+    .vis-seccion.card { padding: 14px; }
+    .vis-seccion .card-title { margin-bottom: 11px; }
+    .vis-vacio { padding: 16px 8px; color: var(--text-muted); font-size: 13px; text-align: center; line-height: 1.5; }
+    .vis-ultimas-lista { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .vis-visita {
+      border: 1px solid var(--border); border-left: 4px solid var(--primary);
+      border-radius: 10px; padding: 11px; background: var(--card); overflow: hidden;
+    }
+    .vis-visita-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .vis-visita-fecha { color: var(--primary); font-size: 13px; font-weight: 900; white-space: nowrap; }
+    .vis-visita-socio { margin-top: 3px; color: var(--text); font-size: 13px; font-weight: 800; overflow-wrap: anywhere; }
+    .vis-etiquetas { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+    .vis-etiqueta {
+      display: inline-block; border-radius: 10px; padding: 3px 6px; background: var(--bg);
+      color: var(--text-muted); font-size: 9px; font-weight: 900; white-space: nowrap;
+    }
+    .vis-etiqueta--aviso { background: #FFF3E0; color: var(--warning); }
+    .vis-etiqueta--error { background: #FFEBEE; color: var(--error); }
+    .vis-etiqueta--junta { background: #E8EAF6; color: #3949AB; }
+    .vis-visita-linea { margin-top: 6px; color: var(--text-muted); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
+    .vis-visita-actividad { margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--border); color: var(--text); }
+    .vis-ver-mas { width: 100%; margin-top: 9px; }
+    .vis-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .vis-grafica { border: 1px solid var(--border); border-radius: 10px; padding: 11px; background: var(--card); overflow: hidden; }
+    .vis-grafica h3 { margin: 0 0 10px; color: var(--primary); font-size: 14px; }
+    .vis-barras-v {
+      width: 100%; height: 154px; display: flex; flex-flow: row nowrap;
+      align-items: stretch; gap: 2px; overflow: visible;
+    }
+    .vis-barra-v-item { flex: 1 1 0; display: flex; flex-direction: column; align-items: stretch; min-width: 0; }
+    .vis-barra-v-valor { height: 18px; color: var(--text-muted); font-size: 8px; font-weight: 800; text-align: center; white-space: nowrap; }
+    .vis-barra-v-area { flex: 1; display: flex; align-items: flex-end; justify-content: center; min-height: 0; }
+    .vis-barra-v {
+      width: 76%; max-width: 18px; height: var(--vis-pct); min-height: 2px;
+      border-radius: 4px 4px 1px 1px; background: var(--primary);
+    }
+    .vis-barra-v.vis-cero { opacity: 0.18; }
+    .vis-barra-v-label {
+      height: 24px; margin-top: 4px; color: var(--text-muted); font-size: 8px;
+      line-height: 1.1; text-align: center; white-space: nowrap; overflow: visible;
+      display: flex; justify-content: center;
+    }
+    .vis-barra-h-fila { margin-bottom: 10px; }
+    .vis-barra-h-fila:last-child { margin-bottom: 0; }
+    .vis-barra-h-cab {
+      display: flex; flex-flow: row nowrap; align-items: baseline; justify-content: space-between;
+      gap: 8px; margin-bottom: 4px; font-size: 11px; line-height: 1.2;
+    }
+    .vis-barra-h-nombre { overflow: hidden; color: var(--text); font-weight: 700; white-space: nowrap; text-overflow: ellipsis; }
+    .vis-barra-h-valor { flex: 0 0 auto; color: var(--text-muted); font-weight: 800; white-space: nowrap; }
+    .vis-barra-h-valor.vis-desfasada { color: var(--warning); }
+    .vis-barra-h-pista { width: 100%; height: 8px; border-radius: 5px; background: var(--bg); overflow: hidden; }
+    .vis-barra-h { width: var(--vis-pct); height: 100%; border-radius: 5px; background: var(--primary); }
+    .vis-barra-h.vis-desfasada { background: var(--warning); }
+    .vis-subnota { margin: -4px 0 10px; color: var(--text-muted); font-size: 10px; line-height: 1.4; }
+    .vis-problemas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .vis-problema { border: 1px solid var(--border); border-radius: 8px; padding: 9px; text-align: center; }
+    .vis-problema strong { display: block; color: var(--primary); font-size: 20px; }
+    .vis-problema span { color: var(--text-muted); font-size: 10px; line-height: 1.3; }
+    .vis-socio-lista { display: grid; grid-template-columns: 1fr; gap: 7px; }
+    .vis-socio-fila { border-bottom: 1px solid var(--border); padding: 8px 0; }
+    .vis-socio-fila:last-child { border-bottom: 0; }
+    .vis-socio-nombre { color: var(--text); font-size: 12px; font-weight: 800; overflow-wrap: anywhere; }
+    .vis-socio-meta { margin-top: 3px; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
+    .vis-detalles { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 9px; color: var(--text-muted); font-size: 12px; }
+    .vis-detalles summary { color: var(--primary); font-weight: 800; cursor: pointer; }
+    .vis-detalles-contenido { padding-top: 8px; line-height: 1.55; overflow-wrap: anywhere; }
+    .vis-sin-entrar { margin: 0; padding-left: 18px; }
+    .vis-sin-entrar li { margin-bottom: 3px; }
+    .vis-error { margin-top: 10px; }
+
+    @media (min-width: 600px) {
+      .stats-grid.vis-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .vis-control-grid,
+      .vis-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .vis-grafica--ancha { grid-column: 1 / -1; }
+      .vis-excluir-lista { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
     .admin-tab-bar {
       overflow-x: auto;
       scrollbar-width: thin;
@@ -1715,7 +1834,7 @@
     <img class="logo-img" src="data:image/webp;base64,UklGRmgMAABXRUJQVlA4IFwMAADQNACdASqAAIAAPmEqkEYkIqGhKJtLuIAMCWcA1XG6+2Rw3Pfou26l3FbzvkJPlnsU/xnhX+LfJv2H8kf67y9ug/Mr+K/Yz7z+YvsJ/iPBX1JeoR+K/zX/F/1P9weArAB+c/1P/Nf3X9yP676Rf9n6G+IB/If6L/pPza5pLyz/Se4F/K/6x/vfvD+mH+f/6n+R/y37fe2j83/v//L/xX5PfYN/K/6j/sv73/eP/V/mfnV9iH7jey7+yX//YrrNvYnVkx4CKYLC8rrmDh3yA8iPc7ybn8LdEWt9FEb55rhE1i47SYPPYThtj8sIdBTU0ScmvzaNE2PSl8ejNlnEWFX7rnYUqDTWg8tVA3VFQT9Ncc1CCH4wHj8GN36qRA5cQ6ChzPq3eD6bWT65Es1VzJnE9f1XlZNqeq8xNkTZzsdBjHTtPe78R3xA5JXiAT7DEDnAI2VraChnIdTvdViXPqXhXxGS41d9UzcN4ZLOfmhBqwya5JL2xZnZtl+z8bal0roExegxmBdfc5giNhFood/zcdVuf1OXTVgVcFA0cFNu/sPZRQmfFbJq3F6/vzMkwAD+7O3/5WfwfbeY8FczPTD/pCeuK6xxrt93Pfqm0fGzWson8jwBajUBgi/6uPYWu7/0nTdfROecqqvg9wBp4dRvPxXMKFp+DHekmErgp77p9qV/JRBaoRt7luMOB1/XfD4WaWZEVOQplOjs/pX6PYh2LFcjrya3Vp7kKzHHfV/6hnh5i/MfsmH0QW5opaqiD640f3xYkXV8SjsQRmhLgDfEWIrBDOvwff4AArXZlfQR5tZ+FmSUtWMO92dbaupGp7mWkipCPDzVVRlpf7eYcnskXUpNKEwgSqJnUKUnBhksvg2QwzbJUlEkhND4OKYVjpTEetMCa4SCrIcx/rUuPpnyXyPVGdczeoKQdqBT7NYCaSZcKPARGu1f57GI3bKOyb2xWfylcMUzzkwBfOw9UP/aBP9qon8TRGDd/h8dtUFRF0qFEBIEts/KNU7Nd6Eb+pw5LbwoNOPkIOHa24AhwMMl7ZG95YddsGl+sCO/n3GXftrwLQWNptdPA+ns8AYFdgELf/kesGnvZozxSP6mwxu1AN9fC1Yo2TX8kQF1Xbshva3aEzjMg8dYQZ8l1PJMjX3U9fxKd60Ncr7gYpYZGT2CiwfjKtHHSdxYnyHfHZkKFDbzOO9cEgRTqHYpIdZbvSSfmSA9izMsjlhdj4mmNm1ioWde6Kw4QCouXuXM1us1HqBFv9E7rhGgC+O98+DO+8D3RSJknesvtXDD8QNxDYL4d7E/wqx0HHFWiptQDUEb66q1RKaXwtW2NLz/TrslHTJl6zTPqK0TnAI5CYzTVcBd4KzyoWfIyQsxoWgEjh4MTHixANmFYcOX5jmWVquphiyoPhG37lQSOUTydDr6xG2B2BzgEvxXKHh8kwDWQdXZYZcpC+y9DD0LJttJVan7ckpw2uK8jQF9o3pqi6+Gb/y2GLhDMrNmDhvD9Wg6MNLnAhAL3NOPB7KGX2NSWSJGdRx6Q/zUpT7sFa2UcaecLAartVmNvt9yGmvYk95y8QumlxWeM/O7gPQfuNP6gWp6sX2DoXRPJLxfl4sJAqCfcm/g2Naa9E6qmD8dPTcyT8XaXD6z21aaEfJ+pViiN/1HkEc6vreWwTdLo329JcjlJiVGvCNGa2I9RdDgrpV7pBhl+jXiJDC4DCpw+9c6f9HawcbHTU5XR0hKsdK/p1qbxTrCOsscmWczIF4ENibAtJ/P17H51B7xGjTyW7BwATIuMMIgcO3jwXFFa+bQ+0Htbzj9rK+Besoz2Ry0j8NlCe2B2y3836s4otM1sEl0n6KV8L3fSq8vo/jFMZ/nniezjasn2H+ug839y8f5gfc24CpCIPWBITu+mv/NFdvUxxN87MLvTiFDNntNKJk6TH7aMF7BzfWeglSbFLDA/T7hW+6+7S0j/Oha4A8TRGa1wpT4RP5Aoz1sT6O2044PZ8FabGlf8//HnegyJEIEFfFW1yC+x/hbAlXAywxN4wLKLqb4X4Tx3L+VSp+fvagzmrSu33O02Yy7BSxjqv2OhYIdXds/1f2VrpngSgfAfvhDUix8saKQTDt8rGu2+32u8ahOHG58yTxX2snhIUnTMN/eZum48NsbLpidpxGAh9G1NGYJvueElGzC5qKu64tRd2d+adiD0NDl/efDRFt9Q9/tEpb7ixqnDKLZekNmklchZuQfnKTxPV1uf13A7Y1UWoB3NYu4euxjrK++A3+Qe3waUN0NTuqPiOOEIFwmYOSlbBaTdj5R8vTbjU4dUr3b3CIfde2Z1GpdIidy6O7CM0U7tnDMOY6F607Fknd2A2SMnVS4llkl91BNcRPSQGr+dFaghNf4NYrtk+ATQE+z4o9X222TFRT48QzhnNMQD8VIEJhImwn3sfbx2T04e/1ArgNkkwH51uZaiNjLzkHcmMSKUzVgj86MzwT2H8Mgm/0z9fihexJ+5v71jctDZ/f5NM0CGdEjlI+BGwIr2bJ69XiVreVLXnXxNaeGJZCs2yqNp2zFbBdp4BeR6gmti/qERJdJrMGCJO9fyaxUGRqqJD6ANMuVetIYrrKek997ayHCA/4eRU2ah2LwkwK+DOhS4cdCu9RgFBm55sNPNyYLFUN9rFC0f1Ve06/Ep2foDIrpMltfSjuzg9HRl4iASiqKmNek6Py5uC5P4nuLDBVJM5ck19xCiF/hLoAXB8UjHcHSrUN6CKirpGYK051vp3u+zpX2rriSbUXp/QAgIPa2mLyat9Ov1IKMfR8VAk7D2OFUkzO521sQRoxPwjQLNbqpA7spqh7W+tZ5OfTbguZcPKU1j9Vd+RFcZrVqJdDPkvWc4uyuvgND0UY51JgsnVRnk+aqWmq69aoGiy6GV23ClO77+pUoSRseAG90kn16zPZNDQtmzX86a5dyvEIvHgNEmZt3ANIEqxjyxrtg+gjEeCSOr38wn+7iZvTIEpboACKc6vpteVOtf4VKGG52+7lTXY7hcr4y105Q2HhsiNv0HS1zyvXrKz54wVvN//VmKJk8qOKmWf8FWW8pb9nEscgUORbR6fckBUuBauL24Ld/brIhoiXDdzptXami7h0oJB3JX4a8WVTWGPqBbTP1ShqNtlMRxbOVt2GxgtveraepA/HQDTf3HSzzDadb+7bLY142tTSyEEnXBSvYYwGN3x05SQZyMyfKQRQy37mu9gwjSrJqlsanANCB+1DV37qruhyUtjPH9DsiBVlSFSAy65jT3cuVlxeIYKtP5qBLHV0Ksa+uDcfScV4Ht5OdtDVr39YP727S2pLJ/huA4nOForr8sUCgyf2zfuijF2ffsYSDTf8rBf8R+o0jAGsl9WpPVmcRJhsKtgVCCO9nGfLfg6ut11gR4TB8Q4WjcPd5laNN1ShD6b2b2ZLf/o3X+ACirh8+zkPs1eAh+wCeU77ciEL1V62wD7liPyebsrgSifSF54tKS+gVy4k++fLXAScCcnwTBYgfA00D1YU3Y2Mh3yFDb7CgvjCB1F7PBzxI4myyXjh9+wNAXvbb0TYOE5GmfG6cOqb4NDDLkVCIEo5MoNcFwpzNRQKwf79hDKb9kRTELQEyMSa4oLF85f7kzz5nVIxsULPGk/eMBYEoJbYVf8abY/VOZuSGeAEsMyoU9XIns+X2MS0DH+6ocX9y+NnUlRNafEopG845T2KeVhIgXIWPEgR6gb2+73MBuLk3eenrtaNn/5/PCn85jNn3wUntnIR6jTcWtGdsJ+nci+X6bGpF/fgIEFlNh2LzMVePsvY0LPbl2KpFX0y9WhCcq6l7Sm/pQf2bERONIGBOH54eI93cuDZ3vZ2UCuGaQg5SyJFK6+8v3Db4kpZeTDRtZtQLe0eYTl4oJ3UCcomN0Y/yemNzTMgvo3Ctpu+UFc+7jXyUixctNKJ86G/N2hHH1XLjJPLpuaX75GDXIEy2mUFmnPuxAA80AgfjvFSyElE727SSxnPbgsPWU40j+nbOn/uiaGM9eUzpNJGD7W/Br9oSMQXIsBFimRQhOtGcr/QVnfAngQO/TFwQh1W/hgE0Wzto0Udh2keczizfyOQdke1gSo3eS1LZzH2BAyd8u3HstVadw+40K/vNzj3bABJJr/t22NOR9VnWjXIHSixspoCDrdpJw1Af/KA+D7ZQgYRcDQExZLezVFlXJsbJ+RQ+okAAAAAAAA==" alt="Txoko Azkena" onerror="this.style.display='none'">
     <div class="logo-txt">
       <span class="title">Txoko Azkena</span>
-      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.5</span></span>
+      <span class="subtitle" id="h-subtitle">Libro Dietario Digital <span style="opacity:0.85;font-size:11px;font-weight:700;">v2.6</span></span>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -2252,6 +2371,7 @@
         <button class="tab-btn"        id="at-tablon-admin" onclick="adminTab('tablon-admin')" style="font-size:9.5px;">📌 Tablón</button>
         <button class="tab-btn"        id="at-socios"     onclick="adminTab('socios')"     style="font-size:9.5px;">👥 Socios</button>
         <button class="tab-btn"        id="at-informe"    onclick="adminTab('informe')"    style="font-size:9.5px;">📄 Informe</button>
+        <button class="tab-btn"        id="at-visitas"    onclick="adminTab('visitas')"    style="font-size:9.5px;">📊 Visitas</button>
       </div>
 
       <div id="admin-tab"></div>
@@ -2397,10 +2517,11 @@ function toggleLang() {
   if (currentScreen === 'calc')        { renderCalcTexts(); calcMostrarBotonGuardar(); }
   if (currentScreen === 'avisos' && _comunidadTab === 'tablon') renderTablon();
   if (currentScreen === 'avisos' && _comunidadTab === 'todo')   renderComunidadTodo();
+  try { if (typeof visitasAccion === 'function') visitasAccion('idioma'); } catch(e) {}
 }
 
 // Subir este número con CADA actualización que se suba a GitHub (así se ve si el móvil tiene la versión nueva)
-const APP_VERSION = '2.5';
+const APP_VERSION = '2.6';
 
 function applyTR() {
   const sub = document.getElementById('h-subtitle');
@@ -2557,6 +2678,7 @@ async function doLogin(e) {
       marcarCachePintada();
     }
     refrescarDatos({ motivo: 'login', bloqueante: !hayCache });
+    try { if (typeof visitasAviso === 'function') visitasAviso('login'); } catch(e) {}
   } catch(err) {
     errEl.textContent = '❌ ' + err.message;
     loginBtn.disabled = false;
@@ -3016,13 +3138,32 @@ async function apiCall(params, timeoutMs, silent = false, intentos) {
   });
 
   try {
+    let resultado;
     if (!lectura) {
       const timeoutEscritura = Math.max(ESCRITURA_TIMEOUT_MS, Number(timeoutMs) || 0);
-      return await apiIntento(params, timeoutEscritura);
+      resultado = await apiIntento(params, timeoutEscritura);
+    } else {
+      const numeroIntentos = Math.max(1, Math.floor(Number(intentos) || 3));
+      const timeoutTotal = Math.max(LECTURA_TIMEOUT_TOTAL_MS, Number(timeoutMs) || 0);
+      resultado = await apiLecturaEnCarrera(params, timeoutTotal, numeroIntentos);
     }
-    const numeroIntentos = Math.max(1, Math.floor(Number(intentos) || 3));
-    const timeoutTotal = Math.max(LECTURA_TIMEOUT_TOTAL_MS, Number(timeoutMs) || 0);
-    return await apiLecturaEnCarrera(params, timeoutTotal, numeroIntentos);
+    try {
+      const accionesVisita = {
+        login:'login', addReserva:'reserva', cancelReserva:'cancelar_reserva', addRespuesta:'voto',
+        addIncidencia:'incidencia', addAnuncio:'anuncio', saveCuenta:'cuenta_guardada',
+        saveCuentaLibre:'cuenta_guardada', changePassword:'cambio_password'
+      };
+      if (accionesVisita[accion] && typeof visitasAccion === 'function') visitasAccion(accionesVisita[accion]);
+    } catch(e) {}
+    return resultado;
+  } catch(error) {
+    try {
+      if (typeof visitasAccion === 'function') {
+        visitasAccion('error_api');
+        if (accion === 'login') visitasAccion('login_error');
+      }
+    } catch(e) {}
+    throw error;
   } finally {
     Espera.terminar(esperaId);
   }
@@ -3075,6 +3216,1292 @@ function showLoading(show) {
   }
 }
 /* <<< ESPERA+API (fin) */
+
+/* >>> VISITAS CLIENTE (inicio) */
+const VISITAS_ACTIVO = true;
+const VISITAS_REGISTRAR_SOCIO = true;
+const VISITAS_UBICACION = true;
+const VISITAS_HOSTS = ['txoko-azkena.github.io'];
+const VISITAS_INACTIVIDAD_MS = 30 * 60 * 1000;
+const VISITAS_ESPERA_PRIMER_AVISO_MS = 6000;
+const VISITAS_AVISO_ACTIVO_MS = 45000;
+const VISITAS_GEO_TTL_MS = 24 * 3600 * 1000;
+
+var _visitasMemLocal = {};
+var _visitasMemSesion = {};
+var _visitasParametrosAplicados = false;
+var _visitasIniciado = false;
+var _visitasSesionId = '';
+var _visitasInicioMs = 0;
+var _visitasUltimaActividadMs = 0;
+var _visitasVisibleDesdeMs = null;
+var _visitasVisibleAcumuladoMs = 0;
+var _visitasPaginaInicioPerf = 0;
+var _visitasNVisita = 0;
+var _visitasPrimeraVez = 'no';
+var _visitasCargaMs = '';
+var _visitasPantallas = {};
+var _visitasAcciones = {};
+var _visitasErrores = 0;
+var _visitasPrimerAvisoSolicitado = false;
+var _visitasUltimoAvisoMs = null;
+var _visitasAvisoPendiente = false;
+var _visitasAvisoEpoca = 0;
+var _visitasAvisoDiferido = 0;
+var _visitasGeo = { pais:'', region:'', ciudad:'', red:'' };
+var _visitasGeoPromesa = null;
+var _visitasGeoResuelta = false;
+var _visitasGeoCaducaMs = 0;
+var _visitasGeoFalloHastaMs = 0;
+var _visitasUltimaDireccion = '';
+
+function visitasAhora() {
+  try { return Date.now(); } catch(e) { return new Date().getTime(); }
+}
+
+function visitasRendimientoAhora() {
+  try {
+    if (typeof performance !== 'undefined' && performance && typeof performance.now === 'function') return performance.now();
+  } catch(e) {}
+  return visitasAhora();
+}
+
+function visitasAlmacenLeer(tipo, clave) {
+  var memoria = tipo === 'local' ? _visitasMemLocal : _visitasMemSesion;
+  try {
+    var almacen = tipo === 'local' ? localStorage : sessionStorage;
+    var valor = almacen.getItem(clave);
+    if (valor !== null && typeof valor !== 'undefined') {
+      memoria[clave] = String(valor);
+      return String(valor);
+    }
+  } catch(e) {}
+  return Object.prototype.hasOwnProperty.call(memoria, clave) ? memoria[clave] : null;
+}
+
+function visitasAlmacenGuardar(tipo, clave, valor) {
+  var memoria = tipo === 'local' ? _visitasMemLocal : _visitasMemSesion;
+  memoria[clave] = String(valor);
+  try {
+    var almacen = tipo === 'local' ? localStorage : sessionStorage;
+    almacen.setItem(clave, String(valor));
+  } catch(e) {}
+}
+
+function visitasAlmacenBorrar(tipo, clave) {
+  var memoria = tipo === 'local' ? _visitasMemLocal : _visitasMemSesion;
+  try { delete memoria[clave]; } catch(e) { memoria[clave] = null; }
+  try {
+    var almacen = tipo === 'local' ? localStorage : sessionStorage;
+    almacen.removeItem(clave);
+  } catch(e) {}
+}
+
+function visitasParametro(nombre) {
+  var busqueda = '';
+  try { busqueda = location && location.search ? String(location.search) : ''; } catch(e) {}
+  var partes = busqueda.replace(/^\?/, '').split('&');
+  for (var i = 0; i < partes.length; i++) {
+    var par = partes[i].split('=');
+    var clave = '';
+    try { clave = decodeURIComponent(String(par[0] || '').replace(/\+/g, ' ')); } catch(e) { clave = String(par[0] || ''); }
+    if (clave === nombre) {
+      var valor = par.slice(1).join('=');
+      try { return decodeURIComponent(String(valor || '').replace(/\+/g, ' ')); } catch(e2) { return String(valor || ''); }
+    }
+  }
+  return '';
+}
+
+function visitasAplicarParametros() {
+  if (_visitasParametrosAplicados) return;
+  _visitasParametrosAplicados = true;
+  var noContar = visitasParametro('nocontar') === '1';
+  var contar = visitasParametro('contar') === '1';
+  if (noContar) visitasAlmacenGuardar('local', 'azk_nocontar', '1');
+  else if (contar) visitasAlmacenBorrar('local', 'azk_nocontar');
+}
+
+function visitasPermitido() {
+  try {
+    visitasAplicarParametros();
+    if (!VISITAS_ACTIVO) return false;
+    if (visitasAlmacenLeer('local', 'azk_nocontar') === '1') return false;
+    var prueba = false;
+    try { prueba = window && window.__AZK_VISITAS_PRUEBA === true; } catch(e) {}
+    if (!prueba) {
+      var host = '';
+      try { host = location && location.hostname ? String(location.hostname).toLowerCase() : ''; } catch(e2) {}
+      if (VISITAS_HOSTS.indexOf(host) === -1) return false;
+      try { if (navigator && navigator.webdriver) return false; } catch(e3) {}
+      // Robots de buscadores y herramientas de revisión que ejecutan la página (la dirección es pública)
+      try {
+        var agente = navigator && navigator.userAgent ? String(navigator.userAgent) : '';
+        if (/googlebot|bingbot|yandexbot|baiduspider|duckduckbot|applebot|petalbot|semrushbot|ahrefsbot|mj12bot|slurp|crawler|spider|headlesschrome|lighthouse|pagespeed|inspectiontool|facebookexternalhit|python-requests|curl\/|wget\//i.test(agente)) return false;
+      } catch(e4) {}
+    }
+    return true;
+  } catch(e) { return false; }
+}
+
+function visitasIdAleatorio() {
+  var salida = '';
+  try {
+    if (typeof crypto !== 'undefined' && crypto && typeof crypto.getRandomValues === 'function') {
+      var bytes = new Uint8Array(8);
+      crypto.getRandomValues(bytes);
+      for (var i = 0; i < bytes.length; i++) salida += ('0' + bytes[i].toString(16)).slice(-2);
+    }
+  } catch(e) { salida = ''; }
+  while (salida.length < 16) salida += ('00000000' + Math.floor(Math.random() * 4294967296).toString(16)).slice(-8);
+  return salida.slice(0, 16);
+}
+
+function visitasDispositivoId() {
+  try {
+    var guardado = visitasAlmacenLeer('local', 'azk_dispositivo');
+    if (guardado && /^[a-f0-9]{16}$/i.test(guardado)) return guardado;
+    var nuevo = visitasIdAleatorio();
+    visitasAlmacenGuardar('local', 'azk_dispositivo', nuevo);
+    return nuevo;
+  } catch(e) { return visitasIdAleatorio(); }
+}
+
+function visitasTexto(valor, maximo) {
+  var texto = '';
+  try { texto = valor === null || typeof valor === 'undefined' ? '' : String(valor); } catch(e) {}
+  texto = texto.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/^\s+|\s+$/g, '');
+  return texto.length > maximo ? texto.slice(0, maximo) : texto;
+}
+
+function visitasInfoDispositivo() {
+  var nav = {};
+  try { nav = navigator || {}; } catch(e) {}
+  var ua = visitasTexto(nav.userAgent || '', 500);
+  var tactil = Number(nav.maxTouchPoints || 0);
+  var ipadOculto = /Macintosh/i.test(ua) && tactil > 1;
+  var tipo = 'otro';
+  if (ipadOculto || /iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua))) tipo = 'tablet';
+  else if (/iPhone|iPod|Mobile|Android/i.test(ua)) tipo = 'movil';
+  else if (/Windows|Macintosh|Mac OS X|Linux|CrOS/i.test(ua)) tipo = 'escritorio';
+
+  var so = 'otro';
+  if (ipadOculto || /iPhone|iPad|iPod/i.test(ua)) so = 'iOS';
+  else if (/Android/i.test(ua)) so = 'Android';
+  else if (/Windows/i.test(ua)) so = 'Windows';
+  else if (/CrOS/i.test(ua)) so = 'ChromeOS';
+  else if (/Macintosh|Mac OS X/i.test(ua)) so = 'macOS';
+  else if (/Linux/i.test(ua)) so = 'Linux';
+
+  var navegador = 'otro';
+  if (/FBAN|FBAV|Instagram/i.test(ua)) navegador = 'Facebook/Instagram';
+  else if (/EdgA|EdgiOS|Edg\//i.test(ua)) navegador = 'Edge';
+  else if (/OPR\/|Opera/i.test(ua)) navegador = 'Opera';
+  else if (/SamsungBrowser/i.test(ua)) navegador = 'Samsung';
+  else if (/Firefox|FxiOS/i.test(ua)) navegador = 'Firefox';
+  else if (/Chrome|CriOS/i.test(ua)) navegador = 'Chrome';
+  else if (/Safari/i.test(ua)) navegador = 'Safari';
+
+  var ancho = 0;
+  var alto = 0;
+  try {
+    var pantallaObj = window && window.screen ? window.screen : (typeof screen !== 'undefined' ? screen : null);
+    ancho = pantallaObj ? Math.round(Number(pantallaObj.width) || 0) : 0;
+    alto = pantallaObj ? Math.round(Number(pantallaObj.height) || 0) : 0;
+  } catch(e2) {}
+  var pantalla = ancho > 0 && alto > 0 ? ancho + 'x' + alto : '';
+
+  var instalada = false;
+  try {
+    instalada = !!nav.standalone;
+    if (!instalada && window && typeof window.matchMedia === 'function') instalada = !!window.matchMedia('(display-mode: standalone)').matches;
+  } catch(e3) {}
+  var conexion = '';
+  try { conexion = nav.connection && nav.connection.effectiveType ? visitasTexto(nav.connection.effectiveType, 40) : ''; } catch(e4) {}
+  var zona = '';
+  try { zona = visitasTexto(Intl.DateTimeFormat().resolvedOptions().timeZone || '', 40); } catch(e5) {}
+  return {
+    tipoDisp: tipo,
+    so: so,
+    navegador: navegador,
+    pantalla: visitasTexto(pantalla, 20),
+    modo: instalada ? 'instalada' : 'navegador',
+    conexion: conexion,
+    zonaHoraria: zona
+  };
+}
+
+function visitasDominioReferente(referente) {
+  var dominio = '';
+  try {
+    var coincidencia = String(referente || '').match(/^[a-z][a-z0-9+.-]*:\/\/([^\/?#]+)/i);
+    dominio = coincidencia ? coincidencia[1].toLowerCase().replace(/:\d+$/, '') : '';
+  } catch(e) {}
+  return dominio.replace(/^(www\.|m\.)/, '');
+}
+
+function visitasOrigen() {
+  try {
+    var parametro = visitasParametro('o') || visitasParametro('utm_source');
+    if (parametro) {
+      parametro = visitasTexto(parametro.toLowerCase(), 40);
+      visitasAlmacenGuardar('sesion', 'azk_origen', parametro);
+      return parametro;
+    }
+    var guardado = visitasAlmacenLeer('sesion', 'azk_origen');
+    if (guardado) return visitasTexto(guardado, 40);
+    var referente = '';
+    try { referente = document && document.referrer ? document.referrer : ''; } catch(e) {}
+    if (!referente) {
+      visitasAlmacenGuardar('sesion', 'azk_origen', 'directo');
+      return 'directo';
+    }
+    var dominio = visitasDominioReferente(referente);
+    var origen = 'otro:' + (dominio || 'desconocido');
+    if (/google\./.test(dominio) || dominio === 'google') origen = 'google';
+    else if (dominio === 'wa.me' || /(^|\.)whatsapp\./.test(dominio)) origen = 'whatsapp';
+    else if (/(^|\.)telegram\./.test(dominio) || dominio === 't.me') origen = 'telegram';
+    else if (/(^|\.)facebook\./.test(dominio) || dominio === 'fb.com') origen = 'facebook';
+    else if (/(^|\.)instagram\./.test(dominio)) origen = 'instagram';
+    else if (/(^|\.)github\./.test(dominio) || dominio === 'github.com') origen = 'github';
+    origen = visitasTexto(origen, 40);
+    visitasAlmacenGuardar('sesion', 'azk_origen', origen);
+    return origen;
+  } catch(e2) { return 'directo'; }
+}
+
+function visitasGeoVacia() {
+  return { pais:'', region:'', ciudad:'', red:'' };
+}
+
+function visitasGeoNormalizar(datos, servicio) {
+  if (!datos || typeof datos !== 'object') return null;
+  if (servicio === 'ipwho' && datos.success === false) return null;
+  var pais = visitasTexto(datos.country_code || datos.country_code2 || '', 2).toUpperCase();
+  if (pais && !/^[A-Z]{2}$/.test(pais)) pais = '';
+  var red = '';
+  if (servicio === 'ipwho') {
+    red = datos.connection && (datos.connection.isp || datos.connection.org) ? (datos.connection.isp || datos.connection.org) : '';
+  } else {
+    red = datos.organization_name || datos.organization || datos.isp || '';
+  }
+  var geo = {
+    pais: pais,
+    region: visitasTexto(datos.region || datos.region_name || '', 50),
+    ciudad: visitasTexto(datos.city || '', 50),
+    red: visitasTexto(red, 50)
+  };
+  return geo.pais || geo.region || geo.ciudad || geo.red ? geo : null;
+}
+
+function visitasPeticionGeo(url, servicio, tiempoMs) {
+  return new Promise(function(resolve, reject) {
+    var terminada = false;
+    var temporizador = setTimeout(function() {
+      if (terminada) return;
+      terminada = true;
+      reject(new Error('timeout_geo'));
+    }, Math.max(1, tiempoMs));
+    function limpiar() {
+      try { if (typeof clearTimeout === 'function') clearTimeout(temporizador); } catch(e) {}
+    }
+    function fallar(error) {
+      if (terminada) return;
+      terminada = true;
+      limpiar();
+      reject(error || new Error('error_geo'));
+    }
+    var peticion;
+    try { peticion = fetch(url, { cache:'no-store' }); } catch(e) { fallar(e); return; }
+    if (!peticion || typeof peticion.then !== 'function') { fallar(new Error('error_geo')); return; }
+    peticion.then(function(respuesta) {
+      if (!respuesta || respuesta.ok === false || typeof respuesta.json !== 'function') throw new Error('error_geo');
+      return respuesta.json();
+    }).then(function(datos) {
+      if (terminada) return;
+      var normalizada = visitasGeoNormalizar(datos, servicio);
+      if (!normalizada) { fallar(new Error('error_geo')); return; }
+      terminada = true;
+      limpiar();
+      resolve(normalizada);
+    }).catch(fallar);
+  });
+}
+
+function visitasCargarGeoGuardada() {
+  var ahora = visitasAhora();
+  var guardada = visitasAlmacenLeer('local', 'azk_geo_v1');
+  if (guardada) {
+    try {
+      var datos = JSON.parse(guardada);
+      var ts = Number(datos && datos.ts);
+      if (datos && Object.prototype.hasOwnProperty.call(datos, 'ts') && isFinite(ts) && ts >= 0 && ahora - ts < VISITAS_GEO_TTL_MS) {
+        _visitasGeo = {
+          pais: visitasTexto(datos.pais || '', 2).toUpperCase(),
+          region: visitasTexto(datos.region || '', 50),
+          ciudad: visitasTexto(datos.ciudad || '', 50),
+          red: visitasTexto(datos.red || '', 50)
+        };
+        _visitasGeoCaducaMs = ts + VISITAS_GEO_TTL_MS;
+        _visitasGeoResuelta = true;
+        return true;
+      }
+    } catch(e) {}
+  }
+  var falloGuardado = visitasAlmacenLeer('local', 'azk_geo_fallo_v1');
+  var fallo = Number(falloGuardado);
+  if (falloGuardado !== null && isFinite(fallo) && fallo >= 0 && ahora - fallo < 3600000) {
+    _visitasGeo = visitasGeoVacia();
+    _visitasGeoFalloHastaMs = fallo + 3600000;
+    _visitasGeoResuelta = true;
+    return true;
+  }
+  return false;
+}
+
+function visitasUbicacion() {
+  try {
+    var ahora = visitasAhora();
+    if (!VISITAS_UBICACION) {
+      _visitasGeo = visitasGeoVacia();
+      _visitasGeoResuelta = true;
+      return Promise.resolve(_visitasGeo);
+    }
+    if (_visitasGeoResuelta && _visitasGeoCaducaMs > ahora) return Promise.resolve(_visitasGeo);
+    if (_visitasGeoResuelta && _visitasGeoFalloHastaMs > ahora) return Promise.resolve(_visitasGeo);
+    if (_visitasGeoResuelta) _visitasGeoResuelta = false;
+    if (visitasCargarGeoGuardada()) return Promise.resolve(_visitasGeo);
+    if (_visitasGeoPromesa) return _visitasGeoPromesa;
+
+    var limite = ahora + 2500;
+    var primera = visitasPeticionGeo('https://ipwho.is/', 'ipwho', 2500).catch(function() {
+      var restante = limite - visitasAhora();
+      if (restante <= 0) throw new Error('timeout_geo');
+      return visitasPeticionGeo('https://get.geojs.io/v1/ip/geo.json', 'geojs', Math.min(2500, restante));
+    });
+    _visitasGeoPromesa = primera.then(function(geo) {
+      var ts = visitasAhora();
+      _visitasGeo = geo;
+      _visitasGeoCaducaMs = ts + VISITAS_GEO_TTL_MS;
+      _visitasGeoFalloHastaMs = 0;
+      _visitasGeoResuelta = true;
+      visitasAlmacenGuardar('local', 'azk_geo_v1', JSON.stringify({
+        pais:geo.pais, region:geo.region, ciudad:geo.ciudad, red:geo.red, ts:ts
+      }));
+      visitasAlmacenBorrar('local', 'azk_geo_fallo_v1');
+      _visitasGeoPromesa = null;
+      return geo;
+    }).catch(function() {
+      var ts = visitasAhora();
+      _visitasGeo = visitasGeoVacia();
+      _visitasGeoCaducaMs = 0;
+      _visitasGeoFalloHastaMs = ts + 3600000;
+      _visitasGeoResuelta = true;
+      visitasAlmacenGuardar('local', 'azk_geo_fallo_v1', String(ts));
+      _visitasGeoPromesa = null;
+      return _visitasGeo;
+    });
+    return _visitasGeoPromesa;
+  } catch(e) {
+    _visitasGeo = visitasGeoVacia();
+    _visitasGeoResuelta = true;
+    return Promise.resolve(_visitasGeo);
+  }
+}
+
+function visitasMapaSeguro(valor, permitidas) {
+  var salida = {};
+  if (!valor || typeof valor !== 'object') return salida;
+  for (var i = 0; i < permitidas.length; i++) {
+    var clave = permitidas[i];
+    var numero = Math.floor(Number(valor[clave]) || 0);
+    if (numero > 0) salida[clave] = Math.min(9999, numero);
+  }
+  return salida;
+}
+
+function visitasGuardarEstado() {
+  if (!_visitasSesionId) return;
+  try {
+    visitasAlmacenGuardar('sesion', 'azk_sesion', _visitasSesionId);
+    visitasAlmacenGuardar('sesion', 'azk_sesion_ultima', String(_visitasUltimaActividadMs));
+    visitasAlmacenGuardar('sesion', 'azk_vis_estado_v1', JSON.stringify({
+      sesionId:_visitasSesionId,
+      inicio:_visitasInicioMs,
+      ultima:_visitasUltimaActividadMs,
+      visible:_visitasVisibleAcumuladoMs,
+      nVisita:_visitasNVisita,
+      primeraVez:_visitasPrimeraVez,
+      cargaMs:_visitasCargaMs,
+      pantallas:_visitasPantallas,
+      acciones:_visitasAcciones,
+      errores:_visitasErrores,
+      primerAviso:_visitasPrimerAvisoSolicitado,
+      ultimoAviso:_visitasUltimoAvisoMs
+    }));
+  } catch(e) {}
+}
+
+function visitasEstaVisible() {
+  try { return !document || !document.visibilityState || document.visibilityState === 'visible'; } catch(e) { return true; }
+}
+
+function visitasProgramarAvisos(sesionId) {
+  try {
+    setTimeout(function() {
+      try {
+        if (_visitasSesionId !== sesionId || _visitasPrimerAvisoSolicitado) return;
+        _visitasPrimerAvisoSolicitado = true;
+        visitasGuardarEstado();
+        visitasAviso('primero');
+      } catch(e) {}
+    }, VISITAS_ESPERA_PRIMER_AVISO_MS);
+    setTimeout(function() {
+      try {
+        if (_visitasSesionId === sesionId && visitasEstaVisible()) visitasAviso('activo45');
+      } catch(e) {}
+    }, VISITAS_AVISO_ACTIVO_MS);
+  } catch(e) {}
+}
+
+function visitasPrepararSesion(forzarNueva) {
+  var ahora = visitasAhora();
+  var sesionGuardada = visitasAlmacenLeer('sesion', 'azk_sesion') || '';
+  var ultimaTexto = visitasAlmacenLeer('sesion', 'azk_sesion_ultima');
+  var ultimaGuardada = Number(ultimaTexto);
+  var nueva = !!forzarNueva || !/^[a-f0-9]{16}$/i.test(sesionGuardada);
+  if (!nueva && ultimaTexto !== null && isFinite(ultimaGuardada) && ahora - ultimaGuardada > VISITAS_INACTIVIDAD_MS) nueva = true;
+  var estado = null;
+  if (!nueva) {
+    try { estado = JSON.parse(visitasAlmacenLeer('sesion', 'azk_vis_estado_v1') || 'null'); } catch(e) {}
+    if (!estado || estado.sesionId !== sesionGuardada) estado = null;
+  }
+
+  _visitasAvisoEpoca++;
+  _visitasAvisoDiferido++;
+  _visitasAvisoPendiente = false;
+  _visitasPaginaInicioPerf = visitasRendimientoAhora();
+  if (nueva) {
+    _visitasSesionId = visitasIdAleatorio();
+    _visitasInicioMs = ahora;
+    _visitasVisibleAcumuladoMs = 0;
+    var anteriores = Math.floor(Number(visitasAlmacenLeer('local', 'azk_visitas_n') || 0));
+    if (anteriores < 0) anteriores = 0;
+    _visitasNVisita = Math.min(99999, anteriores + 1);
+    _visitasPrimeraVez = anteriores === 0 ? 'si' : 'no';
+    visitasAlmacenGuardar('local', 'azk_visitas_n', String(_visitasNVisita));
+    _visitasCargaMs = '';
+    _visitasPantallas = { calendario:1 };
+    _visitasAcciones = {};
+    _visitasErrores = 0;
+    _visitasPrimerAvisoSolicitado = false;
+    _visitasUltimoAvisoMs = null;
+  } else {
+    _visitasSesionId = sesionGuardada;
+    _visitasInicioMs = estado ? Number(estado.inicio) || ahora : ahora;
+    _visitasVisibleAcumuladoMs = estado ? Math.max(0, Number(estado.visible) || 0) : 0;
+    _visitasNVisita = estado ? Math.max(1, Math.floor(Number(estado.nVisita) || 1)) : Math.max(1, Math.floor(Number(visitasAlmacenLeer('local', 'azk_visitas_n') || 1)));
+    _visitasPrimeraVez = estado && estado.primeraVez === 'si' ? 'si' : 'no';
+    _visitasCargaMs = estado && typeof estado.cargaMs === 'number' ? Math.max(0, Math.floor(estado.cargaMs)) : '';
+    _visitasPantallas = visitasMapaSeguro(estado && estado.pantallas, ['calendario','reserva','misreservas','avisos','normas','calc','admin']);
+    if (Object.keys(_visitasPantallas).length === 0) _visitasPantallas.calendario = 1;
+    _visitasAcciones = visitasMapaSeguro(estado && estado.acciones, ['login','login_error','reserva','cancelar_reserva','voto','incidencia','anuncio','cuenta_guardada','cambio_password','idioma','documento','pin_admin','error_api']);
+    _visitasErrores = estado ? Math.max(0, Math.floor(Number(estado.errores) || 0)) : 0;
+    _visitasPrimerAvisoSolicitado = !!(estado && estado.primerAviso);
+    _visitasUltimoAvisoMs = estado && typeof estado.ultimoAviso === 'number' ? estado.ultimoAviso : null;
+  }
+  _visitasUltimaActividadMs = ahora;
+  _visitasVisibleDesdeMs = visitasEstaVisible() ? ahora : null;
+  visitasDispositivoId();
+  visitasGuardarEstado();
+  visitasProgramarAvisos(_visitasSesionId);
+}
+
+function visitasAsegurarSesion() {
+  if (!_visitasSesionId) visitasPrepararSesion(false);
+}
+
+function visitasDuracionS() {
+  var total = _visitasVisibleAcumuladoMs;
+  if (_visitasVisibleDesdeMs !== null) total += Math.max(0, visitasAhora() - _visitasVisibleDesdeMs);
+  return Math.min(86400, Math.max(0, Math.floor(total / 1000)));
+}
+
+function visitasCopiarMapa(mapa, maximo) {
+  var copia = {};
+  var claves = Object.keys(mapa || {});
+  for (var i = 0; i < claves.length && i < maximo; i++) {
+    var clave = claves[i];
+    if (/^[a-z0-9_]{1,24}$/.test(clave)) copia[clave] = Math.min(9999, Math.max(0, Math.floor(Number(mapa[clave]) || 0)));
+  }
+  return copia;
+}
+
+function visitasPayload() {
+  try {
+    visitasAsegurarSesion();
+    var info = visitasInfoDispositivo();
+    var socioId = '';
+    if (VISITAS_REGISTRAR_SOCIO) {
+      try {
+        var sesion = typeof getSession === 'function' ? getSession() : null;
+        socioId = sesion && sesion.socioId ? visitasTexto(sesion.socioId, 3) : '';
+      } catch(e) { socioId = ''; }
+    }
+    var idioma = '';
+    try { idioma = lang === 'eu' ? 'eu' : (lang === 'es' ? 'es' : ''); } catch(e2) {}
+    var version = '';
+    try { version = typeof APP_VERSION !== 'undefined' ? visitasTexto(APP_VERSION, 5) : ''; } catch(e3) {}
+    return {
+      sesionId:_visitasSesionId,
+      dispositivoId:visitasDispositivoId(),
+      socioId:socioId,
+      admin:visitasAlmacenLeer('local', 'azk_admin_dev') === '1' ? 'si' : '',
+      version:version,
+      idioma:idioma,
+      tipoDisp:info.tipoDisp,
+      so:visitasTexto(info.so, 40),
+      navegador:visitasTexto(info.navegador, 40),
+      pantalla:visitasTexto(info.pantalla, 20),
+      modo:info.modo,
+      conexion:visitasTexto(info.conexion, 40),
+      zonaHoraria:visitasTexto(info.zonaHoraria, 40),
+      origen:visitasTexto(visitasOrigen(), 40),
+      pais:visitasTexto(_visitasGeo.pais, 2).toUpperCase(),
+      region:visitasTexto(_visitasGeo.region, 50),
+      ciudad:visitasTexto(_visitasGeo.ciudad, 50),
+      red:visitasTexto(_visitasGeo.red, 50),
+      primeraVez:_visitasPrimeraVez,
+      nVisita:_visitasNVisita,
+      duracionS:visitasDuracionS(),
+      cargaMs:typeof _visitasCargaMs === 'number' ? Math.min(300000, Math.max(0, Math.floor(_visitasCargaMs))) : '',
+      pantallas:visitasCopiarMapa(_visitasPantallas, 12),
+      acciones:visitasCopiarMapa(_visitasAcciones, 20),
+      errores:Math.min(9999, Math.max(0, Math.floor(_visitasErrores)))
+    };
+  } catch(e4) { return null; }
+}
+
+function visitasDireccion(payload) {
+  var copia = {};
+  var clavesPayload = Object.keys(payload || {});
+  for (var i = 0; i < clavesPayload.length; i++) copia[clavesPayload[i]] = payload[clavesPayload[i]];
+  copia.pantallas = visitasCopiarMapa(payload && payload.pantallas, 12);
+  copia.acciones = visitasCopiarMapa(payload && payload.acciones, 20);
+  var base = visitasTexto(typeof API_URL !== 'undefined' ? API_URL : '', 1000);
+  var separador = base.indexOf('?') === -1 ? '?' : '&';
+  function construir() { return base + separador + 'action=track&data=' + encodeURIComponent(JSON.stringify(copia)); }
+  var direccion = construir();
+  var ordenAcciones = Object.keys(copia.acciones);
+  var ordenPantallas = Object.keys(copia.pantallas);
+  while (direccion.length > 1800 && ordenAcciones.length) {
+    delete copia.acciones[ordenAcciones.pop()];
+    direccion = construir();
+  }
+  while (direccion.length > 1800 && ordenPantallas.length) {
+    delete copia.pantallas[ordenPantallas.pop()];
+    direccion = construir();
+  }
+  return direccion;
+}
+
+function visitasEnviar(payload) {
+  try {
+    if (!visitasPermitido()) return false;
+    var datos = payload || visitasPayload();
+    if (!datos) return false;
+    var direccion = visitasDireccion(datos);
+    if (!direccion || direccion.length > 1800) return false;
+    _visitasUltimaDireccion = direccion;
+    var envio = fetch(direccion, { keepalive:true, mode:'no-cors', cache:'no-store', credentials:'omit' });
+    if (envio && typeof envio.catch === 'function') envio.catch(function() {});
+    return true;
+  } catch(e) { return false; }
+}
+
+function visitasEnviarAvisoAhora(epoca) {
+  if (epoca !== _visitasAvisoEpoca) return false;
+  var enviado = visitasEnviar();
+  if (enviado) {
+    _visitasUltimoAvisoMs = visitasAhora();
+    _visitasAvisoDiferido++;
+    visitasGuardarEstado();
+  }
+  return enviado;
+}
+
+function visitasAviso(motivo) {
+  try {
+    if (!visitasPermitido()) return false;
+    visitasAsegurarSesion();
+    var ocultar = motivo === 'ocultar' || motivo === 'pagehide';
+    var ahora = visitasAhora();
+    if (ocultar) {
+      _visitasAvisoEpoca++;
+      _visitasAvisoPendiente = false;
+      return visitasEnviarAvisoAhora(_visitasAvisoEpoca);
+    }
+    if (_visitasUltimoAvisoMs !== null && ahora - _visitasUltimoAvisoMs < 10000) {
+      var espera = Math.max(1, 10000 - (ahora - _visitasUltimoAvisoMs));
+      var token = ++_visitasAvisoDiferido;
+      var sesionId = _visitasSesionId;
+      setTimeout(function() {
+        try {
+          if (token === _visitasAvisoDiferido && sesionId === _visitasSesionId) visitasAviso(motivo);
+        } catch(e) {}
+      }, espera);
+      return false;
+    }
+    if (_visitasAvisoPendiente) return false;
+    _visitasAvisoPendiente = true;
+    var epoca = _visitasAvisoEpoca;
+    var promesa = visitasUbicacion();
+    if (_visitasGeoResuelta) {
+      _visitasAvisoPendiente = false;
+      return visitasEnviarAvisoAhora(epoca);
+    }
+    promesa.then(function() {
+      if (epoca !== _visitasAvisoEpoca) return;
+      _visitasAvisoPendiente = false;
+      visitasAviso(motivo);
+    }).catch(function() {
+      if (epoca !== _visitasAvisoEpoca) return;
+      _visitasAvisoPendiente = false;
+      visitasAviso(motivo);
+    });
+    return true;
+  } catch(e) {
+    _visitasAvisoPendiente = false;
+    return false;
+  }
+}
+
+function visitasAccion(nombre) {
+  try {
+    if (!visitasPermitido()) return;
+    visitasAsegurarSesion();
+    var permitidas = ['login','login_error','reserva','cancelar_reserva','voto','incidencia','anuncio','cuenta_guardada','cambio_password','idioma','documento','pin_admin','error_api'];
+    if (permitidas.indexOf(nombre) === -1) return;
+    _visitasAcciones[nombre] = Math.min(9999, Math.max(0, Math.floor(Number(_visitasAcciones[nombre]) || 0)) + 1);
+    _visitasUltimaActividadMs = visitasAhora();
+    visitasGuardarEstado();
+  } catch(e) {}
+}
+
+function visitasPantalla(nombre) {
+  try {
+    if (!visitasPermitido()) return;
+    visitasAsegurarSesion();
+    var permitidas = ['calendario','reserva','misreservas','avisos','normas','calc','admin'];
+    if (permitidas.indexOf(nombre) === -1) return;
+    _visitasPantallas[nombre] = Math.min(9999, Math.max(0, Math.floor(Number(_visitasPantallas[nombre]) || 0)) + 1);
+    _visitasUltimaActividadMs = visitasAhora();
+    visitasGuardarEstado();
+  } catch(e) {}
+}
+
+function visitasCargaOk() {
+  try {
+    if (!visitasPermitido()) return;
+    visitasAsegurarSesion();
+    if (typeof _visitasCargaMs !== 'number') {
+      _visitasCargaMs = Math.max(0, Math.round(visitasRendimientoAhora() - _visitasPaginaInicioPerf));
+    }
+    if (!_visitasPrimerAvisoSolicitado) {
+      _visitasPrimerAvisoSolicitado = true;
+      visitasGuardarEstado();
+      visitasAviso('carga');
+    } else visitasGuardarEstado();
+  } catch(e) {}
+}
+
+function visitasMarcarAdmin() {
+  try {
+    visitasAlmacenGuardar('local', 'azk_admin_dev', '1');
+    if (typeof visitasAviso === 'function') visitasAviso('admin');
+  } catch(e) {}
+}
+
+function visitasPausarVisible(ahora) {
+  if (_visitasVisibleDesdeMs !== null) {
+    _visitasVisibleAcumuladoMs += Math.max(0, ahora - _visitasVisibleDesdeMs);
+    _visitasVisibleDesdeMs = null;
+  }
+  _visitasUltimaActividadMs = ahora;
+  visitasGuardarEstado();
+}
+
+function visitasVolverVisible() {
+  try {
+    if (!visitasPermitido()) return;
+    visitasAsegurarSesion();
+    var ahora = visitasAhora();
+    if (ahora - _visitasUltimaActividadMs > VISITAS_INACTIVIDAD_MS) visitasPrepararSesion(true);
+    else {
+      if (_visitasVisibleDesdeMs === null) _visitasVisibleDesdeMs = ahora;
+      _visitasUltimaActividadMs = ahora;
+      visitasGuardarEstado();
+    }
+  } catch(e) {}
+}
+
+function visitasIniciar() {
+  try {
+    if (!visitasPermitido()) return false;
+    if (_visitasIniciado) return true;
+    _visitasIniciado = true;
+    visitasPrepararSesion(false);
+    try {
+      document.addEventListener('visibilitychange', function() {
+        try {
+          if (document.visibilityState === 'hidden') {
+            visitasPausarVisible(visitasAhora());
+            visitasAviso('ocultar');
+          } else visitasVolverVisible();
+        } catch(e) {}
+      });
+    } catch(e2) {}
+    try {
+      window.addEventListener('pagehide', function() {
+        try {
+          visitasPausarVisible(visitasAhora());
+          visitasAviso('pagehide');
+        } catch(e) {}
+      });
+      window.addEventListener('pageshow', function() { try { visitasVolverVisible(); } catch(e) {} });
+      window.addEventListener('error', function() {
+        try { _visitasErrores = Math.min(9999, _visitasErrores + 1); visitasGuardarEstado(); } catch(e) {}
+      });
+      window.addEventListener('unhandledrejection', function() {
+        try { _visitasErrores = Math.min(9999, _visitasErrores + 1); visitasGuardarEstado(); } catch(e) {}
+      });
+    } catch(e3) {}
+    return true;
+  } catch(e4) { return false; }
+}
+/* >>> VISITAS CLIENTE (fin) */
+
+/* >>> VISITAS DATOS (inicio) */
+/*
+ * Capa de datos pura del panel de visitas. No consulta el DOM ni el estado de
+ * la aplicación: las sesiones, socios, fechas y versión entran por parámetros.
+ */
+function visitasTexto(valor) {
+  try { return valor === null || valor === undefined ? '' : String(valor); }
+  catch(e) { return ''; }
+}
+
+function visitasNumero(valor, vacioNulo) {
+  if (valor === null || valor === undefined || visitasTexto(valor).trim() === '') return vacioNulo ? null : 0;
+  const numero = Number(valor);
+  return isFinite(numero) ? numero : (vacioNulo ? null : 0);
+}
+
+function visitasContadores(valor) {
+  let objeto = valor;
+  if (typeof objeto === 'string') {
+    if (!objeto.trim()) return {};
+    try { objeto = JSON.parse(objeto); }
+    catch(e) { return {}; }
+  }
+  return objeto && typeof objeto === 'object' && !Array.isArray(objeto) ? objeto : {};
+}
+
+function visitasNormalizar(resp) {
+  const respuesta = resp && typeof resp === 'object' ? resp : {};
+  const cabeceras = Array.isArray(respuesta.cabeceras) ? respuesta.cabeceras : [];
+  const filas = Array.isArray(respuesta.filas) ? respuesta.filas : [];
+  return filas.map(function(fila) {
+    const salida = {};
+    const valores = Array.isArray(fila) ? fila : [];
+    cabeceras.forEach(function(cabecera, indice) {
+      salida[visitasTexto(cabecera)] = indice < valores.length ? valores[indice] : '';
+    });
+    salida.duracionS = visitasNumero(salida.duracionS, false);
+    salida.cargaMs = visitasNumero(salida.cargaMs, true);
+    salida.nVisita = visitasNumero(salida.nVisita, false);
+    salida.errores = visitasNumero(salida.errores, false);
+    salida.pantallas = visitasContadores(salida.pantallas);
+    salida.acciones = visitasContadores(salida.acciones);
+    return salida;
+  });
+}
+
+function visitasPad2(numero) {
+  const texto = String(numero);
+  return texto.length < 2 ? '0' + texto : texto;
+}
+
+function visitasFechaYmd(anio, mes, dia) {
+  return String(anio) + '-' + visitasPad2(mes) + '-' + visitasPad2(dia);
+}
+
+function visitasPartesYmd(fecha) {
+  const coincidencia = /^(\d{4})-(\d{2})-(\d{2})$/.exec(visitasTexto(fecha));
+  if (!coincidencia) return null;
+  const anio = Number(coincidencia[1]);
+  const mes = Number(coincidencia[2]);
+  const dia = Number(coincidencia[3]);
+  const comprobacion = new Date(Date.UTC(anio, mes - 1, dia));
+  if (comprobacion.getUTCFullYear() !== anio || comprobacion.getUTCMonth() !== mes - 1 || comprobacion.getUTCDate() !== dia) return null;
+  return { anio:anio, mes:mes, dia:dia };
+}
+
+function visitasMoverDias(fecha, dias) {
+  const partes = visitasPartesYmd(fecha);
+  if (!partes) return '';
+  const movida = new Date(Date.UTC(partes.anio, partes.mes - 1, partes.dia + Number(dias || 0)));
+  return visitasFechaYmd(movida.getUTCFullYear(), movida.getUTCMonth() + 1, movida.getUTCDate());
+}
+
+function visitasDiasMes(anio, mes) {
+  return new Date(Date.UTC(anio, mes, 0)).getUTCDate();
+}
+
+function visitasMesDesplazado(anio, mes, desplazamiento) {
+  const fecha = new Date(Date.UTC(anio, mes - 1 + desplazamiento, 1));
+  return { anio:fecha.getUTCFullYear(), mes:fecha.getUTCMonth() + 1 };
+}
+
+function visitasDiaSemanaYmd(fecha) {
+  const partes = visitasPartesYmd(fecha);
+  if (!partes) return null;
+  const domingoCero = new Date(Date.UTC(partes.anio, partes.mes - 1, partes.dia)).getUTCDay();
+  return domingoCero === 0 ? 6 : domingoCero - 1;
+}
+
+function visitasFecha(inicioIso) {
+  const instante = new Date(visitasTexto(inicioIso));
+  if (isNaN(instante.getTime())) return { fecha:'', hora:null, diaSemana:null };
+  try {
+    const formato = new Intl.DateTimeFormat('en-GB', {
+      timeZone:'Europe/Madrid', year:'numeric', month:'2-digit', day:'2-digit',
+      hour:'2-digit', hourCycle:'h23'
+    });
+    const partes = formato.formatToParts(instante);
+    const valores = {};
+    partes.forEach(function(parte) {
+      if (parte.type !== 'literal') valores[parte.type] = parte.value;
+    });
+    const fecha = valores.year + '-' + valores.month + '-' + valores.day;
+    const hora = Number(valores.hour);
+    const diaSemana = visitasDiaSemanaYmd(fecha);
+    if (!visitasPartesYmd(fecha) || !isFinite(hora) || hora < 0 || hora > 23 || diaSemana === null) {
+      return { fecha:'', hora:null, diaSemana:null };
+    }
+    return { fecha:fecha, hora:hora, diaSemana:diaSemana };
+  } catch(e) {
+    return { fecha:'', hora:null, diaSemana:null };
+  }
+}
+
+function visitasId(valor) {
+  const texto = visitasTexto(valor).trim();
+  if (!texto) return '';
+  if (/^\d+$/.test(texto) && texto.length < 2) return '0' + texto;
+  return texto;
+}
+
+function visitasFiltrar(sesiones, opciones) {
+  const todas = Array.isArray(sesiones) ? sesiones : [];
+  const opts = opciones && typeof opciones === 'object' ? opciones : {};
+  const aparatosAdmin = Object.create(null);
+  todas.forEach(function(sesion) {
+    const dispositivo = visitasTexto(sesion && sesion.dispositivoId).trim();
+    if (dispositivo && visitasTexto(sesion && sesion.admin).trim().toLowerCase() === 'si') aparatosAdmin[dispositivo] = true;
+  });
+  const socioExcluido = visitasId(opts.excluirSocio);
+  return todas.filter(function(sesion) {
+    const fila = sesion && typeof sesion === 'object' ? sesion : {};
+    const dispositivo = visitasTexto(fila.dispositivoId).trim();
+    if (!opts.incluirAdmin && dispositivo && aparatosAdmin[dispositivo]) return false;
+    if (socioExcluido && visitasId(fila.socioId) === socioExcluido) return false;
+    if (opts.desde || opts.hasta) {
+      const fecha = visitasFecha(fila.inicio).fecha;
+      if (!fecha) return false;
+      if (opts.desde && fecha < opts.desde) return false;
+      if (opts.hasta && fecha > opts.hasta) return false;
+    }
+    return true;
+  });
+}
+
+function visitasPeriodo(clave, hoy) {
+  const fechaHoy = visitasTexto(hoy);
+  const partes = visitasPartesYmd(fechaHoy);
+  const etiquetas = {
+    hoy:'Hoy', '7d':'Últimos 7 días', '30d':'Últimos 30 días', mes:'Este mes',
+    mespasado:'Mes pasado', '90d':'Últimos 90 días', todo:'Todo lo recogido'
+  };
+  const modo = Object.prototype.hasOwnProperty.call(etiquetas, clave) ? clave : '30d';
+  if (!partes) return { desde:null, hasta:null, anteriorDesde:null, anteriorHasta:null, etiqueta:etiquetas[modo] };
+  if (modo === 'todo') {
+    return { desde:null, hasta:fechaHoy, anteriorDesde:null, anteriorHasta:null, etiqueta:etiquetas[modo] };
+  }
+  if (modo === 'mes') {
+    const anterior = visitasMesDesplazado(partes.anio, partes.mes, -1);
+    const anteriorUltimoDia = Math.min(partes.dia, visitasDiasMes(anterior.anio, anterior.mes));
+    return {
+      desde:visitasFechaYmd(partes.anio, partes.mes, 1),
+      hasta:fechaHoy,
+      anteriorDesde:visitasFechaYmd(anterior.anio, anterior.mes, 1),
+      anteriorHasta:visitasFechaYmd(anterior.anio, anterior.mes, anteriorUltimoDia),
+      etiqueta:etiquetas[modo]
+    };
+  }
+  if (modo === 'mespasado') {
+    const pasado = visitasMesDesplazado(partes.anio, partes.mes, -1);
+    const antepasado = visitasMesDesplazado(partes.anio, partes.mes, -2);
+    return {
+      desde:visitasFechaYmd(pasado.anio, pasado.mes, 1),
+      hasta:visitasFechaYmd(pasado.anio, pasado.mes, visitasDiasMes(pasado.anio, pasado.mes)),
+      anteriorDesde:visitasFechaYmd(antepasado.anio, antepasado.mes, 1),
+      anteriorHasta:visitasFechaYmd(antepasado.anio, antepasado.mes, visitasDiasMes(antepasado.anio, antepasado.mes)),
+      etiqueta:etiquetas[modo]
+    };
+  }
+  const duracion = modo === 'hoy' ? 1 : (modo === '7d' ? 7 : (modo === '90d' ? 90 : 30));
+  return {
+    desde:visitasMoverDias(fechaHoy, -(duracion - 1)),
+    hasta:fechaHoy,
+    anteriorDesde:visitasMoverDias(fechaHoy, -(duracion * 2 - 1)),
+    anteriorHasta:visitasMoverDias(fechaHoy, -duracion),
+    etiqueta:etiquetas[modo]
+  };
+}
+
+function visitasOrdenClave(a, b) {
+  if (b.n !== a.n) return b.n - a.n;
+  return a.clave < b.clave ? -1 : (a.clave > b.clave ? 1 : 0);
+}
+
+function visitasDistribucion(sesiones, campo) {
+  const totales = Object.create(null);
+  const totalSesiones = sesiones.length;
+  sesiones.forEach(function(sesion) {
+    const texto = visitasTexto(sesion && sesion[campo]).trim();
+    const clave = texto || '(sin dato)';
+    totales[clave] = (totales[clave] || 0) + 1;
+  });
+  return Object.keys(totales).map(function(clave) {
+    const n = totales[clave];
+    return { clave:clave, n:n, pct:totalSesiones ? n * 100 / totalSesiones : 0 };
+  }).sort(visitasOrdenClave);
+}
+
+function visitasUnicos(sesiones, campo, normalizador) {
+  const vistos = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    let valor = visitasTexto(sesion && sesion[campo]).trim();
+    if (normalizador) valor = normalizador(valor);
+    if (valor) vistos[valor] = true;
+  });
+  return Object.keys(vistos).length;
+}
+
+/* Percentil por interpolación lineal: posición (n-1)*p entre los dos valores vecinos. */
+function visitasPercentil(valores, proporcion) {
+  if (!valores.length) return 0;
+  const ordenados = valores.slice().sort(function(a, b) { return a - b; });
+  const posicion = (ordenados.length - 1) * proporcion;
+  const inferior = Math.floor(posicion);
+  const superior = Math.ceil(posicion);
+  if (inferior === superior) return ordenados[inferior];
+  return ordenados[inferior] + (ordenados[superior] - ordenados[inferior]) * (posicion - inferior);
+}
+
+function visitasTotalesContadores(sesiones, campo) {
+  const totales = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const objeto = visitasContadores(sesion && sesion[campo]);
+    Object.keys(objeto).forEach(function(clave) {
+      const numero = visitasNumero(objeto[clave], false);
+      if (numero > 0) totales[clave] = (totales[clave] || 0) + numero;
+    });
+  });
+  return Object.keys(totales).map(function(clave) {
+    return { clave:clave, n:totales[clave] };
+  }).sort(visitasOrdenClave);
+}
+
+function visitasLimitesSerie(sesiones, opciones) {
+  const opts = opciones || {};
+  let desde = visitasPartesYmd(opts.desde) ? opts.desde : '';
+  let hasta = visitasPartesYmd(opts.hasta) ? opts.hasta : '';
+  const fechas = sesiones.map(function(sesion) { return visitasFecha(sesion && sesion.inicio).fecha; }).filter(function(fecha) { return !!fecha; }).sort();
+  if (!desde && fechas.length) desde = fechas[0];
+  if (!hasta) {
+    if (visitasPartesYmd(opts.hoy)) hasta = opts.hoy;
+    else if (fechas.length) hasta = fechas[fechas.length - 1];
+  }
+  return desde && hasta && desde <= hasta ? { desde:desde, hasta:hasta } : null;
+}
+
+function visitasPorDia(sesiones, limites) {
+  if (!limites) return [];
+  const totales = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    if (fecha) totales[fecha] = (totales[fecha] || 0) + 1;
+  });
+  const salida = [];
+  let cursor = limites.desde;
+  while (cursor && cursor <= limites.hasta) {
+    salida.push({ fecha:cursor, n:totales[cursor] || 0 });
+    cursor = visitasMoverDias(cursor, 1);
+  }
+  return salida;
+}
+
+function visitasLunes(fecha) {
+  const diaSemana = visitasDiaSemanaYmd(fecha);
+  return diaSemana === null ? '' : visitasMoverDias(fecha, -diaSemana);
+}
+
+function visitasPorSemana(sesiones, limites) {
+  if (!limites) return [];
+  const totales = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    const lunes = fecha ? visitasLunes(fecha) : '';
+    if (lunes) totales[lunes] = (totales[lunes] || 0) + 1;
+  });
+  const salida = [];
+  let cursor = visitasLunes(limites.desde);
+  const ultimo = visitasLunes(limites.hasta);
+  while (cursor && cursor <= ultimo) {
+    salida.push({ desde:cursor, n:totales[cursor] || 0 });
+    cursor = visitasMoverDias(cursor, 7);
+  }
+  return salida;
+}
+
+function visitasMoverMes(mesTexto, cantidad) {
+  const coincidencia = /^(\d{4})-(\d{2})$/.exec(visitasTexto(mesTexto));
+  if (!coincidencia) return '';
+  const movido = visitasMesDesplazado(Number(coincidencia[1]), Number(coincidencia[2]), cantidad);
+  return String(movido.anio) + '-' + visitasPad2(movido.mes);
+}
+
+function visitasPorMes(sesiones, limites) {
+  if (!limites) return [];
+  const totales = Object.create(null);
+  sesiones.forEach(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio).fecha;
+    if (fecha) {
+      const mes = fecha.substring(0, 7);
+      totales[mes] = (totales[mes] || 0) + 1;
+    }
+  });
+  const salida = [];
+  let cursor = limites.desde.substring(0, 7);
+  const ultimo = limites.hasta.substring(0, 7);
+  while (cursor && cursor <= ultimo) {
+    salida.push({ mes:cursor, n:totales[cursor] || 0 });
+    cursor = visitasMoverMes(cursor, 1);
+  }
+  return salida;
+}
+
+function visitasTimestamp(valor) {
+  const numero = new Date(visitasTexto(valor)).getTime();
+  return isNaN(numero) ? -Infinity : numero;
+}
+
+function visitasNombreSocio(mapa, id) {
+  return Object.prototype.hasOwnProperty.call(mapa, id) ? mapa[id] : '';
+}
+
+function visitasResumen(sesiones, sociosActivos, opciones) {
+  const todas = Array.isArray(sesiones) ? sesiones : [];
+  const activos = Array.isArray(sociosActivos) ? sociosActivos : [];
+  const opts = opciones && typeof opciones === 'object' ? opciones : {};
+  const filtradas = visitasFiltrar(todas, opts);
+  const nombres = Object.create(null);
+  activos.forEach(function(socio) {
+    const id = visitasId(socio && socio.id);
+    if (id) nombres[id] = visitasTexto(socio && socio.nombre);
+  });
+
+  const sociosPresentes = Object.create(null);
+  filtradas.forEach(function(sesion) {
+    const id = visitasId(sesion && sesion.socioId);
+    if (id) sociosPresentes[id] = true;
+  });
+  const sociosSinEntrar = activos.filter(function(socio) {
+    const id = visitasId(socio && socio.id);
+    return id && !sociosPresentes[id];
+  }).map(function(socio) {
+    return { id:visitasId(socio && socio.id), nombre:visitasTexto(socio && socio.nombre) };
+  });
+
+  const duraciones = [];
+  const cargas = [];
+  const porHora = [];
+  const porDiaSemana = [];
+  let hora;
+  for (hora = 0; hora < 24; hora++) porHora.push({ hora:hora, n:0 });
+  let dia;
+  for (dia = 0; dia < 7; dia++) porDiaSemana.push({ dia:dia, n:0 });
+  filtradas.forEach(function(sesion) {
+    const duracion = visitasNumero(sesion && sesion.duracionS, false);
+    const carga = visitasNumero(sesion && sesion.cargaMs, true);
+    if (duracion > 0) duraciones.push(duracion);
+    if (carga !== null) cargas.push(carga);
+    const fecha = visitasFecha(sesion && sesion.inicio);
+    if (fecha.hora !== null) porHora[fecha.hora].n++;
+    if (fecha.diaSemana !== null) porDiaSemana[fecha.diaSemana].n++;
+  });
+
+  const camposDistribucion = ['tipoDisp','so','navegador','modo','idioma','version','origen','pais','region','ciudad','red','zonaHoraria','conexion'];
+  const distribuciones = {};
+  camposDistribucion.forEach(function(campo) { distribuciones[campo] = visitasDistribucion(filtradas, campo); });
+
+  const porSocioMapa = Object.create(null);
+  filtradas.forEach(function(sesion) {
+    const id = visitasId(sesion && sesion.socioId);
+    if (!id) return;
+    if (!porSocioMapa[id]) {
+      porSocioMapa[id] = { id:id, sesiones:0, ultima:'', dispositivos:Object.create(null), tipos:Object.create(null) };
+    }
+    const grupo = porSocioMapa[id];
+    grupo.sesiones++;
+    const inicio = visitasTexto(sesion && sesion.inicio);
+    if (!grupo.ultima || visitasTimestamp(inicio) > visitasTimestamp(grupo.ultima)) grupo.ultima = inicio;
+    const dispositivo = visitasTexto(sesion && sesion.dispositivoId).trim();
+    if (dispositivo) grupo.dispositivos[dispositivo] = true;
+    const tipo = visitasTexto(sesion && sesion.tipoDisp).trim();
+    if (tipo) grupo.tipos[tipo] = (grupo.tipos[tipo] || 0) + 1;
+  });
+  const porSocio = Object.keys(porSocioMapa).map(function(id) {
+    const grupo = porSocioMapa[id];
+    const tipos = Object.keys(grupo.tipos).map(function(clave) { return { clave:clave, n:grupo.tipos[clave] }; }).sort(visitasOrdenClave);
+    return {
+      id:id,
+      nombre:visitasNombreSocio(nombres, id),
+      sesiones:grupo.sesiones,
+      ultima:grupo.ultima,
+      dispositivos:Object.keys(grupo.dispositivos).length,
+      tipoDisp:tipos.length ? tipos[0].clave : ''
+    };
+  }).sort(function(a, b) {
+    if (b.sesiones !== a.sesiones) return b.sesiones - a.sesiones;
+    const diferencia = visitasTimestamp(b.ultima) - visitasTimestamp(a.ultima);
+    if (diferencia) return diferencia;
+    return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+  });
+
+  const ultimas = filtradas.slice().sort(function(a, b) {
+    const diferencia = visitasTimestamp(b && b.inicio) - visitasTimestamp(a && a.inicio);
+    if (diferencia) return diferencia;
+    const textoA = visitasTexto(a && a.inicio);
+    const textoB = visitasTexto(b && b.inicio);
+    return textoA < textoB ? 1 : (textoA > textoB ? -1 : 0);
+  }).slice(0, 30).map(function(sesion) {
+    const fecha = visitasFecha(sesion && sesion.inicio);
+    const id = visitasId(sesion && sesion.socioId);
+    return {
+      inicio:visitasTexto(sesion && sesion.inicio), fecha:fecha.fecha, hora:fecha.hora,
+      socioId:id, nombre:visitasNombreSocio(nombres, id),
+      tipoDisp:visitasTexto(sesion && sesion.tipoDisp), so:visitasTexto(sesion && sesion.so),
+      navegador:visitasTexto(sesion && sesion.navegador), modo:visitasTexto(sesion && sesion.modo),
+      ciudad:visitasTexto(sesion && sesion.ciudad), pais:visitasTexto(sesion && sesion.pais),
+      red:visitasTexto(sesion && sesion.red), origen:visitasTexto(sesion && sesion.origen),
+      version:visitasTexto(sesion && sesion.version), duracionS:visitasNumero(sesion && sesion.duracionS, false),
+      cargaMs:visitasNumero(sesion && sesion.cargaMs, true), pantallas:visitasContadores(sesion && sesion.pantallas),
+      acciones:visitasContadores(sesion && sesion.acciones), errores:visitasNumero(sesion && sesion.errores, false),
+      primeraVez:visitasTexto(sesion && sesion.primeraVez)
+    };
+  });
+
+  const limites = visitasLimitesSerie(filtradas, opts);
+  let anterior = null;
+  if (visitasPartesYmd(opts.anteriorDesde) && visitasPartesYmd(opts.anteriorHasta)) {
+    const anteriores = visitasFiltrar(todas, {
+      desde:opts.anteriorDesde, hasta:opts.anteriorHasta,
+      incluirAdmin:!!opts.incluirAdmin, excluirSocio:opts.excluirSocio
+    });
+    anterior = {
+      sesiones:anteriores.length,
+      dispositivos:visitasUnicos(anteriores, 'dispositivoId'),
+      socios:visitasUnicos(anteriores, 'socioId', visitasId)
+    };
+  }
+
+  let erroresTotal = 0;
+  let sesionesConError = 0;
+  filtradas.forEach(function(sesion) {
+    const errores = visitasNumero(sesion && sesion.errores, false);
+    erroresTotal += errores;
+    if (errores > 0) sesionesConError++;
+  });
+
+  const resultado = {
+    sesiones:filtradas.length,
+    totalPeriodo:filtradas.length,
+    dispositivos:visitasUnicos(filtradas, 'dispositivoId'),
+    socios:visitasUnicos(filtradas, 'socioId', visitasId),
+    sociosActivosTotal:activos.length,
+    sociosSinEntrar:sociosSinEntrar,
+    sesionesSinSocio:filtradas.filter(function(sesion) { return !visitasId(sesion && sesion.socioId); }).length,
+    nuevos:filtradas.filter(function(sesion) { return visitasTexto(sesion && sesion.primeraVez) === 'si'; }).length,
+    recurrentes:filtradas.filter(function(sesion) { return visitasTexto(sesion && sesion.primeraVez) === 'no'; }).length,
+    duracionMedianaS:visitasPercentil(duraciones, 0.5),
+    cargaMedianaMs:visitasPercentil(cargas, 0.5),
+    cargaP90Ms:visitasPercentil(cargas, 0.9),
+    porDia:visitasPorDia(filtradas, limites),
+    porSemana:visitasPorSemana(filtradas, limites),
+    porMes:visitasPorMes(filtradas, limites),
+    porHora:porHora,
+    porDiaSemana:porDiaSemana,
+    desfasadas:filtradas.filter(function(sesion) {
+      const version = visitasTexto(sesion && sesion.version).trim();
+      return !!version && version !== visitasTexto(opts.versionActual);
+    }).length,
+    pantallas:visitasTotalesContadores(filtradas, 'pantallas'),
+    acciones:visitasTotalesContadores(filtradas, 'acciones'),
+    erroresTotal:erroresTotal,
+    sesionesConError:sesionesConError,
+    porSocio:porSocio,
+    ultimas:ultimas,
+    anterior:anterior
+  };
+  camposDistribucion.forEach(function(campo) { resultado[campo] = distribuciones[campo]; });
+  return resultado;
+}
+
+function visitasCsvValor(valor) {
+  if (valor === null || valor === undefined) return '';
+  if (valor && typeof valor === 'object') {
+    try { return JSON.stringify(valor); }
+    catch(e) { return ''; }
+  }
+  return visitasTexto(valor);
+}
+
+function visitasCsvCelda(valor) {
+  let texto = visitasCsvValor(valor);
+  if (/^[=+\-@]/.test(texto)) texto = "'" + texto;
+  if (/[;"\r\n]/.test(texto)) return '"' + texto.replace(/"/g, '""') + '"';
+  return texto;
+}
+
+function visitasCsv(sesiones) {
+  const cabeceras = [
+    'sesionId','inicio','ultima','dispositivoId','socioId','admin','version','idioma',
+    'tipoDisp','so','navegador','pantalla','modo','conexion','zonaHoraria','origen',
+    'pais','region','ciudad','red','primeraVez','nVisita','duracionS','cargaMs',
+    'pantallas','acciones','errores'
+  ];
+  const lineas = [cabeceras.join(';')];
+  (Array.isArray(sesiones) ? sesiones : []).forEach(function(sesion) {
+    lineas.push(cabeceras.map(function(cabecera) {
+      return visitasCsvCelda(sesion && sesion[cabecera]);
+    }).join(';'));
+  });
+  return '\uFEFF' + lineas.join('\r\n');
+}
+/* >>> VISITAS DATOS (fin) */
 
 /* Comprime una imagen en el propio navegador (redimensiona + JPEG) antes de subirla.
    Devuelve un data URL "data:image/jpeg;base64,...." */
@@ -4193,6 +5620,7 @@ function refrescarDatos(opciones) {
         }
       });
       const resultado = aplicarDatos(datos, { red: true });
+      try { if (typeof visitasCargaOk === 'function') visitasCargaOk(); } catch(e) {}
       if (resultado.criticos) completarPrimeraCarga();
       else if (esPrimeraCarga) mostrarErrorPrimeraCarga();
       repintarTrasRefresco();
@@ -4344,6 +5772,7 @@ function navigate(screen) {
   const navId = navMap[screen] || screen;
   document.getElementById('nav-' + navId).classList.add('active');
   currentScreen = screen;
+  try { if (typeof visitasPantalla === 'function') visitasPantalla(screen); } catch(e) {}
   if (typeof actualizarPrimeraCarga === 'function') actualizarPrimeraCarga();
 
   if (screen === 'calendario')  {
@@ -6058,6 +7487,8 @@ function updatePinDisplay() {
 function pinOK() {
   if (pinBuf === getCfg().pin) {
     adminMode = true; pinBuf = ''; updatePinDisplay();
+    try { if (typeof visitasMarcarAdmin === 'function') visitasMarcarAdmin(); } catch(e) {}
+    try { if (typeof visitasAccion === 'function') visitasAccion('pin_admin'); } catch(e) {}
     document.getElementById('pin-error').classList.add('hidden');
     document.getElementById('admin-pin-view').classList.add('hidden');
     document.getElementById('admin-content').classList.remove('hidden');
@@ -6092,7 +7523,7 @@ let adminCurrentTab = 'reservas';
 
 function adminTab(tab) {
   adminCurrentTab = tab;
-  ['reservas','bloquear','avisos-admin','votos-admin','incid-admin','tablon-admin','socios','informe'].forEach(t => {
+  ['reservas','bloquear','avisos-admin','votos-admin','incid-admin','tablon-admin','socios','informe','visitas'].forEach(t => {
     document.getElementById('at-' + t).classList.toggle('active', t === tab);
   });
   renderAdminTabContent();
@@ -6318,6 +7749,9 @@ function renderAdminTabContent() {
   } else if (adminCurrentTab === 'informe') {
     cont.innerHTML = '<div id="informe-formulario"></div>';
     informeRenderForm();
+
+  } else if (adminCurrentTab === 'visitas') {
+    visitasRenderAdmin();
 
   } else if (adminCurrentTab === 'socios') {
     const socios = getSocios().slice().sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric:true}));
@@ -8793,9 +10227,729 @@ function informeImprimir() {
 }
 /* <<< INFORME PANTALLA (fin) */
 
+/* >>> VISITAS PANTALLA (inicio) */
+var visitasEstadoUI = {
+  periodo:'30d',
+  incluirAdmin:true,
+  excluirSocio:[],
+  datos:null,
+  horaCarga:null,
+  cargando:false,
+  error:'',
+  ultimasVisibles:10,
+  exclusionesLeidas:false,
+  exclusionesAbiertas:false
+};
+
+var VISITAS_NOMBRES_PANTALLAS = {
+  calendario:'Calendario', reserva:'Reservas', misreservas:'Mis reservas', avisos:'Comunidad',
+  normas:'Normas y documentos', calc:'Calculadora', admin:'Administración'
+};
+
+var VISITAS_NOMBRES_ACCIONES = {
+  login:'inició sesión', login_error:'falló al entrar', reserva:'reservó',
+  cancelar_reserva:'canceló una reserva', voto:'votó', incidencia:'avisó de una incidencia',
+  anuncio:'publicó un anuncio', cuenta_guardada:'guardó una cuenta',
+  cambio_password:'cambió la contraseña', idioma:'cambió el idioma',
+  documento:'abrió un documento', pin_admin:'entró en Admin',
+  error_api:'tuvo un fallo de red/servidor'
+};
+
+function visitasEsc(valor) {
+  return escapeHtml(valor === null || valor === undefined ? '' : String(valor));
+}
+
+function visitasLista(valor) {
+  return Array.isArray(valor) ? valor : [];
+}
+
+function visitasNum(valor) {
+  var numero = Number(valor);
+  return isFinite(numero) ? numero : 0;
+}
+
+function visitasIdsExcluidos(valor) {
+  var vistos = Object.create(null);
+  var salida = [];
+  visitasLista(valor).forEach(function(id) {
+    var normalizado = visitasId(id);
+    if (normalizado && !vistos[normalizado]) {
+      vistos[normalizado] = true;
+      salida.push(normalizado);
+    }
+  });
+  return salida;
+}
+
+function visitasExclusionesLeer() {
+  try {
+    var guardado = localStorage.getItem('azk_vis_excluir');
+    return visitasIdsExcluidos(guardado ? JSON.parse(guardado) : []);
+  } catch(e) {
+    return [];
+  }
+}
+
+function visitasExclusionesGuardar(ids) {
+  try { localStorage.setItem('azk_vis_excluir', JSON.stringify(visitasIdsExcluidos(ids))); }
+  catch(e) {}
+}
+
+function visitasExcluirSociosMultiples(sesiones, ids) {
+  var excluidos = Object.create(null);
+  visitasIdsExcluidos(ids).forEach(function(id) { excluidos[id] = true; });
+  return visitasLista(sesiones).filter(function(sesion) {
+    return !excluidos[visitasId(sesion && sesion.socioId)];
+  });
+}
+
+function visitasMapearIncluirAdmin(ocultarAdmin) {
+  return !ocultarAdmin;
+}
+
+function visitasOpcionesFiltro(clavePeriodo, hoy, ocultarAdmin, versionActual) {
+  var periodo = visitasPeriodo(clavePeriodo, hoy);
+  return {
+    desde:periodo.desde,
+    hasta:periodo.hasta,
+    anteriorDesde:periodo.anteriorDesde,
+    anteriorHasta:periodo.anteriorHasta,
+    etiqueta:periodo.etiqueta,
+    hoy:hoy,
+    incluirAdmin:visitasMapearIncluirAdmin(ocultarAdmin),
+    excluirSocio:'',
+    versionActual:versionActual
+  };
+}
+
+function visitasOrdenRecientes(sesiones) {
+  return visitasLista(sesiones).slice().sort(function(a, b) {
+    var tiempoA = new Date(a && a.inicio ? a.inicio : '').getTime();
+    var tiempoB = new Date(b && b.inicio ? b.inicio : '').getTime();
+    tiempoA = isNaN(tiempoA) ? -Infinity : tiempoA;
+    tiempoB = isNaN(tiempoB) ? -Infinity : tiempoB;
+    if (tiempoB !== tiempoA) return tiempoB - tiempoA;
+    var textoA = a && a.inicio ? String(a.inicio) : '';
+    var textoB = b && b.inicio ? String(b.inicio) : '';
+    return textoA < textoB ? 1 : (textoA > textoB ? -1 : 0);
+  });
+}
+
+function visitasCrearModelo(sesiones, sociosActivos, estado, hoy, versionActual) {
+  var todos = visitasLista(sesiones);
+  var excluidos = visitasIdsExcluidos(estado && estado.excluirSocio);
+  var sinSociosExcluidos = visitasExcluirSociosMultiples(todos, excluidos);
+  var ocultarAdmin = !(estado && estado.incluirAdmin);
+  var opciones = visitasOpcionesFiltro(estado && estado.periodo, hoy, ocultarAdmin, versionActual);
+  var resumenBase = visitasResumen(sinSociosExcluidos, sociosActivos, opciones);
+  var filtradas = visitasFiltrar(sinSociosExcluidos, opciones);
+  var sinFiltrosPrivados = visitasFiltrar(todos, {
+    desde:opciones.desde, hasta:opciones.hasta, incluirAdmin:true, excluirSocio:''
+  });
+  var recientes = visitasOrdenRecientes(filtradas).slice(0, 30);
+  var ultimas = visitasLista(resumenBase.ultimas).map(function(visita, indice) {
+    var original = recientes[indice] || {};
+    var copia = {};
+    Object.keys(visita || {}).forEach(function(clave) { copia[clave] = visita[clave]; });
+    copia.admin = String(original.admin || '').toLowerCase() === 'si' ? 'si' : '';
+    return copia;
+  });
+  var resumen = {};
+  Object.keys(resumenBase || {}).forEach(function(clave) { resumen[clave] = resumenBase[clave]; });
+  resumen.ultimas = ultimas;
+  return {
+    resumen:resumen,
+    sesiones:filtradas,
+    periodo:opciones,
+    ocultas:Math.max(0, sinFiltrosPrivados.length - filtradas.length),
+    excluidos:excluidos
+  };
+}
+
+function visitasComparacion(actual, anterior, clave) {
+  if (!anterior || visitasNum(anterior.sesiones) === 0) return '(periodo anterior sin datos)';
+  var diferencia = visitasNum(actual) - visitasNum(anterior[clave]);
+  if (diferencia === 0) return '= igual que el periodo anterior';
+  if (diferencia > 0) return '▲ ' + diferencia + ' más que el periodo anterior';
+  return '▼ ' + Math.abs(diferencia) + ' menos que el periodo anterior';
+}
+
+function visitasFormatoDuracion(segundos) {
+  var total = Math.max(0, Math.round(visitasNum(segundos)));
+  if (total < 60) return total + ' s';
+  if (total < 3600) return Math.round(total / 60) + ' min';
+  var horas = Math.floor(total / 3600);
+  var minutos = Math.round((total % 3600) / 60);
+  return horas + ' h' + (minutos ? ' ' + minutos + ' min' : '');
+}
+
+function visitasFormatoCarga(ms) {
+  var valor = Math.max(0, visitasNum(ms));
+  if (valor < 1000) return Math.round(valor) + ' ms';
+  return (Math.round(valor / 100) / 10).toLocaleString('es-ES') + ' s';
+}
+
+function visitasPorcentaje(valor, total) {
+  var base = visitasNum(total);
+  return base > 0 ? Math.round(visitasNum(valor) * 100 / base) : 0;
+}
+
+function visitasPintarCifras(resumen) {
+  var r = resumen || {};
+  var sinSocio = visitasNum(r.sesionesSinSocio);
+  var tarjetas = [
+    { valor:visitasNum(r.sesiones), etiqueta:'Visitas', comparacion:visitasComparacion(r.sesiones, r.anterior, 'sesiones') },
+    { valor:visitasNum(r.dispositivos), etiqueta:'Aparatos distintos', comparacion:visitasComparacion(r.dispositivos, r.anterior, 'dispositivos') },
+    { valor:visitasNum(r.socios) + ' de ' + visitasNum(r.sociosActivosTotal), etiqueta:'Socios que han entrado', comparacion:visitasComparacion(r.socios, r.anterior, 'socios') },
+    { valor:sinSocio + ' · ' + visitasPorcentaje(sinSocio, r.sesiones) + '%', etiqueta:'Entraron sin identificarse', comparacion:'' },
+    { valor:visitasFormatoDuracion(r.duracionMedianaS), etiqueta:'Duración mediana', comparacion:'' },
+    { valor:visitasFormatoCarga(r.cargaMedianaMs), etiqueta:'Carga mediana', comparacion:'' }
+  ];
+  return '<div class="stats-grid vis-stats">' + tarjetas.map(function(item) {
+    return '<div class="stat-card"><div class="stat-value">' + visitasEsc(item.valor) + '</div>' +
+      '<div class="stat-label">' + visitasEsc(item.etiqueta) + '</div>' +
+      '<div class="vis-stat-comparacion">' + visitasEsc(item.comparacion) + '</div></div>';
+  }).join('') + '</div>';
+}
+
+function visitasHoraMadrid(inicio) {
+  var fecha = new Date(inicio === null || inicio === undefined ? '' : String(inicio));
+  if (isNaN(fecha.getTime())) return '--:--';
+  try {
+    return new Intl.DateTimeFormat('es-ES', {
+      timeZone:'Europe/Madrid', hour:'2-digit', minute:'2-digit', hourCycle:'h23'
+    }).format(fecha);
+  } catch(e) {
+    return '--:--';
+  }
+}
+
+function visitasFechaCorta(fecha, hoy) {
+  if (!fecha) return 'Fecha desconocida';
+  if (fecha === hoy) return 'Hoy';
+  if (fecha === visitasMoverDias(hoy, -1)) return 'Ayer';
+  var partes = visitasPartesYmd(fecha);
+  if (!partes) return fecha;
+  var dias = ['lun','mar','mié','jue','vie','sáb','dom'];
+  var meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var diaSemana = visitasDiaSemanaYmd(fecha);
+  return (dias[diaSemana] || '') + ' ' + partes.dia + ' ' + (meses[partes.mes - 1] || '');
+}
+
+function visitasNombreClave(clave, mapa) {
+  var texto = clave === null || clave === undefined ? '' : String(clave);
+  return Object.prototype.hasOwnProperty.call(mapa, texto) ? mapa[texto] : texto;
+}
+
+function visitasActividadTexto(contadores, mapa, esAccion) {
+  var objeto = contadores && typeof contadores === 'object' ? contadores : {};
+  return Object.keys(objeto).filter(function(clave) {
+    return visitasNum(objeto[clave]) > 0;
+  }).sort(function(a, b) {
+    return visitasNum(objeto[b]) - visitasNum(objeto[a]);
+  }).map(function(clave) {
+    var nombre = visitasNombreClave(clave, mapa);
+    var n = visitasNum(objeto[clave]);
+    if (esAccion) return nombre + (n > 1 ? ' ×' + n : '');
+    return nombre + ' ×' + n;
+  }).join(', ');
+}
+
+function visitasIconoDispositivo(tipo) {
+  if (tipo === 'escritorio') return '🖥️';
+  if (tipo === 'tablet') return '▣';
+  return '📱';
+}
+
+function visitasOrigenTexto(origen) {
+  var texto = origen === null || origen === undefined ? '' : String(origen).trim();
+  if (!texto || texto === 'directo') return 'directo';
+  var nombres = { whatsapp:'WhatsApp', telegram:'Telegram', facebook:'Facebook', instagram:'Instagram', google:'Google', github:'GitHub' };
+  return 'de ' + (nombres[texto.toLowerCase()] || texto);
+}
+
+function visitasPintarUltima(visita, contexto) {
+  var v = visita || {};
+  var ctx = contexto || {};
+  var nombreSocio = v.socioId
+    ? 'Nº ' + String(v.socioId) + (v.nombre ? ' – ' + String(v.nombre) : '')
+    : 'Sin identificarse';
+  var aparato = [v.so, v.navegador, v.modo].filter(function(valor) { return !!valor; }).join(' · ');
+  var ubicacion = '';
+  if (v.ciudad || v.pais) ubicacion = (v.ciudad || '(sin ciudad)') + (v.pais ? ' (' + v.pais + ')' : '');
+  if (v.red) ubicacion += (ubicacion ? ' · ' : '') + v.red;
+  var pantallas = visitasActividadTexto(v.pantallas, VISITAS_NOMBRES_PANTALLAS, false);
+  var acciones = visitasActividadTexto(v.acciones, VISITAS_NOMBRES_ACCIONES, true);
+  var actividad = pantallas || acciones
+    ? (pantallas ? pantallas : 'Sin pantallas detalladas') + (acciones ? ' · ' + acciones : '')
+    : 'Sin actividad detallada';
+  var etiquetas = [];
+  if (String(v.admin || '').toLowerCase() === 'si') etiquetas.push('<span class="vis-etiqueta vis-etiqueta--junta">Junta</span>');
+  if (String(v.primeraVez || '').toLowerCase() === 'si') etiquetas.push('<span class="vis-etiqueta">NUEVO aparato</span>');
+  if (v.version && String(v.version) !== String(ctx.versionActual || '')) {
+    etiquetas.push('<span class="vis-etiqueta vis-etiqueta--aviso">versión antigua ' + visitasEsc(v.version) + '</span>');
+  }
+  if (visitasNum(v.errores) > 0) {
+    etiquetas.push('<span class="vis-etiqueta vis-etiqueta--error">⚠ ' + visitasEsc(visitasNum(v.errores)) + (visitasNum(v.errores) === 1 ? ' error' : ' errores') + '</span>');
+  }
+  return '<article class="vis-visita">' +
+    '<div class="vis-visita-top"><div><div class="vis-visita-fecha">' +
+      visitasEsc(visitasFechaCorta(v.fecha, ctx.hoy) + ' ' + visitasHoraMadrid(v.inicio)) +
+      '</div><div class="vis-visita-socio">' + visitasEsc(nombreSocio) + '</div></div>' +
+      '<div class="vis-etiquetas">' + etiquetas.join('') + '</div></div>' +
+    '<div class="vis-visita-linea">' + visitasEsc(visitasIconoDispositivo(v.tipoDisp) + ' ' + (aparato || '(sin datos del aparato)')) + '</div>' +
+    (ubicacion ? '<div class="vis-visita-linea">📍 ' + visitasEsc(ubicacion) + '</div>' : '') +
+    '<div class="vis-visita-linea">' + visitasEsc(visitasOrigenTexto(v.origen)) + ' · ⏱ ' + visitasEsc(visitasFormatoDuracion(v.duracionS)) + '</div>' +
+    '<div class="vis-visita-linea vis-visita-actividad">' + visitasEsc(actividad) + '</div>' +
+    '</article>';
+}
+
+function visitasPintarUltimas(resumen, contexto) {
+  var r = resumen || {};
+  var ctx = contexto || {};
+  var ultimas = visitasLista(r.ultimas);
+  var limite = Math.max(1, Math.min(30, Math.round(visitasNum(ctx.ultimasVisibles) || 10)));
+  if (!ultimas.length) {
+    return '<section class="card vis-seccion"><div class="card-title">🕘 Últimas visitas</div>' +
+      '<div class="vis-vacio">No hay visitas en este periodo con los filtros elegidos.</div></section>';
+  }
+  var visibles = ultimas.slice(0, limite);
+  var quedan = ultimas.length - visibles.length;
+  var boton = quedan > 0
+    ? '<button type="button" class="btn btn-outline vis-ver-mas" onclick="visitasVerMas()">Ver más (' + visitasEsc(quedan) + ')</button>'
+    : '';
+  var nota = visitasNum(r.totalPeriodo) > ultimas.length
+    ? '<div class="vis-subnota" style="margin-top:9px;margin-bottom:0;">Se muestran las 30 visitas más recientes de ' + visitasEsc(r.totalPeriodo) + '.</div>'
+    : '';
+  return '<section class="card vis-seccion"><div class="card-title">🕘 Últimas visitas</div>' +
+    '<div class="vis-ultimas-lista">' + visibles.map(function(visita) {
+      return visitasPintarUltima(visita, ctx);
+    }).join('') + '</div>' + boton + nota + '</section>';
+}
+
+function visitasEtiquetaDia(fecha) {
+  var partes = visitasPartesYmd(fecha);
+  if (!partes) return fecha || '';
+  var meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return partes.dia + ' ' + meses[partes.mes - 1];
+}
+
+function visitasEtiquetaMes(mes) {
+  var m = /^(\d{4})-(\d{2})$/.exec(String(mes || ''));
+  var meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return m ? meses[Number(m[2]) - 1] + ' ' + m[1].slice(-2) : String(mes || '');
+}
+
+function visitasPintarBarrasVerticales(items, obtenerEtiqueta) {
+  var filas = visitasLista(items);
+  var maximo = Math.max.apply(null, filas.map(function(item) { return visitasNum(item && item.n); }).concat([1]));
+  var pasoEtiqueta = filas.length > 12 ? Math.ceil(filas.length / 10) : 1;
+  return '<div class="vis-barras-v">' + filas.map(function(item, indice) {
+    var valor = visitasNum(item && item.n);
+    var porcentaje = valor > 0 ? Math.max(3, Math.round(valor * 1000 / maximo) / 10) : 2;
+    var etiquetaCompleta = obtenerEtiqueta(item || {}, indice);
+    var etiqueta = indice % pasoEtiqueta === 0 || indice === filas.length - 1 ? etiquetaCompleta : '';
+    return '<div class="vis-barra-v-item" title="' + visitasEsc(etiquetaCompleta + ': ' + valor) + '">' +
+      '<div class="vis-barra-v-valor">' + visitasEsc(valor) + '</div>' +
+      '<div class="vis-barra-v-area"><div class="vis-barra-v' + (valor ? '' : ' vis-cero') + '" style="--vis-pct:' + visitasEsc(porcentaje) + '%"></div></div>' +
+      '<div class="vis-barra-v-label">' + visitasEsc(etiqueta) + '</div></div>';
+  }).join('') + '</div>';
+}
+
+function visitasDiasEntre(desde, hasta) {
+  var a = visitasPartesYmd(desde);
+  var b = visitasPartesYmd(hasta);
+  if (!a || !b) return 0;
+  return Math.floor((Date.UTC(b.anio, b.mes - 1, b.dia) - Date.UTC(a.anio, a.mes - 1, a.dia)) / 86400000) + 1;
+}
+
+function visitasPintarGraficas(resumen, periodo) {
+  var r = resumen || {};
+  var p = periodo || {};
+  var duracion = visitasDiasEntre(p.desde, p.hasta);
+  if (!duracion) duracion = visitasLista(r.porDia).length;
+  var serie;
+  var titulo;
+  var etiqueta;
+  if (duracion <= 31) {
+    serie = visitasLista(r.porDia);
+    titulo = 'Visitas por día';
+    etiqueta = function(item) { return visitasEtiquetaDia(item.fecha); };
+  } else if (duracion <= 200) {
+    serie = visitasLista(r.porSemana);
+    titulo = 'Visitas por semana';
+    etiqueta = function(item) { return visitasEtiquetaDia(item.desde); };
+  } else {
+    serie = visitasLista(r.porMes);
+    titulo = 'Visitas por mes';
+    etiqueta = function(item) { return visitasEtiquetaMes(item.mes); };
+  }
+  var horas = visitasLista(r.porHora);
+  var semana = visitasLista(r.porDiaSemana);
+  var dias = ['L','M','X','J','V','S','D'];
+  return '<section class="vis-seccion"><div class="vis-grid">' +
+    '<div class="vis-grafica vis-grafica--ancha"><h3>' + visitasEsc(titulo) + '</h3>' + visitasPintarBarrasVerticales(serie, etiqueta) + '</div>' +
+    '<div class="vis-grafica"><h3>A qué hora</h3>' + visitasPintarBarrasVerticales(horas, function(item, indice) {
+      var hora = item.hora === null || item.hora === undefined ? indice : item.hora;
+      return indice % 3 === 0 ? visitasPad2(hora) + 'h' : '';
+    }) + '</div>' +
+    '<div class="vis-grafica"><h3>Qué días de la semana</h3>' + visitasPintarBarrasVerticales(semana, function(item, indice) {
+      var dia = item.dia === null || item.dia === undefined ? indice : item.dia;
+      return dias[dia] || '';
+    }) + '</div></div></section>';
+}
+
+function visitasPintarBarraHorizontal(item, totalSesiones, pocas, versionActual, esVersion, maximo) {
+  var fila = item || {};
+  var n = visitasNum(fila.n);
+  var porcentaje = maximo
+    ? (visitasNum(maximo) > 0 ? n * 100 / visitasNum(maximo) : 0)
+    : visitasNum(fila.pct);
+  porcentaje = Math.max(0, Math.min(100, porcentaje));
+  var clave = fila.clave === null || fila.clave === undefined || fila.clave === '' ? '(sin dato)' : String(fila.clave);
+  var desfasada = !!esVersion && clave !== '(sin dato)' && clave !== String(versionActual || '');
+  var valor = pocas ? String(n) : n + ' · ' + Math.round(porcentaje) + '%';
+  return '<div class="vis-barra-h-fila"><div class="vis-barra-h-cab">' +
+    '<span class="vis-barra-h-nombre" title="' + visitasEsc(clave) + '">' + visitasEsc(clave) + '</span>' +
+    '<span class="vis-barra-h-valor' + (desfasada ? ' vis-desfasada' : '') + '">' + visitasEsc(valor) + (desfasada ? ' · desfasada' : '') + '</span></div>' +
+    '<div class="vis-barra-h-pista"><div class="vis-barra-h' + (desfasada ? ' vis-desfasada' : '') + '" style="--vis-pct:' + visitasEsc(Math.round(porcentaje * 10) / 10) + '%"></div></div></div>';
+}
+
+function visitasPintarDistribucion(titulo, filas, resumen, opciones) {
+  var lista = visitasLista(filas);
+  var r = resumen || {};
+  var opts = opciones || {};
+  var pocas = visitasNum(r.sesiones) < 10;
+  var contenido = lista.length ? lista.map(function(item) {
+    return visitasPintarBarraHorizontal(item, r.sesiones, pocas, opts.versionActual, opts.esVersion, 0);
+  }).join('') : '<div class="vis-vacio">Sin datos</div>';
+  var nota = opts.esVersion && visitasNum(r.desfasadas) > 0
+    ? '<div class="vis-subnota">' + visitasEsc(r.desfasadas) + ' visita' + (visitasNum(r.desfasadas) === 1 ? '' : 's') + ' con una versión distinta de la actual.</div>'
+    : '';
+  return '<div class="vis-grafica"><h3>' + visitasEsc(titulo) + '</h3>' + nota + contenido + '</div>';
+}
+
+function visitasPintarDistribuciones(resumen, contexto) {
+  var r = resumen || {};
+  var ctx = contexto || {};
+  var grupos = [
+    ['Aparato', r.tipoDisp], ['Sistema', r.so], ['Navegador', r.navegador],
+    ['Instalada o en navegador', r.modo], ['Idioma', r.idioma],
+    ['Versión de la app', r.version, true], ['De dónde llegan', r.origen],
+    ['País', r.pais], ['Región', r.region], ['Ciudad', r.ciudad],
+    ['Red / operador', r.red], ['Conexión', r.conexion]
+  ];
+  return '<section class="vis-seccion"><div class="card-title" style="padding:0 3px 8px;">Distribuciones</div><div class="vis-grid">' +
+    grupos.map(function(grupo) {
+      return visitasPintarDistribucion(grupo[0], grupo[1], r, { versionActual:ctx.versionActual, esVersion:!!grupo[2] });
+    }).join('') + '</div></section>';
+}
+
+function visitasPintarContadores(titulo, filas, mapa) {
+  var lista = visitasLista(filas);
+  var maximo = Math.max.apply(null, lista.map(function(item) { return visitasNum(item && item.n); }).concat([1]));
+  return '<div class="vis-grafica"><h3>' + visitasEsc(titulo) + '</h3>' + (lista.length ? lista.map(function(item) {
+    var preparado = { clave:visitasNombreClave(item.clave, mapa), n:item.n, pct:0 };
+    return visitasPintarBarraHorizontal(preparado, 0, true, '', false, maximo);
+  }).join('') : '<div class="vis-vacio">Sin actividad registrada</div>') + '</div>';
+}
+
+function visitasContadorAccion(filas, clave) {
+  var encontrado = visitasLista(filas).filter(function(item) { return item && item.clave === clave; })[0];
+  return encontrado ? visitasNum(encontrado.n) : 0;
+}
+
+function visitasPintarActividad(resumen) {
+  var r = resumen || {};
+  return '<section class="vis-seccion"><div class="vis-grid">' +
+    visitasPintarContadores('Qué miran', r.pantallas, VISITAS_NOMBRES_PANTALLAS) +
+    visitasPintarContadores('Qué hacen', r.acciones, VISITAS_NOMBRES_ACCIONES) +
+    '<div class="vis-grafica vis-grafica--ancha"><h3>Problemas</h3><div class="vis-problemas">' +
+      '<div class="vis-problema"><strong>' + visitasEsc(visitasNum(r.erroresTotal)) + '</strong><span>Errores del navegador</span></div>' +
+      '<div class="vis-problema"><strong>' + visitasEsc(visitasNum(r.sesionesConError)) + '</strong><span>Sesiones con error</span></div>' +
+      '<div class="vis-problema"><strong>' + visitasEsc(visitasContadorAccion(r.acciones, 'error_api')) + '</strong><span>Fallos de red / servidor</span></div>' +
+      '<div class="vis-problema"><strong>' + visitasEsc(visitasContadorAccion(r.acciones, 'login_error')) + '</strong><span>Fallos de contraseña</span></div>' +
+    '</div></div></div></section>';
+}
+
+function visitasUltimaRelativa(inicio, hoy) {
+  var fecha = visitasFecha(inicio).fecha;
+  if (!fecha) return 'fecha desconocida';
+  return visitasFechaCorta(fecha, hoy) + ' ' + visitasHoraMadrid(inicio);
+}
+
+function visitasPintarSocios(resumen, contexto) {
+  var r = resumen || {};
+  var ctx = contexto || {};
+  var socios = visitasLista(r.porSocio);
+  var filas = socios.length ? socios.map(function(socio) {
+    return '<div class="vis-socio-fila"><div class="vis-socio-nombre">Nº ' + visitasEsc(socio.id) +
+      (socio.nombre ? ' – ' + visitasEsc(socio.nombre) : '') + '</div>' +
+      '<div class="vis-socio-meta">' + visitasEsc(visitasNum(socio.sesiones)) + ' visita' + (visitasNum(socio.sesiones) === 1 ? '' : 's') +
+      ' · última: ' + visitasEsc(visitasUltimaRelativa(socio.ultima, ctx.hoy)) +
+      ' · ' + visitasEsc(visitasNum(socio.dispositivos)) + ' aparato' + (visitasNum(socio.dispositivos) === 1 ? '' : 's') +
+      (socio.tipoDisp ? ' · habitual: ' + visitasEsc(socio.tipoDisp) : '') + '</div></div>';
+  }).join('') : '<div class="vis-vacio">Ningún socio identificado en este periodo.</div>';
+  var sinEntrar = visitasLista(r.sociosSinEntrar);
+  var pendientes = sinEntrar.length
+    ? '<ul class="vis-sin-entrar">' + sinEntrar.map(function(socio) {
+        return '<li>Nº ' + visitasEsc(socio.id) + (socio.nombre ? ' – ' + visitasEsc(socio.nombre) : '') + '</li>';
+      }).join('') + '</ul>'
+    : '<div>Todos los socios activos han entrado con los filtros actuales.</div>';
+  return '<section class="card vis-seccion"><div class="card-title">👥 Socios</div><div class="vis-socio-lista">' + filas + '</div>' +
+    '<details class="vis-detalles"><summary>Socios que aún no han entrado (' + visitasEsc(sinEntrar.length) + ')</summary>' +
+      '<div class="vis-detalles-contenido">' + pendientes + '</div></details></section>';
+}
+
+function visitasPintarAviso(contexto) {
+  var ctx = contexto || {};
+  var extra = visitasNum(ctx.ocultas) > 0
+    ? ' Con los filtros actuales hay <strong>' + visitasEsc(ctx.ocultas) + ' visita' + (visitasNum(ctx.ocultas) === 1 ? '' : 's') + ' oculta' + (visitasNum(ctx.ocultas) === 1 ? '' : 's') + '</strong> por Junta o socios excluidos.'
+    : '';
+  var truncado = ctx.truncado ? ' <strong>Se muestran solo las últimas 6000 visitas.</strong>' : '';
+  return '<div class="vis-aviso">Cuenta visitas reales a la app publicada. Una visita = abrir la app (o volver tras más de 30 min). ' +
+    'Un aparato = un móvil/ordenador, no una persona. Los aparatos que has apagado con «No contar este aparato» no aparecen.' + extra + truncado + '</div>';
+}
+
+function visitasPintarComoLeer() {
+  return '<details class="card vis-seccion vis-detalles"><summary>Cómo leerlo</summary><div class="vis-detalles-contenido">' +
+    'Una visita es una sesión, no una página vista. Un aparato puede pertenecer a varias personas y una ubicación es aproximada. ' +
+    'La duración cuenta el tiempo con la app visible. «Sin identificarse» significa que se abrió la app pero no se inició sesión.' +
+    '</div></details>';
+}
+
+function visitasPintarPanel(resumen, contexto) {
+  var ctx = contexto || {};
+  return visitasPintarCifras(resumen) +
+    visitasPintarUltimas(resumen, ctx) +
+    visitasPintarGraficas(resumen, ctx.periodo) +
+    visitasPintarDistribuciones(resumen, ctx) +
+    visitasPintarActividad(resumen) +
+    visitasPintarSocios(resumen, ctx) +
+    visitasPintarComoLeer();
+}
+
+function visitasSociosActivosUI() {
+  return visitasLista(typeof getSocios === 'function' ? getSocios() : []).filter(function(socio) {
+    return socio && String(socio.estado) === 'activo';
+  }).map(function(socio) {
+    return { id:visitasId(socio.id), nombre:socio.nombre === null || socio.nombre === undefined ? '' : String(socio.nombre) };
+  }).sort(function(a, b) {
+    var numA = /^\d+$/.test(a.id) ? Number(a.id) : 999999;
+    var numB = /^\d+$/.test(b.id) ? Number(b.id) : 999999;
+    if (numA !== numB) return numA - numB;
+    return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+  });
+}
+
+function visitasHoraActualizacion(valor) {
+  var fecha = valor instanceof Date ? valor : new Date(valor || '');
+  if (isNaN(fecha.getTime())) return '';
+  try {
+    return new Intl.DateTimeFormat('es-ES', {
+      timeZone:'Europe/Madrid', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23'
+    }).format(fecha);
+  } catch(e) {
+    return '';
+  }
+}
+
+function visitasPintarControles(sociosActivos, estado, aparatoApagado) {
+  var e = estado || {};
+  var periodos = [
+    ['hoy','Hoy'], ['7d','7 días'], ['30d','30 días'], ['mes','Este mes'],
+    ['mespasado','Mes pasado'], ['90d','90 días'], ['todo','Todo lo recogido']
+  ];
+  var ids = visitasIdsExcluidos(e.excluirSocio);
+  var opciones = periodos.map(function(periodo) {
+    return '<option value="' + visitasEsc(periodo[0]) + '"' + (periodo[0] === e.periodo ? ' selected' : '') + '>' + visitasEsc(periodo[1]) + '</option>';
+  }).join('');
+  var socios = visitasLista(sociosActivos).map(function(socio) {
+    var id = visitasId(socio && socio.id);
+    return '<label class="vis-check"><input type="checkbox" value="' + visitasEsc(id) + '" onchange="visitasCambiarExclusion(this)"' +
+      (ids.indexOf(id) !== -1 ? ' checked' : '') + '><span>Nº ' + visitasEsc(id) + (socio && socio.nombre ? ' – ' + visitasEsc(socio.nombre) : '') + '</span></label>';
+  }).join('');
+  var hora = visitasHoraActualizacion(e.horaCarga);
+  return '<div class="card vis-controles"><div class="vis-control-titulo">📊 Visitas</div><div class="vis-control-grid">' +
+    '<label class="vis-periodo-label">Periodo<select onchange="visitasCambiarPeriodo(this.value)">' + opciones + '</select></label>' +
+    '<label class="vis-check"><input type="checkbox" onchange="visitasCambiarAdmin(this.checked)"' + (!e.incluirAdmin ? ' checked' : '') +
+      '><span>Ocultar aparatos que han entrado en Admin (Junta)</span></label>' +
+    '<details class="vis-excluir"' + (e.exclusionesAbiertas ? ' open' : '') + ' ontoggle="visitasDetallesExclusion(this.open)"><summary>Excluir socios…' +
+      (ids.length ? ' (' + visitasEsc(ids.length) + ')' : '') + '</summary><div class="vis-excluir-lista">' +
+      (socios || '<div class="vis-vacio">No hay socios activos.</div>') + '</div></details>' +
+    '<div><div class="vis-aparato-estado">Estado: <strong>Este aparato ' + (aparatoApagado ? 'NO' : 'SÍ') + ' cuenta</strong></div>' +
+      '<button type="button" class="btn btn-outline mt-8" onclick="visitasAlternarEsteAparato()">' +
+      (aparatoApagado ? '✅ Volver a contar este aparato' : '🚫 No contar este aparato') + '</button></div>' +
+    '</div><div class="vis-botones">' +
+      '<button type="button" class="btn btn-primary" onclick="visitasActualizar()">🔄 Actualizar</button>' +
+      '<button type="button" class="btn btn-outline" onclick="visitasDescargarCsv()">⬇ CSV</button>' +
+    '</div>' + (hora ? '<div class="vis-actualizado">Datos actualizados a las ' + visitasEsc(hora) + ' (Madrid)</div>' : '') + '</div>';
+}
+
+function visitasEstaApagado() {
+  try { return visitasAlmacenLeer('local', 'azk_nocontar') === '1'; }
+  catch(e) { return false; }
+}
+
+function visitasPintarAdminDom() {
+  var root = document.getElementById('admin-tab');
+  if (!root || adminCurrentTab !== 'visitas') return;
+  var socios = visitasSociosActivosUI();
+  var html = '<div class="vis-panel">' + visitasPintarControles(socios, visitasEstadoUI, visitasEstaApagado());
+  if (visitasEstadoUI.cargando && !visitasEstadoUI.datos) {
+    root.innerHTML = html + '<div class="card vis-vacio">⏳ Cargando visitas…</div></div>';
+    return;
+  }
+  if (visitasEstadoUI.error && !visitasEstadoUI.datos) {
+    root.innerHTML = html + '<div class="alert alert-error vis-error">No se han podido cargar las visitas. ' +
+      '<button type="button" class="btn btn-outline btn-sm" onclick="visitasActualizar()">Reintentar</button></div></div>';
+    return;
+  }
+  if (!visitasEstadoUI.datos) {
+    root.innerHTML = html + '</div>';
+    return;
+  }
+  if (visitasEstadoUI.cargando) html += '<div class="vis-aviso">⏳ Actualizando las visitas…</div>';
+  if (visitasEstadoUI.error) html += '<div class="alert alert-error vis-error">No se han podido actualizar las visitas. Se mantienen los últimos datos cargados.</div>';
+  var sesiones = visitasLista(visitasEstadoUI.datos.sesiones);
+  var modelo = visitasCrearModelo(sesiones, socios, visitasEstadoUI, todayStr(), APP_VERSION);
+  html += visitasPintarAviso({ ocultas:modelo.ocultas, truncado:!!visitasEstadoUI.datos.truncado });
+  if (!sesiones.length) {
+    html += '<div class="card vis-vacio">Todavía no hay visitas registradas: se empiezan a contar desde que se publique la versión 2.6</div></div>';
+    root.innerHTML = html;
+    return;
+  }
+  html += visitasPintarPanel(modelo.resumen, {
+    hoy:todayStr(), versionActual:APP_VERSION, periodo:modelo.periodo,
+    ultimasVisibles:visitasEstadoUI.ultimasVisibles
+  }) + '</div>';
+  root.innerHTML = html;
+}
+
+async function visitasCargar() {
+  if (visitasEstadoUI.cargando) return;
+  visitasEstadoUI.cargando = true;
+  visitasEstadoUI.error = '';
+  visitasPintarAdminDom();
+  try {
+    var respuesta = await apiCall({ action:'getVisitas', dias:400 });
+    visitasEstadoUI.datos = {
+      sesiones:visitasNormalizar(respuesta),
+      truncado:!!(respuesta && respuesta.truncado),
+      total:visitasNum(respuesta && respuesta.total),
+      devueltas:visitasNum(respuesta && respuesta.devueltas)
+    };
+    visitasEstadoUI.horaCarga = new Date();
+    visitasEstadoUI.ultimasVisibles = 10;
+  } catch(error) {
+    visitasEstadoUI.error = error && error.message ? String(error.message) : 'Error de conexión';
+  } finally {
+    visitasEstadoUI.cargando = false;
+    visitasPintarAdminDom();
+  }
+}
+
+function visitasRenderAdmin() {
+  if (!visitasEstadoUI.exclusionesLeidas) {
+    visitasEstadoUI.excluirSocio = visitasExclusionesLeer();
+    visitasEstadoUI.exclusionesLeidas = true;
+  }
+  if (!visitasEstadoUI.datos && !visitasEstadoUI.cargando && !visitasEstadoUI.error) {
+    visitasCargar();
+    return;
+  }
+  visitasPintarAdminDom();
+}
+
+function visitasActualizar() {
+  visitasCargar();
+}
+
+function visitasCambiarPeriodo(periodo) {
+  var validos = ['hoy','7d','30d','mes','mespasado','90d','todo'];
+  visitasEstadoUI.periodo = validos.indexOf(periodo) !== -1 ? periodo : '30d';
+  visitasEstadoUI.ultimasVisibles = 10;
+  visitasPintarAdminDom();
+}
+
+function visitasCambiarAdmin(ocultar) {
+  visitasEstadoUI.incluirAdmin = visitasMapearIncluirAdmin(!!ocultar);
+  visitasEstadoUI.ultimasVisibles = 10;
+  visitasPintarAdminDom();
+}
+
+function visitasCambiarExclusion(casilla) {
+  var id = visitasId(casilla && casilla.value);
+  var ids = visitasIdsExcluidos(visitasEstadoUI.excluirSocio);
+  var indice = ids.indexOf(id);
+  if (casilla && casilla.checked && id && indice === -1) ids.push(id);
+  if (casilla && !casilla.checked && indice !== -1) ids.splice(indice, 1);
+  visitasEstadoUI.excluirSocio = ids;
+  visitasEstadoUI.exclusionesAbiertas = true;
+  visitasEstadoUI.ultimasVisibles = 10;
+  visitasExclusionesGuardar(ids);
+  visitasPintarAdminDom();
+}
+
+function visitasDetallesExclusion(abierto) {
+  visitasEstadoUI.exclusionesAbiertas = !!abierto;
+}
+
+function visitasVerMas() {
+  visitasEstadoUI.ultimasVisibles = Math.min(30, visitasEstadoUI.ultimasVisibles + 10);
+  visitasPintarAdminDom();
+}
+
+function visitasAlternarEsteAparato() {
+  var apagado = visitasEstaApagado();
+  if (!apagado) {
+    if (!confirm('¿Dejar de contar las visitas de este aparato? Puedes volver a activarlo desde este mismo botón.')) return;
+    visitasAlmacenGuardar('local', 'azk_nocontar', '1');
+  } else {
+    visitasAlmacenBorrar('local', 'azk_nocontar');
+  }
+  visitasPintarAdminDom();
+}
+
+function visitasDescargarCsv() {
+  if (!visitasEstadoUI.datos) return;
+  var modelo = visitasCrearModelo(
+    visitasEstadoUI.datos.sesiones,
+    visitasSociosActivosUI(),
+    visitasEstadoUI,
+    todayStr(),
+    APP_VERSION
+  );
+  try {
+    var blob = new Blob([visitasCsv(modelo.sesiones)], { type:'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = 'visitas_azkena_' + todayStr() + '.csv';
+    enlace.style.display = 'none';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 0);
+  } catch(error) {
+    showToast('❌ No se ha podido crear el CSV', 'err');
+  }
+}
+/* >>> VISITAS PANTALLA (fin) */
+
 /* =========================================================
    INIT
 ========================================================= */
+try {
+  document.addEventListener('click', function(event) {
+    try {
+      var objetivo = event && event.target ? event.target : null;
+      if (objetivo && objetivo.nodeType !== 1) objetivo = objetivo.parentElement;
+      if (objetivo && typeof objetivo.closest === 'function' && objetivo.closest('a.doc-item') && typeof visitasAccion === 'function') visitasAccion('documento');
+    } catch(e) {}
+  });
+} catch(e) {}
+
 document.addEventListener('DOMContentLoaded', () => {
   if (limpiarCachePorParametro()) return;
   // Aplicar logo
@@ -8825,6 +10979,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderNormas();
     poblarLoginSocios();
   }
+  try { if (typeof visitasIniciar === 'function') visitasIniciar(); } catch(e) {}
 });
 
 /* =========================================================
